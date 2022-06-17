@@ -5,17 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import com.homalab.android.compose.weather.ui.components.SearchBar
-import com.homalab.android.compose.weather.ui.components.SearchDisplay
-import com.homalab.android.compose.weather.ui.components.SearchState
-import com.homalab.android.compose.weather.ui.components.rememberSearchState
-import com.homalab.android.compose.weather.ui.model.City
+import androidx.compose.ui.unit.dp
+import com.homalab.android.compose.weather.ui.components.*
+import com.homalab.android.compose.weather.ui.model.CityRecord
+import com.homalab.android.compose.weather.ui.model.search
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
 import kotlinx.coroutines.delay
 
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun WeatherApp(state: SearchState<City> = rememberSearchState()) {
+private fun WeatherApp(state: SearchState<CityRecord> = rememberSearchState()) {
     Column {
         SearchBar(
             query = state.query,
@@ -56,7 +59,7 @@ private fun WeatherApp(state: SearchState<City> = rememberSearchState()) {
         LaunchedEffect(state.query.text) {
             state.searching = true
             delay(100)
-//        state.searchResults = //todo
+            state.searchResults = search(state.query.text)
             state.searching = false
         }
 
@@ -73,8 +76,19 @@ private fun WeatherApp(state: SearchState<City> = rememberSearchState()) {
             }
 
             SearchDisplay.Results -> {
-
+                SearchResultList(state.searchResults)
             }
+        }
+    }
+}
+
+@Composable
+fun SearchResultList(itemList: List<CityRecord>) {
+    val scrollState = rememberLazyListState()
+
+    LazyColumn(state = scrollState) {
+        items(items = itemList, key = { it.id }) {
+            CityRow(it, modifier = Modifier.padding(12.dp))
         }
     }
 }
