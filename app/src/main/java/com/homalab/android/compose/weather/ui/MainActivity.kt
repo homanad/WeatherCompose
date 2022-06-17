@@ -3,6 +3,7 @@ package com.homalab.android.compose.weather.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -76,19 +77,23 @@ private fun WeatherApp(state: SearchState<CityRecord> = rememberSearchState()) {
             }
 
             SearchDisplay.Results -> {
-                SearchResultList(state.searchResults)
+                SearchResultList(state.searchResults) {
+
+                }
             }
         }
     }
 }
 
 @Composable
-fun SearchResultList(itemList: List<CityRecord>) {
+fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Unit) {
     val scrollState = rememberLazyListState()
 
     LazyColumn(state = scrollState) {
         items(items = itemList, key = { it.id }) {
-            CityRow(it, modifier = Modifier.padding(12.dp))
+            CityRow(it, modifier = Modifier
+                .padding(12.dp)
+                .clickable { onItemClick(it) })
         }
     }
 }
