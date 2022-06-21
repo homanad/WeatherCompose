@@ -8,6 +8,7 @@ import com.algolia.search.model.IndexName
 import com.algolia.search.model.ObjectID
 import com.algolia.search.model.indexing.Indexable
 import com.algolia.search.model.search.Query
+import com.homalab.android.compose.weather.domain.entity.Coord
 import com.homalab.android.compose.weather.util.Constants
 import kotlinx.serialization.Serializable
 
@@ -20,12 +21,6 @@ data class CityRecord(
     val coord: Coord,
     override val objectID: ObjectID
 ) : Indexable
-
-@Serializable
-data class Coord(
-    val lat: Double,
-    val lon: Double
-)
 
 suspend fun search(query: String): List<CityRecord> {
     val client = ClientSearch(
