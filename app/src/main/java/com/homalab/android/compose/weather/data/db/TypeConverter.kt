@@ -2,6 +2,7 @@ package com.homalab.android.compose.weather.data.db
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.homalab.android.compose.weather.domain.entity.*
 
 class TypeConverter {
@@ -19,13 +20,14 @@ class TypeConverter {
     }
 
     @TypeConverter
-    fun convertWeatherToString(weather: Weather): String {
+    fun convertWeatherToString(weather: List<WeatherItem>): String {
         return gson.toJson(weather)
     }
 
     @TypeConverter
-    fun convertStringToWeather(json: String): Weather {
-        return gson.fromJson(json, Weather::class.java)
+    fun convertStringToWeather(json: String): List<WeatherItem> {
+        val myType = object : TypeToken<List<WeatherItem>>() {}.type
+        return gson.fromJson(json, myType)
     }
 
     @TypeConverter

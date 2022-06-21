@@ -1,6 +1,7 @@
 package com.homalab.android.compose.weather.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -12,12 +13,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
 import com.homalab.android.compose.weather.ui.model.CityRecord
 import com.homalab.android.compose.weather.ui.model.search
@@ -44,7 +45,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun WeatherApp(viewModel: MainViewModel = hiltViewModel(), state: SearchState<CityRecord> = rememberSearchState()) {
+private fun WeatherApp(
+    viewModel: MainViewModel = hiltViewModel(),
+    state: SearchState<CityRecord> = rememberSearchState()
+) {
+    var weatherData: WeatherData? by remember { mutableStateOf(null) }
+
     Column {
         SearchBar(
             query = state.query,
@@ -65,6 +71,18 @@ private fun WeatherApp(viewModel: MainViewModel = hiltViewModel(), state: Search
             delay(100)
             state.searchResults = search(state.query.text)
             state.searching = false
+        }
+
+        LaunchedEffect(state.selectedItem) {
+            state.selectedItem?.let {
+                weatherData = viewModel.getCurrentWeather(
+                    it.id,
+                    it.coord.lat.toFloat(),
+                    it.coord.lon.toFloat()
+                )
+
+                Log.d("MAinACTOVOTU", "-----weatherData: $weatherData")
+            }
         }
 
         if (state.focused) {
