@@ -17,12 +17,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.homalab.android.compose.weather.ui.components.*
 import com.homalab.android.compose.weather.ui.model.CityRecord
 import com.homalab.android.compose.weather.ui.model.search
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +44,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun WeatherApp(state: SearchState<CityRecord> = rememberSearchState()) {
+private fun WeatherApp(viewModel: MainViewModel = hiltViewModel(), state: SearchState<CityRecord> = rememberSearchState()) {
     Column {
         SearchBar(
             query = state.query,
