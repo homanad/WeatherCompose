@@ -6,9 +6,15 @@ import com.homalab.android.compose.weather.domain.entity.WeatherData
 
 class GetCurrentWeatherUseCase(
     private val weatherRepository: WeatherRepository
-) : BaseUseCase<Unit, WeatherData>() {
+) : BaseUseCase<GetCurrentWeatherUseCase.GetCurrentWeatherParam, WeatherData>() {
 
-    override suspend fun create(param: Unit): WeatherData {
-        return weatherRepository.getCurrentWeatherData()
+    override suspend fun create(param: GetCurrentWeatherParam): WeatherData {
+        return weatherRepository.getCurrentWeatherData(param.id, param.lat, param.lon)
     }
+
+    data class GetCurrentWeatherParam(
+        val id: Int,
+        val lat: Float,
+        val lon: Float
+    )
 }

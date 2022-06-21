@@ -7,7 +7,7 @@ class WeatherRemoteDataSourceImpl(
     private val weatherService: WeatherService
 ) : WeatherDataSource {
 
-    override suspend fun getCurrentWeatherData(lat: Float, lon: Float): WeatherData {
+    override suspend fun getCurrentWeatherData(id: Int, lat: Float, lon: Float): WeatherData {
         return weatherService.getCurrentWeather(lat = lat, lon = lon)
     }
 }
