@@ -4,8 +4,9 @@ import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSourc
 import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSourceImpl
 import com.homalab.android.compose.weather.domain.WeatherRepository
 import com.homalab.android.compose.weather.domain.entity.WeatherData
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val weatherRemoteDataSource: WeatherRemoteDataSourceImpl,
     private val weatherLocalDataSource: WeatherLocalDataSourceImpl
 ) : WeatherRepository {
