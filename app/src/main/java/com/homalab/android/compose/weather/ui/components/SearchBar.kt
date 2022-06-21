@@ -33,6 +33,7 @@ fun SearchBar(
 
     val focusManager = LocalFocusManager.current
 //    val keyboardController = LocalSoftwareKeyboardController.current
+    if (!focused) focusManager.clearFocus()
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -44,7 +45,7 @@ fun SearchBar(
             IconButton(
                 modifier = Modifier.padding(start = 2.dp),
                 onClick = {
-                    focusManager.clearFocus()
+//                    focusManager.clearFocus()
 //                    keyboardController?.hide()
                     onBack()
                 }) {
@@ -161,7 +162,8 @@ fun <T> rememberSearchState(
     focused: Boolean = false,
     searching: Boolean = false,
     suggestions: List<T> = emptyList(),
-    searchResults: List<T> = emptyList()
+    searchResults: List<T> = emptyList(),
+    selectedItem: T? = null
 ): SearchState<T> {
     return remember {
         SearchState(
@@ -169,7 +171,8 @@ fun <T> rememberSearchState(
             focused = focused,
             searching = searching,
             suggestions = suggestions,
-            searchResults = searchResults
+            searchResults = searchResults,
+            selectedItem = selectedItem
         )
     }
 }
@@ -180,13 +183,15 @@ class SearchState<T>(
     focused: Boolean,
     searching: Boolean,
     suggestions: List<T>,
-    searchResults: List<T>
+    searchResults: List<T>,
+    selectedItem: T?
 ) {
     var query by mutableStateOf(query)
     var focused by mutableStateOf(focused)
     var searching by mutableStateOf(searching)
     var suggestions by mutableStateOf(suggestions)
     var searchResults by mutableStateOf(searchResults)
+    var selectedItem by mutableStateOf(selectedItem)
 
     val searchDisplay: SearchDisplay
         get() = when {

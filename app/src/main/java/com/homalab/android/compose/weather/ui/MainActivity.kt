@@ -64,23 +64,29 @@ private fun WeatherApp(state: SearchState<CityRecord> = rememberSearchState()) {
             state.searching = false
         }
 
-        when (state.searchDisplay) {
-            SearchDisplay.InitialResults -> {
-
-            }
-            SearchDisplay.NoResults -> {
-
-            }
-
-            SearchDisplay.Suggestions -> {
-
-            }
-
-            SearchDisplay.Results -> {
-                SearchResultList(state.searchResults) {
+        if (state.focused) {
+            when (state.searchDisplay) {
+                SearchDisplay.InitialResults -> {
 
                 }
+                SearchDisplay.NoResults -> {
+
+                }
+
+                SearchDisplay.Suggestions -> {
+
+                }
+
+                SearchDisplay.Results -> {
+                    SearchResultList(state.searchResults) {
+                        state.selectedItem = it
+                        state.focused = false
+                    }
+                }
             }
+        } else {
+            //display weather
+            Weather()
         }
     }
 }
@@ -96,6 +102,11 @@ fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Un
                 .clickable { onItemClick(it) })
         }
     }
+}
+
+@Composable
+fun Weather() {
+
 }
 
 //@Preview(showBackground = true)
