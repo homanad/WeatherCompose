@@ -87,7 +87,7 @@ fun SearchTextField(
                         top = 8.dp,
                         bottom = 8.dp,
                         start = if (!focused) 16.dp else 0.dp,
-                        end = 16.dp
+                        end = 8.dp
                     )
             ),
         color = Color(0xffF5F5F5),
@@ -151,7 +151,7 @@ private fun SearchHint(modifier: Modifier = Modifier) {
     ) {
         Text(
             color = Color(0xff757575),
-            text = "Search a Tag or Description",
+            text = "Search a City",
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.homalab.android.compose.weather.ui
 
+import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,10 +11,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +21,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
 import com.homalab.android.compose.weather.ui.model.CityRecord
@@ -29,10 +35,12 @@ import com.homalab.android.compose.weather.util.Constants.CONDITION_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_MIN_MAX_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_PATTERN
 import com.homalab.android.compose.weather.util.Constants.OPEN_WEATHER_ICON_URL_PATTERN
+import com.homalab.android.compose.weather.util.Constants.WIND_PATTERN
 import com.homalab.android.compose.weather.util.TimeFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -45,46 +53,76 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    WeatherApp()
+                    WeatherApp(this)
                 }
             }
         }
     }
 }
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @Composable
 private fun WeatherApp(
+    context: Context,
     viewModel: MainViewModel = hiltViewModel(),
-    state: SearchState<CityRecord> = rememberSearchState()
+    mainState: MainState = rememberMainState(
+        isRequestLocation = false,
+        location = null,
+        weatherData = null
+    ),
+    searchState: SearchState<CityRecord> = rememberSearchState()
 ) {
-    var weatherData: WeatherData? by remember { mutableStateOf(null) }
+
+    if (mainState.requestLocation) {
+        mainState.location = null
+        mainState.requestLocation = false
+        getCurrentLocation(context) {
+            mainState.location = it
+        }
+    }
+
+    LaunchedEffect(mainState.permissionState.allPermissionsGranted) {
+        mainState.permissionState.launchMultiplePermissionRequest()
+    }
 
     Column {
-        SearchBar(
-            query = state.query,
-            onQueryChange = { state.query = it },
-            onSearchFocusChange = { state.focused = it },
-            onClearQuery = { state.query = TextFieldValue("") },
-            onBack = {
-                state.query = TextFieldValue("")
-                state.focused = false
-            },
-            searching = state.searching,
-            focused = state.focused,
-            modifier = Modifier,
-        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            SearchBar(
+                query = searchState.query,
+                onQueryChange = { searchState.query = it },
+                onSearchFocusChange = { searchState.focused = it },
+                onClearQuery = { searchState.query = TextFieldValue("") },
+                onBack = {
+                    searchState.query = TextFieldValue("")
+                    searchState.focused = false
+                },
+                searching = searchState.searching,
+                focused = searchState.focused,
+                modifier = Modifier.weight(1f),
+            )
 
-        LaunchedEffect(state.query.text) {
-            state.searching = true
-            delay(100)
-            state.searchResults = search(state.query.text)
-            state.searching = false
+            IconButton(
+                onClick = {
+                    mainState.requestLocation = true
+                    if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                },
+                modifier = Modifier.padding(end = 2.dp)
+            ) {
+                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+            }
         }
 
-        LaunchedEffect(state.selectedItem) {
-            state.selectedItem?.let {
-                weatherData = viewModel.getCurrentWeather(
+        LaunchedEffect(searchState.query.text) {
+            searchState.searching = true
+            delay(100)
+            searchState.searchResults = search(searchState.query.text)
+            searchState.searching = false
+        }
+
+        LaunchedEffect(searchState.selectedItem) {
+            searchState.selectedItem?.let {
+                mainState.weatherData = viewModel.getCurrentWeather(
                     it.id,
                     it.coord.lat.toFloat(),
                     it.coord.lon.toFloat()
@@ -92,8 +130,18 @@ private fun WeatherApp(
             }
         }
 
-        if (state.focused) {
-            when (state.searchDisplay) {
+        LaunchedEffect(mainState.location) {
+            mainState.location?.let {
+                mainState.weatherData = viewModel.getCurrentWeather(
+                    -1,
+                    it.latitude.toFloat(),
+                    it.longitude.toFloat()
+                )
+            }
+        }
+
+        if (searchState.focused) {
+            when (searchState.searchDisplay) {
                 SearchDisplay.InitialResults -> {
 
                 }
@@ -106,20 +154,28 @@ private fun WeatherApp(
                 }
 
                 SearchDisplay.Results -> {
-                    SearchResultList(state.searchResults) {
-                        state.selectedItem = it
-                        state.focused = false
+                    SearchResultList(searchState.searchResults) {
+                        searchState.selectedItem = it
+                        searchState.query = TextFieldValue("")
+                        searchState.focused = false
                     }
                 }
             }
         } else {
             //display weather
-            if (weatherData != null) {
-                WeatherDisplay(weatherData!!)
+            if (mainState.weatherData != null) {
+                WeatherDisplay(mainState.weatherData!!)
             } else {
 
             }
         }
+    }
+}
+
+private fun getCurrentLocation(context: Context, onComplete: (LatLng) -> Unit) {
+    val locationService = LocationServices.getFusedLocationProviderClient(context)
+    locationService.lastLocation.addOnCompleteListener {
+        onComplete.invoke(LatLng(it.result.latitude, it.result.longitude))
     }
 }
 
@@ -219,7 +275,7 @@ fun WeatherDisplay(weatherData: WeatherData) {
             ConditionCard(
                 cardModifier,
                 title = "Wind",
-                description = weatherData.wind.speed.toString() + "m/s - " + weatherData.wind.deg
+                description = WIND_PATTERN.format(weatherData.wind.speed, weatherData.wind.deg)
             )
 
             ConditionCard(
@@ -231,6 +287,43 @@ fun WeatherDisplay(weatherData: WeatherData) {
                 )
             )
         }
+    }
+}
+
+@ExperimentalPermissionsApi
+@Stable
+class MainState(
+    isRequestLocation: Boolean,
+    location: LatLng?,
+    weatherData: WeatherData?,
+    permissionState: MultiplePermissionsState
+) {
+    var requestLocation by mutableStateOf(isRequestLocation)
+    var location by mutableStateOf(location)
+    var weatherData by mutableStateOf(weatherData)
+    var permissionState by mutableStateOf(permissionState)
+}
+
+@ExperimentalPermissionsApi
+@Composable
+fun rememberMainState(
+    isRequestLocation: Boolean,
+    location: LatLng?,
+    weatherData: WeatherData?,
+    permissionState: MultiplePermissionsState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+): MainState {
+    return remember {
+        MainState(
+            isRequestLocation = isRequestLocation,
+            location = location,
+            weatherData = weatherData,
+            permissionState = permissionState
+        )
     }
 }
 

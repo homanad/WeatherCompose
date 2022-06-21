@@ -12,4 +12,6 @@ object Constants {
     const val C_DEGREE_MIN_MAX_PATTERN = "%1s °C / %2s °C"
 
     const val CONDITION_PATTERN = "%1s / %2s"
+
+    const val WIND_PATTERN = "%1s m/s - %2s°"
 }
