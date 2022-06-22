@@ -10,4 +10,7 @@ abstract class WeatherDataDao : BaseDao<WeatherDataEntity> {
 
     @Query("SELECT * FROM WeatherDataEntity WHERE id = :id")
     abstract fun getWeatherDataById(id: Int): WeatherDataEntity
+
+    @Query("SELECT * FROM WeatherDataEntity ORDER BY timestamp DESC LIMIT 1")
+    abstract fun getLastWeatherData(): WeatherDataEntity
 }

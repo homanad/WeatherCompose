@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -80,6 +81,10 @@ private fun WeatherApp(
         getCurrentLocation(context) {
             mainState.location = it
         }
+    }
+
+    LaunchedEffect(null) {
+        mainState.weatherData = viewModel.getLastWeather()
     }
 
     LaunchedEffect(mainState.permissionState.allPermissionsGranted) {
@@ -166,7 +171,18 @@ private fun WeatherApp(
             if (mainState.weatherData != null) {
                 WeatherDisplay(mainState.weatherData!!)
             } else {
-
+                Text(
+                    text = "Start to search a city or click here to find your location",
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(0.8f)
+                        .padding(16.dp)
+                        .clickable {
+                            mainState.requestLocation = true
+                            if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                        },
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }

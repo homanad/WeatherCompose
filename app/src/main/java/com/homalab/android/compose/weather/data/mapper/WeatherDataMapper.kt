@@ -30,5 +30,6 @@ fun WeatherData.toWeatherDataEntity() = WeatherDataEntity(
     sys,
     timeZone,
     name,
-    cod
+    cod,
+    System.currentTimeMillis()
 )

@@ -2,6 +2,7 @@ package com.homalab.android.compose.weather.di
 
 import com.homalab.android.compose.weather.domain.WeatherRepository
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
+import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,4 +15,8 @@ object UseCaseModule {
     @Provides
     fun provideGetCurrentWeatherUseCase(weatherRepository: WeatherRepository) =
         GetCurrentWeatherUseCase(weatherRepository)
+
+    @Provides
+    fun provideGetLastWeatherUseCase(weatherRepository: WeatherRepository) =
+        GetLastWeatherUseCase(weatherRepository)
 }

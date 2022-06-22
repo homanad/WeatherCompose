@@ -20,4 +20,15 @@ class WeatherRepositoryImpl @Inject constructor(
             weatherLocalDataSource.getCurrentWeatherData(id, lat, lon)
         }
     }
+
+    override suspend fun getLastWeatherData(): WeatherData {
+        val lastData = weatherLocalDataSource.getLastWeatherData()
+        return if (true) {//TODO internet available
+            weatherRemoteDataSource.getCurrentWeatherData(
+                lastData.id,
+                lastData.coord.lat.toFloat(),
+                lastData.coord.lon.toFloat()
+            )
+        } else lastData
+    }
 }

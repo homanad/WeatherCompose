@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1aeb4d127885b644843fc576ea1a2a44",
+    "identityHash": "c292da0cd82cdd4a925636e4b0834b51",
     "entities": [
       {
         "tableName": "WeatherDataEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `coord` TEXT NOT NULL, `weather` TEXT NOT NULL, `base` TEXT NOT NULL, `main` TEXT NOT NULL, `visibility` INTEGER NOT NULL, `wind` TEXT NOT NULL, `dt` INTEGER NOT NULL, `sys` TEXT NOT NULL, `timeZone` INTEGER NOT NULL, `name` TEXT NOT NULL, `cod` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `coord` TEXT NOT NULL, `weather` TEXT NOT NULL, `base` TEXT NOT NULL, `main` TEXT NOT NULL, `visibility` INTEGER NOT NULL, `wind` TEXT NOT NULL, `dt` INTEGER NOT NULL, `sys` TEXT NOT NULL, `timeZone` INTEGER NOT NULL, `name` TEXT NOT NULL, `cod` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,6 +79,12 @@
             "columnName": "cod",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -94,7 +100,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1aeb4d127885b644843fc576ea1a2a44')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c292da0cd82cdd4a925636e4b0834b51')"
     ]
   }
 }

@@ -21,5 +21,6 @@ data class WeatherDataEntity(
     val sys: Sys,
     val timeZone: Int,
     val name: String,
-    val cod: Int
+    val cod: Int,
+    val timestamp: Long
 )
