@@ -27,11 +27,13 @@ import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
 import com.homalab.android.compose.weather.ui.model.CityRecord
 import com.homalab.android.compose.weather.ui.model.search
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
+import com.homalab.android.compose.weather.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.Constants.CONDITION_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_MIN_MAX_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_PATTERN
@@ -40,11 +42,16 @@ import com.homalab.android.compose.weather.util.Constants.WIND_PATTERN
 import com.homalab.android.compose.weather.util.TimeFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
 @ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkChecker: NetworkChecker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -54,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    WeatherApp(this)
+                    WeatherApp(this, networkChecker)
                 }
             }
         }
@@ -66,6 +73,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun WeatherApp(
     context: Context,
+    networkChecker: NetworkChecker,
     viewModel: MainViewModel = hiltViewModel(),
     mainState: MainState = rememberMainState(
         isRequestLocation = false,
@@ -121,7 +129,8 @@ private fun WeatherApp(
         LaunchedEffect(searchState.query.text) {
             searchState.searching = true
             delay(100)
-            searchState.searchResults = search(searchState.query.text)
+            searchState.searchResults =
+                if (networkChecker.getConnectionType() != NetworkChecker.NONE) search(searchState.query.text) else null
             searchState.searching = false
         }
 
@@ -153,16 +162,26 @@ private fun WeatherApp(
                 SearchDisplay.NoResults -> {
 
                 }
-
+                SearchDisplay.NetworkUnavailable -> {
+                    Text(
+                        text = "Network unavailable",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth(0.8f)
+                            .padding(16.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 SearchDisplay.Suggestions -> {
 
                 }
-
                 SearchDisplay.Results -> {
-                    SearchResultList(searchState.searchResults) {
-                        searchState.selectedItem = it
-                        searchState.query = TextFieldValue("")
-                        searchState.focused = false
+                    searchState.searchResults?.let {
+                        SearchResultList(it) { city ->
+                            searchState.selectedItem = city
+                            searchState.query = TextFieldValue("")
+                            searchState.focused = false
+                        }
                     }
                 }
             }

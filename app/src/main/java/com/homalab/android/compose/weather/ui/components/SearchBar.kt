@@ -183,7 +183,7 @@ class SearchState<T>(
     focused: Boolean,
     searching: Boolean,
     suggestions: List<T>,
-    searchResults: List<T>,
+    searchResults: List<T>?,
     selectedItem: T?
 ) {
     var query by mutableStateOf(query)
@@ -197,11 +197,12 @@ class SearchState<T>(
         get() = when {
             !focused && query.text.isEmpty() -> SearchDisplay.InitialResults
             focused && query.text.isEmpty() -> SearchDisplay.Suggestions
-            searchResults.isEmpty() -> SearchDisplay.NoResults
+            searchResults?.isEmpty() == true -> SearchDisplay.NoResults
+            searchResults == null -> SearchDisplay.NetworkUnavailable
             else -> SearchDisplay.Results
         }
 }
 
 enum class SearchDisplay {
-    InitialResults, Suggestions, Results, NoResults
+    InitialResults, Suggestions, Results, NoResults, NetworkUnavailable
 }
