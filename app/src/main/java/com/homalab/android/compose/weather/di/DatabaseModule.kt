@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.homalab.android.compose.weather.data.api.ApiFactory
 import com.homalab.android.compose.weather.data.api.service.WeatherService
 import com.homalab.android.compose.weather.data.db.WeatherDatabase
+import com.homalab.android.compose.weather.data.util.NetworkChecker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +30,7 @@ object DatabaseModule {
 
     @Provides
     fun provideWeatherService() = ApiFactory.createRetrofit<WeatherService>()
+
+    @Provides
+    fun provideNetworkChecker(@ApplicationContext context: Context) = NetworkChecker(context)
 }
