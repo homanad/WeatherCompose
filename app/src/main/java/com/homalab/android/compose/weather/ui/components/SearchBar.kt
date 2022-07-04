@@ -17,7 +17,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchBar(
@@ -43,7 +42,7 @@ fun SearchBar(
         AnimatedVisibility(visible = focused) {
             // Back button
             IconButton(
-                modifier = Modifier.padding(start = 2.dp),
+                modifier = Modifier.padding(start = IconPadding),
                 onClick = {
 //                    focusManager.clearFocus()
 //                    keyboardController?.hide()
@@ -82,12 +81,12 @@ fun SearchTextField(
         modifier = modifier
             .then(
                 Modifier
-                    .height(56.dp)
+                    .height(SearchBarHeight)
                     .padding(
-                        top = 8.dp,
-                        bottom = 8.dp,
-                        start = if (!focused) 16.dp else 0.dp,
-                        end = 8.dp
+                        top = Dimension2,
+                        bottom = Dimension2,
+                        start = if (!focused) Dimension4 else Dimension0,
+                        end = Dimension2
                     )
             ),
         color = Color(0xffF5F5F5),
@@ -101,7 +100,7 @@ fun SearchTextField(
             ) {
 
                 if (query.text.isEmpty()) {
-                    SearchHint(modifier.padding(start = 24.dp, end = 8.dp))
+                    SearchHint(modifier.padding(start = Dimension6, end = Dimension2))
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -115,7 +114,12 @@ fun SearchTextField(
                                 onSearchFocusChange(it.isFocused)
                             }
                             .focusRequester(focusRequester)
-                            .padding(top = 9.dp, bottom = 8.dp, start = 24.dp, end = 8.dp),
+                            .padding(
+                                top = Dimension2,
+                                bottom = Dimension2,
+                                start = Dimension6,
+                                end = Dimension2
+                            ),
                         singleLine = true
                     )
 
@@ -123,8 +127,8 @@ fun SearchTextField(
                         searching -> {
                             CircularProgressIndicator(
                                 modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(36.dp)
+                                    .padding(horizontal = Dimension2)
+                                    .size(Dimension9)
                             )
                         }
                         query.text.isNotEmpty() -> {

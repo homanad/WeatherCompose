@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -120,7 +119,7 @@ private fun WeatherApp(
                     mainState.requestLocation = true
                     if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
                 },
-                modifier = Modifier.padding(end = 2.dp)
+                modifier = Modifier.padding(end = IconPadding)
             ) {
                 Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
             }
@@ -168,7 +167,7 @@ private fun WeatherApp(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .fillMaxWidth(0.8f)
-                            .padding(16.dp),
+                            .padding(Dimension4),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -195,7 +194,7 @@ private fun WeatherApp(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(0.8f)
-                        .padding(16.dp)
+                        .padding(Dimension4)
                         .clickable {
                             mainState.requestLocation = true
                             if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
@@ -230,30 +229,30 @@ fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Un
 fun WeatherDisplay(weatherData: WeatherData) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
-        Spacer(modifier = Modifier.height(16.dp))
+        LargeSpacer()
 
         Text(text = weatherData.name, style = MaterialTheme.typography.headlineLarge)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        DefaultSpacer()
 
         Text(text = TimeFormatter.formatFullTime(weatherData.dt, weatherData.timeZone))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        LargeSpacer()
 
         Text(
             text = C_DEGREE_PATTERN.format(weatherData.main.temp),
             style = MaterialTheme.typography.displayLarge
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        LargeSpacer()
 
         Image(
             painter = rememberAsyncImagePainter(OPEN_WEATHER_ICON_URL_PATTERN.format(weatherData.weather[0].icon)),
             contentDescription = null,
-            modifier = Modifier.size(128.dp)
+            modifier = Modifier.size(WeatherConditionImageSize)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        LargeSpacer()
 
         Text(
             text = CONDITION_PATTERN.format(
@@ -263,7 +262,7 @@ fun WeatherDisplay(weatherData: WeatherData) {
             style = MaterialTheme.typography.titleLarge
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        DefaultSpacer()
 
         Text(
             text = C_DEGREE_MIN_MAX_PATTERN.format(
@@ -272,10 +271,9 @@ fun WeatherDisplay(weatherData: WeatherData) {
             ), style = MaterialTheme.typography.titleMedium
         )
 
+        DefaultSpacer()
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val cardModifier = Modifier.padding(8.dp)
+        val cardModifier = Modifier.padding(Dimension2)
 
         Row {
             ConditionCard(
