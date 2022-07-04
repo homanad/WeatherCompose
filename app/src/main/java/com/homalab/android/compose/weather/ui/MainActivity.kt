@@ -118,22 +118,15 @@ private fun WeatherApp(
 
     LaunchedEffect(searchState.selectedItem) {
         searchState.selectedItem?.let {
-            mainState.weatherData = viewModel.getCurrentWeather(
-                it.id,
-                it.coord.lat.toFloat(),
-                it.coord.lon.toFloat()
-            )
+            mainState.weatherData = viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
         }
     }
 
     LaunchedEffect(mainState.isRefreshing) {
         if (mainState.isRefreshing) {
             mainState.weatherData?.let {
-                mainState.weatherData = viewModel.getCurrentWeather(
-                    it.id,
-                    it.coord.lat.toFloat(),
-                    it.coord.lon.toFloat()
-                )
+                mainState.weatherData =
+                    viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
             }
             mainState.isRefreshing = false
         }
@@ -141,11 +134,7 @@ private fun WeatherApp(
 
     LaunchedEffect(mainState.location) {
         mainState.location?.let {
-            mainState.weatherData = viewModel.getCurrentWeather(
-                -1,
-                it.latitude.toFloat(),
-                it.longitude.toFloat()
-            )
+            mainState.weatherData = viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
         }
     }
 

@@ -13,7 +13,7 @@ class WeatherRepositoryImpl @Inject constructor(
     private val weatherLocalDataSource: WeatherLocalDataSourceImpl
 ) : WeatherRepository {
 
-    override suspend fun getCurrentWeatherData(id: Int, lat: Float, lon: Float): WeatherData {
+    override suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData {
         return if (isNetworkAvailable()) {
             val data = weatherRemoteDataSource.getCurrentWeatherData(id, lat, lon)
             weatherLocalDataSource.saveWeatherData(data)
@@ -28,8 +28,8 @@ class WeatherRepositoryImpl @Inject constructor(
         return if (isNetworkAvailable()) {
             weatherRemoteDataSource.getCurrentWeatherData(
                 lastData.id,
-                lastData.coord.lat.toFloat(),
-                lastData.coord.lon.toFloat()
+                lastData.coord.lat,
+                lastData.coord.lon
             )
         } else lastData
     }

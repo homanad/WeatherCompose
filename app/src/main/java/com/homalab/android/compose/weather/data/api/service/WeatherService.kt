@@ -10,8 +10,8 @@ interface WeatherService {
 
     @GET("weather")
     suspend fun getCurrentWeather(
-        @Query("lat") lat: Float,
-        @Query("lon") lon: Float,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
         @Query("appid") appId: String = OPEN_WEATHER_API_KEY,
         @Query("units") units: String = OPEN_WEATHER_DEFAULT_UNITS
     ): WeatherData

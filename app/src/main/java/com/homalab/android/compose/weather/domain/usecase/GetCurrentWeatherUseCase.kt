@@ -14,7 +14,7 @@ class GetCurrentWeatherUseCase(
 
     data class GetCurrentWeatherParam(
         val id: Int,
-        val lat: Float,
-        val lon: Float
+        val lat: Double,
+        val lon: Double
     )
 }

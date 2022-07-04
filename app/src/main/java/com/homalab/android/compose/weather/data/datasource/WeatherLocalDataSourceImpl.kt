@@ -10,7 +10,7 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     private val weatherDataDao: WeatherDataDao
 ) : WeatherDataSource {
 
-    override suspend fun getCurrentWeatherData(id: Int, lat: Float, lon: Float): WeatherData {
+    override suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData {
         return weatherDataDao.getWeatherDataById(id).toWeatherData()
     }
 

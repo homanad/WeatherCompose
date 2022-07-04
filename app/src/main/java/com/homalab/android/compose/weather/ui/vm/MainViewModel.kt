@@ -7,7 +7,6 @@ import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCa
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,15 +16,11 @@ class MainViewModel @Inject constructor(
     private val getLastWeatherUseCase: GetLastWeatherUseCase
 ) : ViewModel() {
 
-    suspend fun getCurrentWeather(id: Int, lat: Float, lon: Float): WeatherData? {
+    suspend fun getCurrentWeather(id: Int, lat: Double, lon: Double): WeatherData? {
         return try {
             withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
                 getCurrentWeatherUseCase(
-                    GetCurrentWeatherUseCase.GetCurrentWeatherParam(
-                        id,
-                        lat,
-                        lon
-                    )
+                    GetCurrentWeatherUseCase.GetCurrentWeatherParam(id, lat, lon)
                 )
             }
         } catch (e: Exception) {
