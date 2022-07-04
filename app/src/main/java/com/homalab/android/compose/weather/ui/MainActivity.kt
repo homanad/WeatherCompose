@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +27,7 @@ import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
@@ -99,7 +101,7 @@ private fun WeatherApp(
     }
 
     Column {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 query = searchState.query,
                 onQueryChange = { searchState.query = it },
@@ -163,7 +165,7 @@ private fun WeatherApp(
                 }
                 SearchDisplay.NetworkUnavailable -> {
                     Text(
-                        text = "Network unavailable",
+                        text = stringResource(id = R.string.network_unavailable),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .fillMaxWidth(0.8f)
@@ -190,7 +192,7 @@ private fun WeatherApp(
                 WeatherDisplay(mainState.weatherData!!)
             } else {
                 Text(
-                    text = "Start to search a city or click here to find your location",
+                    text = stringResource(id = R.string.empty_weather_holder),
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(0.8f)
@@ -278,19 +280,19 @@ fun WeatherDisplay(weatherData: WeatherData) {
         Row {
             ConditionCard(
                 cardModifier,
-                title = "Feels like",
+                title = stringResource(id = R.string.feels_like),
                 description = weatherData.main.feels_like.toString()
             )
 
             ConditionCard(
                 cardModifier,
-                title = "Pressure",
+                title = stringResource(id = R.string.pressure),
                 description = weatherData.main.pressure.toString()
             )
 
             ConditionCard(
                 cardModifier,
-                title = "Humidity",
+                title = stringResource(id = R.string.humidity),
                 description = weatherData.main.humidity.toString()
             )
         }
@@ -298,7 +300,7 @@ fun WeatherDisplay(weatherData: WeatherData) {
         Row {
             ConditionCard(
                 cardModifier,
-                title = "Sunrise",
+                title = stringResource(id = R.string.sunrise),
                 description = TimeFormatter.formatSunEventTime(
                     weatherData.sys.sunrise,
                     weatherData.timeZone
@@ -307,13 +309,13 @@ fun WeatherDisplay(weatherData: WeatherData) {
 
             ConditionCard(
                 cardModifier,
-                title = "Wind",
+                title = stringResource(id = R.string.wind),
                 description = WIND_PATTERN.format(weatherData.wind.speed, weatherData.wind.deg)
             )
 
             ConditionCard(
                 cardModifier,
-                title = "Sunset",
+                title = stringResource(id = R.string.sunset),
                 description = TimeFormatter.formatSunEventTime(
                     weatherData.sys.sunset,
                     weatherData.timeZone
