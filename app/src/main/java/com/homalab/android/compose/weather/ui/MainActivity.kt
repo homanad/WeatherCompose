@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
@@ -27,6 +29,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.homalab.android.compose.weather.R
@@ -122,6 +126,19 @@ private fun WeatherApp(
         }
     }
 
+    LaunchedEffect(mainState.isRefreshing) {
+        if (mainState.isRefreshing) {
+            mainState.weatherData?.let {
+                mainState.weatherData = viewModel.getCurrentWeather(
+                    it.id,
+                    it.coord.lat.toFloat(),
+                    it.coord.lon.toFloat()
+                )
+            }
+            mainState.isRefreshing = false
+        }
+    }
+
     LaunchedEffect(mainState.location) {
         mainState.location?.let {
             mainState.weatherData = viewModel.getCurrentWeather(
@@ -193,7 +210,7 @@ private fun WeatherApp(
                 }
             } else {
                 if (mainState.weatherData != null) {
-                    WeatherDisplay(mainState.weatherData!!)
+                    WeatherDisplay(mainState.weatherData!!, mainState)
                 } else {
                     Text(
                         text = stringResource(id = R.string.empty_weather_holder),
@@ -231,100 +248,112 @@ fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Un
     }
 }
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @Composable
-fun WeatherDisplay(weatherData: WeatherData) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+fun WeatherDisplay(
+    weatherData: WeatherData,
+    mainState: MainState,
+) {
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(mainState.isRefreshing),
+        onRefresh = { mainState.isRefreshing = true }) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
 
-        val weather = weatherData.weather[0]
+            val weather = weatherData.weather[0]
 
-        LargeSpacer()
+            LargeSpacer()
 
-        Text(text = weatherData.name, style = MaterialTheme.typography.headlineLarge)
+            Text(text = weatherData.name, style = MaterialTheme.typography.headlineLarge)
 
-        DefaultSpacer()
+            DefaultSpacer()
 
-        Text(text = TimeFormatter.formatFullTime(weatherData.dt, weatherData.timeZone))
+            Text(text = TimeFormatter.formatFullTime(weatherData.dt, weatherData.timeZone))
 
-        LargeSpacer()
+            LargeSpacer()
 
-        Text(
-            text = C_DEGREE_PATTERN.format(weatherData.main.temp),
-            style = MaterialTheme.typography.displayLarge
-        )
-
-        LargeSpacer()
-
-        Image(
-            painter = rememberAsyncImagePainter(OPEN_WEATHER_ICON_URL_PATTERN.format(weather.icon)),
-            contentDescription = null,
-            modifier = Modifier.size(WeatherConditionImageSize)
-        )
-
-        LargeSpacer()
-
-        Text(
-            text = CONDITION_PATTERN.format(weather.main, weather.description),
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        DefaultSpacer()
-
-        Text(
-            text = C_DEGREE_MIN_MAX_PATTERN.format(
-                weatherData.main.temp_min,
-                weatherData.main.temp_max
-            ), style = MaterialTheme.typography.titleMedium
-        )
-
-        DefaultSpacer()
-
-        val cardModifier = Modifier.padding(Dimension2)
-
-        Row {
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.feels_like),
-                description = weatherData.main.feels_like.toString()
+            Text(
+                text = C_DEGREE_PATTERN.format(weatherData.main.temp),
+                style = MaterialTheme.typography.displayLarge
             )
 
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.pressure),
-                description = weatherData.main.pressure.toString()
+            LargeSpacer()
+
+            Image(
+                painter = rememberAsyncImagePainter(OPEN_WEATHER_ICON_URL_PATTERN.format(weather.icon)),
+                contentDescription = null,
+                modifier = Modifier.size(WeatherConditionImageSize)
             )
 
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.humidity),
-                description = weatherData.main.humidity.toString()
-            )
-        }
+            LargeSpacer()
 
-        Row {
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.sunrise),
-                description = TimeFormatter.formatSunEventTime(
-                    weatherData.sys.sunrise,
-                    weatherData.timeZone
+            Text(
+                text = CONDITION_PATTERN.format(weather.main, weather.description),
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            DefaultSpacer()
+
+            Text(
+                text = C_DEGREE_MIN_MAX_PATTERN.format(
+                    weatherData.main.temp_min,
+                    weatherData.main.temp_max
+                ), style = MaterialTheme.typography.titleMedium
+            )
+
+            DefaultSpacer()
+
+            val cardModifier = Modifier.padding(Dimension2)
+
+            Row {
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.feels_like),
+                    description = weatherData.main.feels_like.toString()
                 )
-            )
 
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.wind),
-                description = WIND_PATTERN.format(weatherData.wind.speed, weatherData.wind.deg)
-            )
-
-            ConditionCard(
-                cardModifier,
-                title = stringResource(id = R.string.sunset),
-                description = TimeFormatter.formatSunEventTime(
-                    weatherData.sys.sunset,
-                    weatherData.timeZone
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.pressure),
+                    description = weatherData.main.pressure.toString()
                 )
-            )
+
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.humidity),
+                    description = weatherData.main.humidity.toString()
+                )
+            }
+
+            Row {
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.sunrise),
+                    description = TimeFormatter.formatSunEventTime(
+                        weatherData.sys.sunrise,
+                        weatherData.timeZone
+                    )
+                )
+
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.wind),
+                    description = WIND_PATTERN.format(weatherData.wind.speed, weatherData.wind.deg)
+                )
+
+                ConditionCard(
+                    cardModifier,
+                    title = stringResource(id = R.string.sunset),
+                    description = TimeFormatter.formatSunEventTime(
+                        weatherData.sys.sunset,
+                        weatherData.timeZone
+                    )
+                )
+            }
         }
     }
 }
@@ -335,12 +364,14 @@ class MainState(
     isRequestLocation: Boolean,
     location: LatLng?,
     weatherData: WeatherData?,
-    permissionState: MultiplePermissionsState
+    permissionState: MultiplePermissionsState,
+    isRefreshing: Boolean
 ) {
     var requestLocation by mutableStateOf(isRequestLocation)
     var location by mutableStateOf(location)
     var weatherData by mutableStateOf(weatherData)
     var permissionState by mutableStateOf(permissionState)
+    var isRefreshing by mutableStateOf(isRefreshing)
 }
 
 @ExperimentalPermissionsApi
@@ -361,7 +392,8 @@ fun rememberMainState(
             isRequestLocation = isRequestLocation,
             location = location,
             weatherData = weatherData,
-            permissionState = permissionState
+            permissionState = permissionState,
+            isRefreshing = false
         )
     }
 }

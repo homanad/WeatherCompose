@@ -7,6 +7,7 @@ import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCa
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
