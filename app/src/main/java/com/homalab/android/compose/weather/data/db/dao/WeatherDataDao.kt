@@ -22,6 +22,9 @@ abstract class WeatherDataDao : BaseDao<WeatherDataEntity> {
     @Query("SELECT COUNT(id) FROM WeatherDataEntity")
     abstract fun count(): Int
 
+    @Query("SELECT * FROM WeatherDataEntity ORDER BY timestamp DESC")
+    abstract fun getWeathers(): List<WeatherDataEntity>
+
     @Transaction
     open fun removeLastIfNeededAndSaveNew(weatherDataEntity: WeatherDataEntity): Long {
         val id = insert(weatherDataEntity)

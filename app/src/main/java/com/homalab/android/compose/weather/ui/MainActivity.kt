@@ -37,6 +37,7 @@ import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
+import com.homalab.android.compose.weather.ui.mapper.toCity
 import com.homalab.android.compose.weather.ui.model.CityRecord
 import com.homalab.android.compose.weather.ui.model.search
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
@@ -87,7 +88,8 @@ private fun WeatherApp(
     mainState: MainState = rememberMainState(
         isRequestLocation = false,
         location = null,
-        weatherData = null
+        weatherData = null,
+        savedCity = listOf()
     ),
     searchState: SearchState<CityRecord> = rememberSearchState()
 ) {
@@ -122,6 +124,10 @@ private fun WeatherApp(
         }
     }
 
+    LaunchedEffect(mainState.weatherData) {
+        mainState.savedCity = viewModel.getSavedWeathers()?.map { it.toCity() }
+    }
+
     LaunchedEffect(mainState.isRefreshing) {
         if (mainState.isRefreshing) {
             mainState.weatherData?.let {
@@ -138,81 +144,90 @@ private fun WeatherApp(
         }
     }
 
-    Column {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            SearchBar(
-                query = searchState.query,
-                onQueryChange = { searchState.query = it },
-                onSearchFocusChange = { searchState.focused = it },
-                onClearQuery = { searchState.query = TextFieldValue("") },
-                onBack = {
-                    searchState.query = TextFieldValue("")
-                    searchState.focused = false
-                },
-                searching = searchState.searching,
-                focused = searchState.focused,
-                modifier = Modifier.weight(1f),
-            )
+    RecentlyBottomSheetScaffold(
+        itemList = mainState.savedCity ?: listOf(),
+        onItemClick = { searchState.selectedItem = it },
+    ) {
 
-            IconButton(
-                onClick = {
-                    mainState.requestLocation = true
-                    if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                },
-                modifier = Modifier.padding(end = IconPadding)
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                SearchBar(
+                    query = searchState.query,
+                    onQueryChange = { searchState.query = it },
+                    onSearchFocusChange = { searchState.focused = it },
+                    onClearQuery = { searchState.query = TextFieldValue("") },
+                    onBack = {
+                        searchState.query = TextFieldValue("")
+                        searchState.focused = false
+                    },
+                    searching = searchState.searching,
+                    focused = searchState.focused,
+                    modifier = Modifier.weight(1f),
+                )
+
+                IconButton(
+                    onClick = {
+                        mainState.requestLocation = true
+                        if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                    },
+                    modifier = Modifier.padding(end = IconPadding)
+                ) {
+                    Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                }
             }
-        }
 
-        AnimatedContent(targetState = searchState.focused) { isFocused ->
-            if (isFocused) {
-                when (searchState.searchDisplay) {
-                    SearchDisplay.InitialResults -> {
+            AnimatedContent(targetState = searchState.focused) { isFocused ->
+                if (isFocused) {
+                    when (searchState.searchDisplay) {
+                        SearchDisplay.InitialResults -> {
 
-                    }
-                    SearchDisplay.NoResults -> {
+                        }
+                        SearchDisplay.NoResults -> {
 
-                    }
-                    SearchDisplay.NetworkUnavailable -> {
-                        Text(
-                            text = stringResource(id = R.string.network_unavailable),
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .fillMaxWidth()
-                                .padding(Dimension4),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    SearchDisplay.Suggestions -> {
+                        }
+                        SearchDisplay.NetworkUnavailable -> {
+                            Text(
+                                text = stringResource(id = R.string.network_unavailable),
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .fillMaxWidth()
+                                    .padding(Dimension4),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        SearchDisplay.Suggestions -> {
 
-                    }
-                    SearchDisplay.Results -> {
-                        searchState.searchResults?.let {
-                            SearchResultList(it) { city ->
-                                searchState.selectedItem = city
-                                searchState.query = TextFieldValue("")
-                                searchState.focused = false
+                        }
+                        SearchDisplay.Results -> {
+                            searchState.searchResults?.let {
+                                SearchResultList(it) { city ->
+                                    searchState.selectedItem = city
+                                    searchState.query = TextFieldValue("")
+                                    searchState.focused = false
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                if (mainState.weatherData != null) {
-                    WeatherDisplay(mainState.weatherData!!, mainState)
                 } else {
-                    Text(
-                        text = stringResource(id = R.string.empty_weather_holder),
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth()
-                            .padding(Dimension4)
-                            .clickable {
-                                mainState.requestLocation = true
-                                if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                            },
-                        textAlign = TextAlign.Center
-                    )
+                    if (mainState.weatherData != null) {
+                        WeatherDisplay(mainState.weatherData!!, mainState)
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.empty_weather_holder),
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
+                                .padding(Dimension4)
+                                .clickable {
+                                    mainState.requestLocation = true
+                                    if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                                },
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -353,12 +368,14 @@ class MainState(
     isRequestLocation: Boolean,
     location: LatLng?,
     weatherData: WeatherData?,
+    savedCity: List<CityRecord>?,
     permissionState: MultiplePermissionsState,
     isRefreshing: Boolean
 ) {
     var requestLocation by mutableStateOf(isRequestLocation)
     var location by mutableStateOf(location)
     var weatherData by mutableStateOf(weatherData)
+    var savedCity by mutableStateOf(savedCity)
     var permissionState by mutableStateOf(permissionState)
     var isRefreshing by mutableStateOf(isRefreshing)
 }
@@ -369,6 +386,7 @@ fun rememberMainState(
     isRequestLocation: Boolean,
     location: LatLng?,
     weatherData: WeatherData?,
+    savedCity: List<CityRecord>,
     permissionState: MultiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -381,6 +399,7 @@ fun rememberMainState(
             isRequestLocation = isRequestLocation,
             location = location,
             weatherData = weatherData,
+            savedCity = savedCity,
             permissionState = permissionState,
             isRefreshing = false
         )

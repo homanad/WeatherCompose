@@ -21,4 +21,8 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     fun getLastWeatherData(): WeatherData {
         return weatherDataDao.getLastWeatherData().toWeatherData()
     }
+
+    fun getSavedWeathers(): List<WeatherData> {
+        return weatherDataDao.getWeathers().map { it.toWeatherData() }
+    }
 }

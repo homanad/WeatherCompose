@@ -34,5 +34,9 @@ class WeatherRepositoryImpl @Inject constructor(
         } else lastData
     }
 
+    override suspend fun getSavedWeathers(): List<WeatherData> {
+        return weatherLocalDataSource.getSavedWeathers()
+    }
+
     private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
 }
