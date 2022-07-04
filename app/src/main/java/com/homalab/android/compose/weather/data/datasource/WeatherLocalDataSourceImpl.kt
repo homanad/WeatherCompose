@@ -15,7 +15,7 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     }
 
     fun saveWeatherData(weatherData: WeatherData): Long {
-        return weatherDataDao.insert(weatherData.toWeatherDataEntity())
+        return weatherDataDao.removeLastIfNeededAndSaveNew(weatherData.toWeatherDataEntity())
     }
 
     fun getLastWeatherData(): WeatherData {
