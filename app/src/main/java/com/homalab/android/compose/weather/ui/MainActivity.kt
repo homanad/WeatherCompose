@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -45,6 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
+@ExperimentalAnimationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
@@ -69,6 +72,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterial3Api
 @Composable
@@ -100,6 +104,34 @@ private fun WeatherApp(
         mainState.permissionState.launchMultiplePermissionRequest()
     }
 
+    LaunchedEffect(searchState.query.text) {
+        searchState.searching = true
+        delay(100)
+        searchState.searchResults =
+            if (networkChecker.getConnectionType() != NetworkChecker.NONE) search(searchState.query.text) else null
+        searchState.searching = false
+    }
+
+    LaunchedEffect(searchState.selectedItem) {
+        searchState.selectedItem?.let {
+            mainState.weatherData = viewModel.getCurrentWeather(
+                it.id,
+                it.coord.lat.toFloat(),
+                it.coord.lon.toFloat()
+            )
+        }
+    }
+
+    LaunchedEffect(mainState.location) {
+        mainState.location?.let {
+            mainState.weatherData = viewModel.getCurrentWeather(
+                -1,
+                it.latitude.toFloat(),
+                it.longitude.toFloat()
+            )
+        }
+    }
+
     Column {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
@@ -127,82 +159,55 @@ private fun WeatherApp(
             }
         }
 
-        LaunchedEffect(searchState.query.text) {
-            searchState.searching = true
-            delay(100)
-            searchState.searchResults =
-                if (networkChecker.getConnectionType() != NetworkChecker.NONE) search(searchState.query.text) else null
-            searchState.searching = false
-        }
+        AnimatedContent(targetState = searchState.focused) { isFocused ->
+            if (isFocused) {
+                when (searchState.searchDisplay) {
+                    SearchDisplay.InitialResults -> {
 
-        LaunchedEffect(searchState.selectedItem) {
-            searchState.selectedItem?.let {
-                mainState.weatherData = viewModel.getCurrentWeather(
-                    it.id,
-                    it.coord.lat.toFloat(),
-                    it.coord.lon.toFloat()
-                )
-            }
-        }
+                    }
+                    SearchDisplay.NoResults -> {
 
-        LaunchedEffect(mainState.location) {
-            mainState.location?.let {
-                mainState.weatherData = viewModel.getCurrentWeather(
-                    -1,
-                    it.latitude.toFloat(),
-                    it.longitude.toFloat()
-                )
-            }
-        }
+                    }
+                    SearchDisplay.NetworkUnavailable -> {
+                        Text(
+                            text = stringResource(id = R.string.network_unavailable),
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
+                                .padding(Dimension4),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    SearchDisplay.Suggestions -> {
 
-        if (searchState.focused) {
-            when (searchState.searchDisplay) {
-                SearchDisplay.InitialResults -> {
-
-                }
-                SearchDisplay.NoResults -> {
-
-                }
-                SearchDisplay.NetworkUnavailable -> {
-                    Text(
-                        text = stringResource(id = R.string.network_unavailable),
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth(0.8f)
-                            .padding(Dimension4),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                SearchDisplay.Suggestions -> {
-
-                }
-                SearchDisplay.Results -> {
-                    searchState.searchResults?.let {
-                        SearchResultList(it) { city ->
-                            searchState.selectedItem = city
-                            searchState.query = TextFieldValue("")
-                            searchState.focused = false
+                    }
+                    SearchDisplay.Results -> {
+                        searchState.searchResults?.let {
+                            SearchResultList(it) { city ->
+                                searchState.selectedItem = city
+                                searchState.query = TextFieldValue("")
+                                searchState.focused = false
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            //display weather
-            if (mainState.weatherData != null) {
-                WeatherDisplay(mainState.weatherData!!)
             } else {
-                Text(
-                    text = stringResource(id = R.string.empty_weather_holder),
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(0.8f)
-                        .padding(Dimension4)
-                        .clickable {
-                            mainState.requestLocation = true
-                            if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                        },
-                    textAlign = TextAlign.Center
-                )
+                if (mainState.weatherData != null) {
+                    WeatherDisplay(mainState.weatherData!!)
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.empty_weather_holder),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth()
+                            .padding(Dimension4)
+                            .clickable {
+                                mainState.requestLocation = true
+                                if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                            },
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
@@ -231,6 +236,8 @@ fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Un
 fun WeatherDisplay(weatherData: WeatherData) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
+        val weather = weatherData.weather[0]
+
         LargeSpacer()
 
         Text(text = weatherData.name, style = MaterialTheme.typography.headlineLarge)
@@ -249,7 +256,7 @@ fun WeatherDisplay(weatherData: WeatherData) {
         LargeSpacer()
 
         Image(
-            painter = rememberAsyncImagePainter(OPEN_WEATHER_ICON_URL_PATTERN.format(weatherData.weather[0].icon)),
+            painter = rememberAsyncImagePainter(OPEN_WEATHER_ICON_URL_PATTERN.format(weather.icon)),
             contentDescription = null,
             modifier = Modifier.size(WeatherConditionImageSize)
         )
@@ -257,10 +264,7 @@ fun WeatherDisplay(weatherData: WeatherData) {
         LargeSpacer()
 
         Text(
-            text = CONDITION_PATTERN.format(
-                weatherData.weather[0].main,
-                weatherData.weather[0].description
-            ),
+            text = CONDITION_PATTERN.format(weather.main, weather.description),
             style = MaterialTheme.typography.titleLarge
         )
 
