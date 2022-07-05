@@ -7,20 +7,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -34,11 +35,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.homalab.android.compose.weather.R
+import com.homalab.android.compose.weather.data.mapper.toCity
 import com.homalab.android.compose.weather.data.util.NetworkChecker
+import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
-import com.homalab.android.compose.weather.data.mapper.toCity
-import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.Constants.CONDITION_PATTERN
@@ -47,6 +48,7 @@ import com.homalab.android.compose.weather.util.Constants.C_DEGREE_PATTERN
 import com.homalab.android.compose.weather.util.Constants.OPEN_WEATHER_ICON_URL_PATTERN
 import com.homalab.android.compose.weather.util.Constants.WIND_PATTERN
 import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.isInRange
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -113,7 +115,9 @@ private fun WeatherApp(
         searchState.searching = true
         delay(300)
         searchState.searchResults =
-            if (networkChecker.getConnectionType() != NetworkChecker.NONE) viewModel.search(searchState.query.text) else null
+            if (networkChecker.getConnectionType() != NetworkChecker.NONE)
+                viewModel.search(searchState.query.text)
+            else null
         searchState.searching = false
     }
 
@@ -145,87 +149,99 @@ private fun WeatherApp(
 
     RecentlyBottomSheetScaffold(
         itemList = mainState.savedCity ?: listOf(),
-        onItemClick = { searchState.selectedItem = it },
+        onItemClick = { searchState.selectedItem = it }
     ) {
-
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SearchBar(
-                    query = searchState.query,
-                    onQueryChange = { searchState.query = it },
-                    onSearchFocusChange = { searchState.focused = it },
-                    onClearQuery = { searchState.query = TextFieldValue("") },
-                    onBack = {
-                        searchState.query = TextFieldValue("")
-                        searchState.focused = false
-                    },
-                    searching = searchState.searching,
-                    focused = searchState.focused,
-                    modifier = Modifier.weight(1f),
+        Box(modifier = Modifier.fillMaxSize()) {
+            mainState.backgroundResource?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .alpha(0.5f),
+                    contentScale = ContentScale.FillBounds
                 )
-
-                IconButton(
-                    onClick = {
-                        mainState.requestLocation = true
-                        if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                    },
-                    modifier = Modifier.padding(end = IconPadding)
-                ) {
-                    Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
-                }
             }
 
-            AnimatedContent(targetState = searchState.focused) { isFocused ->
-                if (isFocused) {
-                    when (searchState.searchDisplay) {
-                        SearchDisplay.InitialResults -> {
+            Column(modifier = Modifier.background(Color.Transparent)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SearchBar(
+                        query = searchState.query,
+                        onQueryChange = { searchState.query = it },
+                        onSearchFocusChange = { searchState.focused = it },
+                        onClearQuery = { searchState.query = TextFieldValue("") },
+                        onBack = {
+                            searchState.query = TextFieldValue("")
+                            searchState.focused = false
+                        },
+                        searching = searchState.searching,
+                        focused = searchState.focused,
+                        modifier = Modifier.weight(1f),
+                    )
 
-                        }
-                        SearchDisplay.NoResults -> {
+                    IconButton(
+                        onClick = {
+                            mainState.requestLocation = true
+                            if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                        },
+                        modifier = Modifier.padding(end = IconPadding)
+                    ) {
+                        Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                    }
+                }
 
-                        }
-                        SearchDisplay.NetworkUnavailable -> {
-                            Text(
-                                text = stringResource(id = R.string.network_unavailable),
-                                modifier = Modifier
-                                    .align(Alignment.CenterHorizontally)
-                                    .fillMaxWidth()
-                                    .padding(Dimension4),
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                        SearchDisplay.Suggestions -> {
+                AnimatedContent(targetState = searchState.focused) { isFocused ->
+                    if (isFocused) {
+                        when (searchState.searchDisplay) {
+                            SearchDisplay.InitialResults -> {
 
-                        }
-                        SearchDisplay.Results -> {
-                            searchState.searchResults?.let {
-                                SearchResultList(it) { city ->
-                                    searchState.selectedItem = city
-                                    searchState.query = TextFieldValue("")
-                                    searchState.focused = false
+                            }
+                            SearchDisplay.NoResults -> {
+
+                            }
+                            SearchDisplay.NetworkUnavailable -> {
+                                Text(
+                                    text = stringResource(id = R.string.network_unavailable),
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .fillMaxWidth()
+                                        .padding(Dimension4),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            SearchDisplay.Suggestions -> {
+
+                            }
+                            SearchDisplay.Results -> {
+                                searchState.searchResults?.let {
+                                    SearchResultList(it) { city ->
+                                        searchState.selectedItem = city
+                                        searchState.query = TextFieldValue("")
+                                        searchState.focused = false
+                                    }
                                 }
                             }
                         }
-                    }
-                } else {
-                    if (mainState.weatherData != null) {
-                        WeatherDisplay(mainState.weatherData!!, mainState)
                     } else {
-                        Text(
-                            text = stringResource(id = R.string.empty_weather_holder),
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .fillMaxWidth()
-                                .padding(Dimension4)
-                                .clickable {
-                                    mainState.requestLocation = true
-                                    if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                                },
-                            textAlign = TextAlign.Center
-                        )
+                        if (mainState.weatherData != null) {
+                            WeatherDisplay(mainState.weatherData!!, mainState)
+                        } else {
+                            Text(
+                                text = stringResource(id = R.string.empty_weather_holder),
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .fillMaxWidth()
+                                    .padding(Dimension4)
+                                    .clickable {
+                                        mainState.requestLocation = true
+                                        if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+                                    },
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -377,6 +393,35 @@ class MainState(
     var savedCity by mutableStateOf(savedCity)
     var permissionState by mutableStateOf(permissionState)
     var isRefreshing by mutableStateOf(isRefreshing)
+
+    val backgroundResource: Int?
+        get() {
+            val id = weatherData?.weather?.get(0)?.id ?: 0
+            return when {
+                id.isInRange(200, 232) -> {
+                    R.drawable.thunderstorm
+                }
+                id.isInRange(300, 321) -> {
+                    R.drawable.dizzle
+                }
+                id.isInRange(500, 531) -> {
+                    R.drawable.rain
+                }
+                id.isInRange(600, 622) -> {
+                    R.drawable.snow
+                }
+                id.isInRange(701, 781) -> {
+                    R.drawable.atmosphere
+                }
+                id == 800 -> {
+                    R.drawable.clear
+                }
+                id.isInRange(801, 804) -> {
+                    R.drawable.clouds
+                }
+                else -> null
+            }
+        }
 }
 
 @ExperimentalPermissionsApi
