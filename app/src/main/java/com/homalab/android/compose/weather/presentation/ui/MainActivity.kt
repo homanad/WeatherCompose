@@ -25,7 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.model.LatLng
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.mapper.toCity
 import com.homalab.android.compose.weather.data.util.NetworkChecker
@@ -84,12 +83,6 @@ private fun WeatherApp(
         mainState.weatherData = viewModel.getLastWeather()
     }
 
-    LaunchedEffect(mainState.location) {
-        mainState.location?.let {
-            mainState.weatherData = viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
-        }
-    }
-
     LaunchedEffect(searchState.selectedItem) {
         searchState.selectedItem?.let {
             mainState.weatherData = viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
@@ -140,14 +133,12 @@ private fun WeatherApp(
 @Stable
 class MainState(
     isRequestLocation: Boolean,
-    location: LatLng?,
     weatherData: WeatherData?,
     savedCity: List<City>?,
     permissionState: MultiplePermissionsState,
     isRefreshing: Boolean
 ) {
     var requestLocation by mutableStateOf(isRequestLocation)
-    var location by mutableStateOf(location)
     var weatherData by mutableStateOf(weatherData)
     var savedCity by mutableStateOf(savedCity)
     var permissionState by mutableStateOf(permissionState)
@@ -187,7 +178,6 @@ class MainState(
 @Composable
 fun rememberMainState(
     isRequestLocation: Boolean = false,
-    location: LatLng? = null,
     weatherData: WeatherData? = null,
     savedCity: List<City> = listOf(),
     permissionState: MultiplePermissionsState = rememberMultiplePermissionsState(
@@ -200,7 +190,6 @@ fun rememberMainState(
     return remember {
         MainState(
             isRequestLocation = isRequestLocation,
-            location = location,
             weatherData = weatherData,
             savedCity = savedCity,
             permissionState = permissionState,

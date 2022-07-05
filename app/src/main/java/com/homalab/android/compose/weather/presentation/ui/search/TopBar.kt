@@ -23,7 +23,10 @@ import com.homalab.android.compose.weather.presentation.components.SearchBar
 import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.IconPadding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -34,16 +37,21 @@ fun TopBar(
     viewModel: MainViewModel = hiltViewModel(),
     networkChecker: NetworkChecker
 ) {
-    if (mainState.requestLocation) {
-        mainState.location = null
-        mainState.requestLocation = false
-        getCurrentLocation(context) {
-            mainState.location = it
-        }
-    }
-
-    LaunchedEffect(mainState.permissionState.allPermissionsGranted) {
-        mainState.permissionState.launchMultiplePermissionRequest()
+    LaunchedEffect(
+        key1 = mainState.permissionState.allPermissionsGranted,
+        key2 = mainState.requestLocation
+    ) {
+        if (mainState.permissionState.allPermissionsGranted) {
+            if (mainState.requestLocation) {
+                mainState.requestLocation = false
+                getCurrentLocation(context) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        mainState.weatherData =
+                            viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
+                    }
+                }
+            }
+        } else mainState.permissionState.launchMultiplePermissionRequest()
     }
 
     LaunchedEffect(searchState.query.text) {
