@@ -56,7 +56,10 @@ fun RecentlyViewedBottomSheetContent(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Spacer(
                 modifier = Modifier
                     .padding(Dimension1)
@@ -72,9 +75,17 @@ fun RecentlyViewedBottomSheetContent(
                 modifier = Modifier.padding(bottom = Dimension1)
             )
 
-            LazyColumn {
-                items(items = itemList, key = { it.id }) {
-                    CityRow(it, modifier = Modifier.clickable { onItemClick(it) })
+            if (itemList.isEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.no_history),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(Dimension2)
+                )
+            } else {
+                LazyColumn {
+                    items(items = itemList, key = { it.id }) {
+                        CityRow(it, modifier = Modifier.clickable { onItemClick(it) })
+                    }
                 }
             }
         }
