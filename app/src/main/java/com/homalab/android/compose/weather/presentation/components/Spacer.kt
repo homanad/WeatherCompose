@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.components
+package com.homalab.android.compose.weather.presentation.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

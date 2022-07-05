@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.components
+package com.homalab.android.compose.weather.presentation.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -198,16 +198,16 @@ class SearchState<T>(
     var searchResults by mutableStateOf(searchResults)
     var selectedItem by mutableStateOf(selectedItem)
 
-    val searchDisplay: SearchDisplay
+    val searchDisplayType: SearchDisplayType
         get() = when {
-            !focused && query.text.isEmpty() -> SearchDisplay.InitialResults
-            focused && query.text.isEmpty() -> SearchDisplay.Suggestions
-            searchResults?.isEmpty() == true -> SearchDisplay.NoResults
-            searchResults == null -> SearchDisplay.NetworkUnavailable
-            else -> SearchDisplay.Results
+            !focused && query.text.isEmpty() -> SearchDisplayType.InitialResults
+            focused && query.text.isEmpty() -> SearchDisplayType.Suggestions
+            searchResults?.isEmpty() == true -> SearchDisplayType.NoResults
+            searchResults == null -> SearchDisplayType.NetworkUnavailable
+            else -> SearchDisplayType.Results
         }
 }
 
-enum class SearchDisplay {
+enum class SearchDisplayType {
     InitialResults, Suggestions, Results, NoResults, NetworkUnavailable
 }

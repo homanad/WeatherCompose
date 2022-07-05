@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.vm
+package com.homalab.android.compose.weather.presentation.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

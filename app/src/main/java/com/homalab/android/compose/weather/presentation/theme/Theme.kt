@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.theme
+package com.homalab.android.compose.weather.presentation.theme
 
 import android.app.Activity
 import android.os.Build

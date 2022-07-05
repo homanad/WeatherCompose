@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.theme
+package com.homalab.android.compose.weather.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
