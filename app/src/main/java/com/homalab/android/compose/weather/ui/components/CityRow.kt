@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.util.Dimension3
+import com.homalab.android.compose.weather.util.SpacerLineSize
 
 @Composable
 fun CityRow(city: City, modifier: Modifier = Modifier) {

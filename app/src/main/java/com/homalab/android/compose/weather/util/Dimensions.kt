@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.ui.components
+package com.homalab.android.compose.weather.util
 
 import androidx.compose.ui.unit.dp
 
@@ -17,3 +17,7 @@ val WeatherConditionImageSize = 128.dp
 val IconPadding = 2.dp
 val SearchBarHeight = 56.dp
 val SpacerLineSize = 1.dp
+
+val RecentlyBottomSheetBarWidth = 80.dp
+val RecentlyBottomSheetPeekHeight = 44.dp
+val RecentlyBottomSheetCorner = 20.dp

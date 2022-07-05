@@ -42,13 +42,12 @@ import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.ui.vm.MainViewModel
+import com.homalab.android.compose.weather.util.*
 import com.homalab.android.compose.weather.util.Constants.CONDITION_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_MIN_MAX_PATTERN
 import com.homalab.android.compose.weather.util.Constants.C_DEGREE_PATTERN
 import com.homalab.android.compose.weather.util.Constants.OPEN_WEATHER_ICON_URL_PATTERN
 import com.homalab.android.compose.weather.util.Constants.WIND_PATTERN
-import com.homalab.android.compose.weather.util.TimeFormatter
-import com.homalab.android.compose.weather.util.isInRange
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -158,7 +157,7 @@ private fun WeatherApp(
                     contentDescription = null,
                     modifier = Modifier
                         .matchParentSize()
-                        .alpha(0.5f),
+                        .alpha(BackgroundImageAlpha),
                     contentScale = ContentScale.FillBounds
                 )
             }

@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -43,7 +43,7 @@ fun RecentlyBottomSheetScaffold(
                     .background(MaterialTheme.colorScheme.primaryContainer)
             )
         },
-        sheetPeekHeight = 44.dp
+        sheetPeekHeight = RecentlyBottomSheetPeekHeight
     ) {
         contentBody.invoke()
     }
@@ -60,9 +60,9 @@ fun RecentlyViewedBottomSheetContent(
             Spacer(
                 modifier = Modifier
                     .padding(Dimension1)
-                    .height(4.dp)
-                    .width(80.dp)
-                    .clip(RoundedCornerShape(3.dp))
+                    .height(Dimension1)
+                    .width(RecentlyBottomSheetBarWidth)
+                    .clip(RoundedCornerShape(Dimension1))
                     .background(Color.Gray),
             )
 
@@ -81,5 +81,9 @@ fun RecentlyViewedBottomSheetContent(
     }
 }
 
-val BottomSheetShape =
-    RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+val BottomSheetShape = RoundedCornerShape(
+    topStart = RecentlyBottomSheetCorner,
+    topEnd = RecentlyBottomSheetCorner,
+    bottomStart = Dimension0,
+    bottomEnd = Dimension0
+)

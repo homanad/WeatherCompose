@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.homalab.android.compose.weather.util.Dimension2
+import com.homalab.android.compose.weather.util.Dimension4
 
 @ExperimentalMaterial3Api
 @Composable
