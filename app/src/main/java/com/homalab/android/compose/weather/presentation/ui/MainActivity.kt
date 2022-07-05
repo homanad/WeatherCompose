@@ -25,7 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.mapper.toCity
@@ -33,17 +32,16 @@ import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.presentation.components.RecentlyBottomSheetScaffold
-import com.homalab.android.compose.weather.presentation.components.SearchState
-import com.homalab.android.compose.weather.presentation.components.rememberSearchState
 import com.homalab.android.compose.weather.presentation.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.presentation.ui.search.SearchDisplay
+import com.homalab.android.compose.weather.presentation.ui.search.SearchState
 import com.homalab.android.compose.weather.presentation.ui.search.TopBar
+import com.homalab.android.compose.weather.presentation.ui.search.rememberSearchState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.presentation.ui.weather.WeatherDisplay
 import com.homalab.android.compose.weather.util.BackgroundImageAlpha
 import com.homalab.android.compose.weather.util.isInRange
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -82,33 +80,14 @@ private fun WeatherApp(
     mainState: MainState = rememberMainState(),
     searchState: SearchState<City> = rememberSearchState()
 ) {
-
-    if (mainState.requestLocation) {
-        mainState.location = null
-        mainState.requestLocation = false
-        getCurrentLocation(context) {
-            mainState.location = it
-        }
-    }
-
     LaunchedEffect(null) {
         mainState.weatherData = viewModel.getLastWeather()
     }
 
-    LaunchedEffect(mainState.permissionState.allPermissionsGranted) {
-        mainState.permissionState.launchMultiplePermissionRequest()
-    }
-
-    LaunchedEffect(searchState.query.text) {
-        searchState.searching = true
-        if (searchState.searching) {
-            delay(500)
+    LaunchedEffect(mainState.location) {
+        mainState.location?.let {
+            mainState.weatherData = viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
         }
-        searchState.searchResults =
-            if (networkChecker.getConnectionType() != NetworkChecker.NONE)
-                viewModel.search(searchState.query.text)
-            else null
-        searchState.searching = false
     }
 
     LaunchedEffect(searchState.selectedItem) {
@@ -119,22 +98,6 @@ private fun WeatherApp(
 
     LaunchedEffect(mainState.weatherData) {
         mainState.savedCity = viewModel.getSavedWeathers()?.map { it.toCity() }
-    }
-
-    LaunchedEffect(mainState.isRefreshing) {
-        if (mainState.isRefreshing) {
-            mainState.weatherData?.let {
-                mainState.weatherData =
-                    viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
-            }
-            mainState.isRefreshing = false
-        }
-    }
-
-    LaunchedEffect(mainState.location) {
-        mainState.location?.let {
-            mainState.weatherData = viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
-        }
     }
 
     RecentlyBottomSheetScaffold(
@@ -154,7 +117,12 @@ private fun WeatherApp(
             }
 
             Column(modifier = Modifier.background(Color.Transparent)) {
-                TopBar(mainState = mainState, searchState = searchState)
+                TopBar(
+                    mainState = mainState,
+                    searchState = searchState,
+                    context = context,
+                    networkChecker = networkChecker
+                )
 
                 AnimatedContent(targetState = searchState.focused) { isFocused ->
                     if (isFocused) {
@@ -165,13 +133,6 @@ private fun WeatherApp(
                 }
             }
         }
-    }
-}
-
-private fun getCurrentLocation(context: Context, onComplete: (LatLng) -> Unit) {
-    val locationService = LocationServices.getFusedLocationProviderClient(context)
-    locationService.lastLocation.addOnCompleteListener {
-        onComplete.invoke(LatLng(it.result.latitude, it.result.longitude))
     }
 }
 

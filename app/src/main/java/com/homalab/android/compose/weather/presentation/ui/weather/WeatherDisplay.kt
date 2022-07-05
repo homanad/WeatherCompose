@@ -9,20 +9,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.WeatherData
-import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.components.ConditionCard
 import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
 import com.homalab.android.compose.weather.presentation.components.LargeSpacer
+import com.homalab.android.compose.weather.presentation.ui.MainState
+import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.*
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -51,7 +54,18 @@ fun WeatherDisplay(mainState: MainState) {
 private fun WeatherInfo(
     weatherData: WeatherData,
     mainState: MainState,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(mainState.isRefreshing) {
+        if (mainState.isRefreshing) {
+            mainState.weatherData?.let {
+                mainState.weatherData =
+                    viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
+            }
+            mainState.isRefreshing = false
+        }
+    }
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(mainState.isRefreshing),
         onRefresh = { mainState.isRefreshing = true }) {
