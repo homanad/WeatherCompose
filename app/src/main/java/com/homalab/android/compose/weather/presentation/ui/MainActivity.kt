@@ -101,7 +101,9 @@ private fun WeatherApp(
 
     LaunchedEffect(searchState.query.text) {
         searchState.searching = true
-        delay(300)
+        if (searchState.searching) {
+            delay(500)
+        }
         searchState.searchResults =
             if (networkChecker.getConnectionType() != NetworkChecker.NONE)
                 viewModel.search(searchState.query.text)
