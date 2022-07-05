@@ -3,7 +3,7 @@ package com.homalab.android.compose.weather.data.repository
 import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSourceImpl
 import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSourceImpl
 import com.homalab.android.compose.weather.data.util.NetworkChecker
-import com.homalab.android.compose.weather.domain.WeatherRepository
+import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import javax.inject.Inject
 

@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.homalab.android.compose.weather.R
-import com.homalab.android.compose.weather.ui.model.CityRecord
+import com.homalab.android.compose.weather.domain.entity.City
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecentlyBottomSheetScaffold(
-    itemList: List<CityRecord>,
-    onItemClick: (CityRecord) -> Unit,
+    itemList: List<City>,
+    onItemClick: (City) -> Unit,
     modifier: Modifier = Modifier,
     contentBody: @Composable () -> Unit
 ) {
@@ -51,8 +51,8 @@ fun RecentlyBottomSheetScaffold(
 
 @Composable
 fun RecentlyViewedBottomSheetContent(
-    itemList: List<CityRecord>,
-    onItemClick: (CityRecord) -> Unit,
+    itemList: List<City>,
+    onItemClick: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {

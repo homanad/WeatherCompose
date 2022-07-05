@@ -2,10 +2,12 @@ package com.homalab.android.compose.weather.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetSavedWeatherUseCase
+import com.homalab.android.compose.weather.domain.usecase.SearchCityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,7 +17,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getLastWeatherUseCase: GetLastWeatherUseCase,
-    private val getSavedWeatherUseCase: GetSavedWeatherUseCase
+    private val getSavedWeatherUseCase: GetSavedWeatherUseCase,
+    private val searchCityUseCase: SearchCityUseCase
 ) : ViewModel() {
 
     suspend fun getCurrentWeather(id: Int, lat: Double, lon: Double): WeatherData? {
@@ -47,6 +50,12 @@ class MainViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun search(keyword: String): List<City> {
+        return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+            searchCityUseCase(keyword)
         }
     }
 }

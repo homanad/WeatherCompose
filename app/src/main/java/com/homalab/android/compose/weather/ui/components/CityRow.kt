@@ -6,10 +6,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.homalab.android.compose.weather.ui.model.CityRecord
+import com.homalab.android.compose.weather.domain.entity.City
 
 @Composable
-fun CityRow(city: CityRecord, modifier: Modifier = Modifier) {
+fun CityRow(city: City, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(text = city.name, modifier = Modifier.padding(Dimension3))
         Spacer(

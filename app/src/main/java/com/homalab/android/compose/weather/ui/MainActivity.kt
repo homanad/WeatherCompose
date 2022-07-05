@@ -37,9 +37,8 @@ import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.ui.components.*
-import com.homalab.android.compose.weather.ui.mapper.toCity
-import com.homalab.android.compose.weather.ui.model.CityRecord
-import com.homalab.android.compose.weather.ui.model.search
+import com.homalab.android.compose.weather.data.mapper.toCity
+import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.ui.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.Constants.CONDITION_PATTERN
@@ -91,7 +90,7 @@ private fun WeatherApp(
         weatherData = null,
         savedCity = listOf()
     ),
-    searchState: SearchState<CityRecord> = rememberSearchState()
+    searchState: SearchState<City> = rememberSearchState()
 ) {
 
     if (mainState.requestLocation) {
@@ -114,7 +113,7 @@ private fun WeatherApp(
         searchState.searching = true
         delay(300)
         searchState.searchResults =
-            if (networkChecker.getConnectionType() != NetworkChecker.NONE) search(searchState.query.text) else null
+            if (networkChecker.getConnectionType() != NetworkChecker.NONE) viewModel.search(searchState.query.text) else null
         searchState.searching = false
     }
 
@@ -242,7 +241,7 @@ private fun getCurrentLocation(context: Context, onComplete: (LatLng) -> Unit) {
 }
 
 @Composable
-fun SearchResultList(itemList: List<CityRecord>, onItemClick: (CityRecord) -> Unit) {
+fun SearchResultList(itemList: List<City>, onItemClick: (City) -> Unit) {
     val scrollState = rememberLazyListState()
 
     LazyColumn(state = scrollState) {
@@ -368,7 +367,7 @@ class MainState(
     isRequestLocation: Boolean,
     location: LatLng?,
     weatherData: WeatherData?,
-    savedCity: List<CityRecord>?,
+    savedCity: List<City>?,
     permissionState: MultiplePermissionsState,
     isRefreshing: Boolean
 ) {
@@ -386,7 +385,7 @@ fun rememberMainState(
     isRequestLocation: Boolean,
     location: LatLng?,
     weatherData: WeatherData?,
-    savedCity: List<CityRecord>,
+    savedCity: List<City>,
     permissionState: MultiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,

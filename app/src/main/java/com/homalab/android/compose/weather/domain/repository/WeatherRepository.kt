@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.domain
+package com.homalab.android.compose.weather.domain.repository
 
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 

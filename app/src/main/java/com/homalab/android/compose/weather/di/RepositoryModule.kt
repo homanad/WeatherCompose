@@ -1,10 +1,10 @@
 package com.homalab.android.compose.weather.di
 
-import com.homalab.android.compose.weather.data.datasource.WeatherDataSource
-import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSourceImpl
-import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSourceImpl
+import com.homalab.android.compose.weather.data.datasource.*
+import com.homalab.android.compose.weather.data.repository.CityRepositoryImpl
 import com.homalab.android.compose.weather.data.repository.WeatherRepositoryImpl
-import com.homalab.android.compose.weather.domain.WeatherRepository
+import com.homalab.android.compose.weather.domain.repository.CityRepository
+import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,4 +24,10 @@ interface RepositoryModule {
 
     @Binds
     fun bindWeatherRepository(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository
+
+    @Binds
+    fun bindCityDataSource(cityDataSourceImpl: CityDataSourceImpl): CityDataSource
+
+    @Binds
+    fun bindCityRepository(cityRepositoryImpl: CityRepositoryImpl): CityRepository
 }
