@@ -7,7 +7,7 @@ import com.homalab.android.compose.weather.domain.entity.*
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
-import com.homalab.android.compose.weather.domain.usecase.GetSavedWeatherUseCase
+import com.homalab.android.compose.weather.domain.usecase.GetSavedCitiesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -65,7 +65,7 @@ class MainViewModelTest {
             WeatherLocalDataSourceImpl()
         )
 
-        val useCase = GetSavedWeatherUseCase(weatherRepository)
+        val useCase = GetSavedCitiesUseCase(weatherRepository)
         val data = useCase.invoke(0)
         Assert.assertEquals(data, listOf<WeatherData>())
     }
@@ -84,7 +84,7 @@ class WeatherLocalDataSourceImpl : WeatherLocalDataSource {
         return getLocalWeatherData(0)
     }
 
-    override suspend fun getSavedWeathers(): List<WeatherData> {
+    override suspend fun getSavedCities(): List<City> {
         return listOf()
     }
 }

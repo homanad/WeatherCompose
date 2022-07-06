@@ -4,7 +4,7 @@ import com.homalab.android.compose.weather.domain.repository.CityRepository
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
-import com.homalab.android.compose.weather.domain.usecase.GetSavedWeatherUseCase
+import com.homalab.android.compose.weather.domain.usecase.GetSavedCitiesUseCase
 import com.homalab.android.compose.weather.domain.usecase.SearchCityUseCase
 import dagger.Module
 import dagger.Provides
@@ -25,7 +25,7 @@ object UseCaseModule {
 
     @Provides
     fun provideGetSavedWeatherUseCase(weatherRepository: WeatherRepository) =
-        GetSavedWeatherUseCase(weatherRepository)
+        GetSavedCitiesUseCase(weatherRepository)
 
     @Provides
     fun provideSearchCityUseCase(cityRepository: CityRepository) = SearchCityUseCase(cityRepository)

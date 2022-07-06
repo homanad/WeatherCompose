@@ -2,13 +2,13 @@ package com.homalab.android.compose.weather.domain.usecase
 
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.common.BaseUseCase
-import com.homalab.android.compose.weather.domain.entity.WeatherData
+import com.homalab.android.compose.weather.domain.entity.City
 
-class GetSavedWeatherUseCase(
+class GetSavedCitiesUseCase(
     private val weatherRepository: WeatherRepository
-) : BaseUseCase<Int, List<WeatherData>>() {
+) : BaseUseCase<Int, List<City>>() {
 
-    override suspend fun create(param: Int): List<WeatherData> {
-        return weatherRepository.getSavedWeathers()
+    override suspend fun create(param: Int): List<City> {
+        return weatherRepository.getSavedCities()
     }
 }

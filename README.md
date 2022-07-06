@@ -27,4 +27,7 @@
 
 - Search and display weather by city or from current location
 - Cache up to 5 cities in Room DB and use it in case of no connection
--
+
+### Unit test
+
+- Kotlin coroutines test

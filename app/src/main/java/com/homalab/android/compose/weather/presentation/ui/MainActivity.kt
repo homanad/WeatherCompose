@@ -25,7 +25,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.homalab.android.compose.weather.R
-import com.homalab.android.compose.weather.data.mapper.toCity
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
@@ -82,7 +81,7 @@ private fun WeatherApp(
     }
 
     LaunchedEffect(mainState.weatherData) {
-        mainState.savedCities = viewModel.getSavedWeathers()?.map { it.toCity() }
+        mainState.savedCities = viewModel.getSavedWeathers()
         searchState.suggestions = mainState.savedCities ?: listOf()
     }
 

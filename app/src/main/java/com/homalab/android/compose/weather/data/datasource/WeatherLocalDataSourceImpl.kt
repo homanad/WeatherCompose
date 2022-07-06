@@ -1,8 +1,10 @@
 package com.homalab.android.compose.weather.data.datasource
 
 import com.homalab.android.compose.weather.data.db.dao.WeatherDataDao
+import com.homalab.android.compose.weather.data.mapper.toCity
 import com.homalab.android.compose.weather.data.mapper.toWeatherData
 import com.homalab.android.compose.weather.data.mapper.toWeatherDataEntity
+import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import javax.inject.Inject
 
@@ -22,7 +24,7 @@ class WeatherLocalDataSourceImpl @Inject constructor(
         return weatherDataDao.getLastWeatherData().toWeatherData()
     }
 
-    override suspend fun getSavedWeathers(): List<WeatherData> {
-        return weatherDataDao.getWeathers().map { it.toWeatherData() }
+    override suspend fun getSavedCities(): List<City> {
+        return weatherDataDao.getWeathers().map { it.toCity() }
     }
 }

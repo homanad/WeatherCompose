@@ -6,7 +6,7 @@ import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
-import com.homalab.android.compose.weather.domain.usecase.GetSavedWeatherUseCase
+import com.homalab.android.compose.weather.domain.usecase.GetSavedCitiesUseCase
 import com.homalab.android.compose.weather.domain.usecase.SearchCityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getLastWeatherUseCase: GetLastWeatherUseCase,
-    private val getSavedWeatherUseCase: GetSavedWeatherUseCase,
+    private val getSavedWeatherUseCase: GetSavedCitiesUseCase,
     private val searchCityUseCase: SearchCityUseCase
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSavedWeathers(): List<WeatherData>? {
+    suspend fun getSavedWeathers(): List<City>? {
         return try {
             withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
                 getSavedWeatherUseCase.invoke(0)
