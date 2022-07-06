@@ -24,7 +24,13 @@ fun SearchDisplay(searchState: SearchState<City>) {
 
         }
         SearchDisplayType.NoResults -> {
-
+            Text(
+                text = stringResource(id = R.string.search_no_result),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimension4),
+                textAlign = TextAlign.Center
+            )
         }
         SearchDisplayType.NetworkUnavailable -> {
             Text(
@@ -36,11 +42,16 @@ fun SearchDisplay(searchState: SearchState<City>) {
             )
         }
         SearchDisplayType.Suggestions -> {
-
+            SearchResultList(
+                itemList = searchState.suggestions
+            ) { city ->
+                searchState.selectedItem = city
+                searchState.focused = false
+            }
         }
         SearchDisplayType.Results -> {
             searchState.searchResults?.let {
-                SearchResult(
+                SearchResultList(
                     itemList = it
                 ) { city ->
                     searchState.selectedItem = city
@@ -52,17 +63,8 @@ fun SearchDisplay(searchState: SearchState<City>) {
 }
 
 @Composable
-private fun SearchResult(
-    modifier: Modifier = Modifier,
-    itemList: List<City>,
-    onItemClick: (City) -> Unit
-) {
-    SearchResultList(modifier, itemList = itemList, onItemClick = onItemClick)
-}
-
-@Composable
 private fun SearchResultList(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     itemList: List<City>,
     onItemClick: (City) -> Unit
 ) {

@@ -3,6 +3,7 @@
 
     <string name="network_unavailable">Network unavailable</string>
     <string name="empty_weather_holder">Start to search a city or click here to find your location</string>
+    <string name="search_no_result">No results match</string>
 
     <string name="feels_like">Feels like</string>
     <string name="pressure">Pressure</string>

@@ -90,11 +90,12 @@ private fun WeatherApp(
     }
 
     LaunchedEffect(mainState.weatherData) {
-        mainState.savedCity = viewModel.getSavedWeathers()?.map { it.toCity() }
+        mainState.savedCities = viewModel.getSavedWeathers()?.map { it.toCity() }
+        searchState.suggestions = mainState.savedCities ?: listOf()
     }
 
     RecentlyBottomSheetScaffold(
-        itemList = mainState.savedCity ?: listOf(),
+        itemList = mainState.savedCities ?: listOf(),
         onItemClick = { searchState.selectedItem = it }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -140,7 +141,7 @@ class MainState(
 ) {
     var requestLocation by mutableStateOf(isRequestLocation)
     var weatherData by mutableStateOf(weatherData)
-    var savedCity by mutableStateOf(savedCity)
+    var savedCities by mutableStateOf(savedCity)
     var permissionState by mutableStateOf(permissionState)
     var isRefreshing by mutableStateOf(isRefreshing)
 
