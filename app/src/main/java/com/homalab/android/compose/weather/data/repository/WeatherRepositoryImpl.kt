@@ -1,42 +1,42 @@
 package com.homalab.android.compose.weather.data.repository
 
-import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSourceImpl
-import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSourceImpl
-import com.homalab.android.compose.weather.data.util.NetworkChecker
-import com.homalab.android.compose.weather.domain.repository.WeatherRepository
+import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSource
+import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSource
 import com.homalab.android.compose.weather.domain.entity.WeatherData
+import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val networkChecker: NetworkChecker,
-    private val weatherRemoteDataSource: WeatherRemoteDataSourceImpl,
-    private val weatherLocalDataSource: WeatherLocalDataSourceImpl
+//    private val networkChecker: NetworkChecker,
+    private val weatherRemoteDataSource: WeatherRemoteDataSource,
+    private val weatherLocalDataSource: WeatherLocalDataSource
 ) : WeatherRepository {
 
     override suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData {
-        return if (isNetworkAvailable()) {
-            val data = weatherRemoteDataSource.getCurrentWeatherData(id, lat, lon)
+        return try {
+            val data = weatherRemoteDataSource.getCurrentWeatherData(lat, lon)
             weatherLocalDataSource.saveWeatherData(data)
             return data
-        } else {
-            weatherLocalDataSource.getCurrentWeatherData(id, lat, lon)
+        } catch (e: Exception) {
+            weatherLocalDataSource.getSavedWeatherData(id)
         }
     }
 
     override suspend fun getLastWeatherData(): WeatherData {
         val lastData = weatherLocalDataSource.getLastWeatherData()
-        return if (isNetworkAvailable()) {
+        return try {
             weatherRemoteDataSource.getCurrentWeatherData(
-                lastData.id,
                 lastData.coord.lat,
                 lastData.coord.lon
             )
-        } else lastData
+        } catch (e: Exception) {
+            lastData
+        }
     }
 
     override suspend fun getSavedWeathers(): List<WeatherData> {
         return weatherLocalDataSource.getSavedWeathers()
     }
 
-    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
+//    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
 }

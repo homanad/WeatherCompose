@@ -14,13 +14,13 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface RepositoryModule {
 
-    @RemoteDataSource
+    //    @RemoteDataSource
     @Binds
-    fun bindWeatherRemoteDataSource(remoteDataSourceImpl: WeatherRemoteDataSourceImpl): WeatherDataSource
+    fun bindWeatherRemoteDataSource(remoteDataSourceImpl: WeatherRemoteDataSourceImpl): WeatherRemoteDataSource
 
-    @LocalDataSource
+    //    @LocalDataSource
     @Binds
-    fun bindWeatherLocalDataSource(localDataSourceImpl: WeatherLocalDataSourceImpl): WeatherDataSource
+    fun bindWeatherLocalDataSource(localDataSourceImpl: WeatherLocalDataSourceImpl): WeatherLocalDataSource
 
     @Binds
     fun bindWeatherRepository(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository

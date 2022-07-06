@@ -6,9 +6,9 @@ import javax.inject.Inject
 
 class WeatherRemoteDataSourceImpl @Inject constructor(
     private val weatherService: WeatherService
-) : WeatherDataSource {
+) : WeatherRemoteDataSource {
 
-    override suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData {
+    override suspend fun getCurrentWeatherData(lat: Double, lon: Double): WeatherData {
         return weatherService.getCurrentWeather(lat = lat, lon = lon)
     }
 }

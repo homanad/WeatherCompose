@@ -8,21 +8,21 @@ import javax.inject.Inject
 
 class WeatherLocalDataSourceImpl @Inject constructor(
     private val weatherDataDao: WeatherDataDao
-) : WeatherDataSource {
+) : WeatherLocalDataSource {
 
-    override suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData {
+    override suspend fun getSavedWeatherData(id: Int): WeatherData {
         return weatherDataDao.getWeatherDataById(id).toWeatherData()
     }
 
-    fun saveWeatherData(weatherData: WeatherData): Long {
+    override suspend fun saveWeatherData(weatherData: WeatherData): Long {
         return weatherDataDao.removeLastIfNeededAndSaveNew(weatherData.toWeatherDataEntity())
     }
 
-    fun getLastWeatherData(): WeatherData {
+    override suspend fun getLastWeatherData(): WeatherData {
         return weatherDataDao.getLastWeatherData().toWeatherData()
     }
 
-    fun getSavedWeathers(): List<WeatherData> {
+    override suspend fun getSavedWeathers(): List<WeatherData> {
         return weatherDataDao.getWeathers().map { it.toWeatherData() }
     }
 }
