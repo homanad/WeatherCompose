@@ -31,3 +31,7 @@
 ### Unit test
 
 - Kotlin coroutines test
+
+### UI test
+
+- Macro benchmark test
