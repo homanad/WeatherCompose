@@ -10,8 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.presentation.components.CityRow
@@ -70,7 +73,7 @@ private fun SearchResultList(
 ) {
     val scrollState = rememberLazyListState()
 
-    LazyColumn(state = scrollState) {
+    LazyColumn(state = scrollState, modifier = Modifier.semantics { contentDescription = GlobalConstants.SearchResultDescription }) {
         items(items = itemList, key = { it.id }) {
             CityRow(it, modifier = modifier.clickable { onItemClick(it) })
         }
