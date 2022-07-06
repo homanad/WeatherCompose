@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,7 @@ import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.*
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WeatherDisplay(mainState: MainState) {
     if (mainState.weatherData != null) {
@@ -48,8 +47,6 @@ fun WeatherDisplay(mainState: MainState) {
     }
 }
 
-@ExperimentalPermissionsApi
-@ExperimentalMaterial3Api
 @Composable
 private fun WeatherInfo(
     weatherData: WeatherData,

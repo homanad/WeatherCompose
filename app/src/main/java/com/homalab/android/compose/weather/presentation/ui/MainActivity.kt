@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
@@ -43,9 +42,6 @@ import com.homalab.android.compose.weather.util.isInRange
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@ExperimentalAnimationApi
-@ExperimentalPermissionsApi
-@ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -68,9 +64,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalPermissionsApi
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 private fun WeatherApp(
     context: Context,
@@ -128,7 +122,7 @@ private fun WeatherApp(
     }
 }
 
-@ExperimentalPermissionsApi
+@OptIn(ExperimentalPermissionsApi::class)
 @Stable
 class MainState(
     isRequestLocation: Boolean,
@@ -173,7 +167,7 @@ class MainState(
         }
 }
 
-@ExperimentalPermissionsApi
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun rememberMainState(
     isRequestLocation: Boolean = false,

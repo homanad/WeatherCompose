@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import com.homalab.android.compose.weather.util.Dimension2
 import com.homalab.android.compose.weather.util.Dimension4
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConditionCard(modifier: Modifier = Modifier, title: String, description: String) {
     Card(modifier = modifier) {
