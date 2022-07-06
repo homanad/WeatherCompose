@@ -44,7 +44,6 @@ fun SearchDisplay(searchState: SearchState<City>) {
                     itemList = it
                 ) { city ->
                     searchState.selectedItem = city
-                    searchState.query = TextFieldValue("")
                     searchState.focused = false
                 }
             }

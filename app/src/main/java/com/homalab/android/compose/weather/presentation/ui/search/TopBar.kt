@@ -73,12 +73,12 @@ fun TopBar(
         SearchBar(
             query = searchState.query,
             onQueryChange = { searchState.query = it },
-            onSearchFocusChange = { searchState.focused = it },
-            onClearQuery = { searchState.query = TextFieldValue("") },
-            onBack = {
-                searchState.query = TextFieldValue("")
-                searchState.focused = false
+            onSearchFocusChange = {
+                if (!searchState.focused) searchState.query = TextFieldValue("")
+                searchState.focused = it
             },
+            onClearQuery = { searchState.query = TextFieldValue("") },
+            onBack = { searchState.focused = false },
             searching = searchState.searching,
             focused = searchState.focused,
             modifier = Modifier.weight(1f),
