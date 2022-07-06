@@ -79,14 +79,12 @@ private fun WeatherApp(
     mainState: MainState = rememberMainState(),
     searchState: SearchState<City> = rememberSearchState()
 ) {
-    LaunchedEffect(null) {
-        mainState.weatherData = viewModel.getLastWeather()
-    }
-
     LaunchedEffect(searchState.selectedItem) {
-        searchState.selectedItem?.let {
-            mainState.weatherData = viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
-        }
+        if (searchState.selectedItem != null) {
+            val item = searchState.selectedItem!!
+            mainState.weatherData =
+                viewModel.getCurrentWeather(item.id, item.coord.lat, item.coord.lon)
+        } else mainState.weatherData = viewModel.getLastWeather()
     }
 
     LaunchedEffect(mainState.weatherData) {
