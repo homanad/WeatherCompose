@@ -125,7 +125,7 @@ private fun WeatherApp(
                 )
             }
 
-            Column(modifier = Modifier.background(Color.Transparent)) {
+            Column(modifier = Modifier.background(Color.Transparent).padding(bottom = RecentlyBottomSheetPeekHeight + Dimension2)) {
                 TopBar(
                     mainState = mainState,
                     searchState = searchState,
