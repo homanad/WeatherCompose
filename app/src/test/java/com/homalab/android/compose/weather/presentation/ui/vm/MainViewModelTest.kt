@@ -4,6 +4,7 @@ import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSourc
 import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSource
 import com.homalab.android.compose.weather.data.repository.WeatherRepositoryImpl
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.domain.entity.ForecastData
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.domain.entity.subEntity.*
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
@@ -95,11 +96,19 @@ class WeatherRemoteDataSourceImpl : WeatherRemoteDataSource {
     override suspend fun getCurrentWeatherData(lat: Double, lon: Double): WeatherData {
         return getRemoteWeatherData(lat, lon)
     }
+
+    override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
+        TODO("Not yet implemented")
+    }
 }
 
 class ExceptionRemoteDataSourceImpl : WeatherRemoteDataSource {
     override suspend fun getCurrentWeatherData(lat: Double, lon: Double): WeatherData {
         throw Exception("Network unavailable")
+    }
+
+    override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
+        TODO("Not yet implemented")
     }
 }
 

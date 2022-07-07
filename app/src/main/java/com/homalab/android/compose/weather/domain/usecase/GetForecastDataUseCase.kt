@@ -9,7 +9,7 @@ class GetForecastDataUseCase(
 ) : BaseUseCase<GetForecastDataUseCase.GetForecastDataParam, ForecastData>() {
 
     override suspend fun create(param: GetForecastDataParam): ForecastData {
-        return weatherRepository.getForecastData()
+        return weatherRepository.getForecastData(param.lat, param.lon)
     }
 
     data class GetForecastDataParam(

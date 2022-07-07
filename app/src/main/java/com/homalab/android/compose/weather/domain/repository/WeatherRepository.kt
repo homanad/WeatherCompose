@@ -8,6 +8,5 @@ interface WeatherRepository {
     suspend fun getCurrentWeatherData(id: Int, lat: Double, lon: Double): WeatherData
     suspend fun getLastWeatherData(): WeatherData
     suspend fun getSavedCities(): List<City>
-
-    suspend fun getForecastData(): ForecastData
+    suspend fun getForecastData(lat: Double, lon: Double): ForecastData
 }

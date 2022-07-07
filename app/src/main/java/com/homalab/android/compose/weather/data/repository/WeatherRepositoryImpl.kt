@@ -40,8 +40,8 @@ class WeatherRepositoryImpl @Inject constructor(
         return weatherLocalDataSource.getSavedCities()
     }
 
-    override suspend fun getForecastData(): ForecastData {
-        TODO("Not yet implemented")
+    override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
+        return weatherRemoteDataSource.getForecastData(lat, lon) //TODO implement local DS
     }
 
     //    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
