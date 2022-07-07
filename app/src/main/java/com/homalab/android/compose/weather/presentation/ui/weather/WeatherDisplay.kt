@@ -58,6 +58,7 @@ private fun WeatherInfo(
             mainState.weatherData?.let {
                 mainState.weatherData =
                     viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
+                println("-------test: ${viewModel.getForecastData(it.coord.lat, it.coord.lon)}")
             }
             mainState.isRefreshing = false
         }

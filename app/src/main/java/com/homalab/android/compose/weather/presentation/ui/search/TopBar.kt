@@ -49,6 +49,7 @@ fun TopBar(
                     CoroutineScope(Dispatchers.IO).launch {
                         mainState.weatherData =
                             viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
+                        println("-------test: ${viewModel.getForecastData(it.latitude, it.longitude)}")
                     }
                 }
             }

@@ -42,7 +42,9 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
         return try {
-            weatherRemoteDataSource.getForecastData(lat, lon)
+            val forecastData = weatherRemoteDataSource.getForecastData(lat, lon)
+            weatherLocalDataSource.saveForecastData(forecastData)
+            forecastData
         } catch (e: Exception) {
             weatherLocalDataSource.getForecastData(lat, lon)
         }

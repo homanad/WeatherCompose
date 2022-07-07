@@ -84,7 +84,11 @@ private fun WeatherApp(
             val item = searchState.selectedItem!!
             mainState.weatherData =
                 viewModel.getCurrentWeather(item.id, item.coord.lat, item.coord.lon)
-        } else mainState.weatherData = viewModel.getLastWeather()
+            println("-------test: ${viewModel.getForecastData(item.coord.lat, item.coord.lon)}")
+        } else {
+            mainState.weatherData = viewModel.getLastWeather()
+            println("-------test: ${viewModel.getForecastData(mainState.weatherData!!.coord.lat, mainState.weatherData!!.coord.lon)}")
+        }
     }
 
     LaunchedEffect(mainState.weatherData) {
