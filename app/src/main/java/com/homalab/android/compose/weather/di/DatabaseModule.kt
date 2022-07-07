@@ -33,6 +33,9 @@ object DatabaseModule {
     fun provideWeatherDataDao(weatherDatabase: WeatherDatabase) = weatherDatabase.weatherDataDao
 
     @Provides
+    fun provideForecastDataDao(weatherDatabase: WeatherDatabase) = weatherDatabase.forecastDataDao
+
+    @Provides
     fun provideWeatherService() = ApiFactory.createRetrofit<WeatherService>()
 
     @Provides

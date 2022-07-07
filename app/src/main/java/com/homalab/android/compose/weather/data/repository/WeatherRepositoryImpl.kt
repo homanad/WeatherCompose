@@ -41,7 +41,11 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
-        return weatherRemoteDataSource.getForecastData(lat, lon) //TODO implement local DS
+        return try {
+            weatherRemoteDataSource.getForecastData(lat, lon)
+        } catch (e: Exception) {
+            weatherLocalDataSource.getForecastData(lat, lon)
+        }
     }
 
     //    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE

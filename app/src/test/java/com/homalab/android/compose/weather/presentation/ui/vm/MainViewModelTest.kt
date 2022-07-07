@@ -90,6 +90,14 @@ class WeatherLocalDataSourceImpl : WeatherLocalDataSource {
     override suspend fun getSavedCities(): List<City> {
         return listOf()
     }
+
+    override suspend fun getForecastData(lat: Double, lon: Double): ForecastData {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveForecastData(forecastData: ForecastData): Long {
+        TODO("Not yet implemented")
+    }
 }
 
 class WeatherRemoteDataSourceImpl : WeatherRemoteDataSource {
