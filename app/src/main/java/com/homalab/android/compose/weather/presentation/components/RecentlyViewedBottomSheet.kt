@@ -1,10 +1,7 @@
 package com.homalab.android.compose.weather.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
@@ -87,13 +84,7 @@ fun RecentlyViewedBottomSheetContent(
                     modifier = Modifier.padding(Dimension2)
                 )
             } else {
-                LazyColumn(modifier = Modifier.semantics {
-                    contentDescription = GlobalConstants.CityListDescription
-                }) {
-                    items(items = itemList, key = { it.id }) {
-                        CityRow(it, modifier = Modifier.clickable { onItemClick(it) })
-                    }
-                }
+                CityList(itemList = itemList, onItemClick = { onItemClick(it) })
             }
         }
     }

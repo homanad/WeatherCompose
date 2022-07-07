@@ -1,23 +1,16 @@
 package com.homalab.android.compose.weather.presentation.ui.search
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
-import com.homalab.android.compose.weather.presentation.components.CityRow
+import com.homalab.android.compose.weather.presentation.components.CityList
 import com.homalab.android.compose.weather.util.Dimension4
 
 @Composable
@@ -45,7 +38,7 @@ fun SearchDisplay(searchState: SearchState<City>) {
             )
         }
         SearchDisplayType.Suggestions -> {
-            SearchResultList(
+            CityList(
                 itemList = searchState.suggestions
             ) { city ->
                 searchState.selectedItem = city
@@ -54,7 +47,7 @@ fun SearchDisplay(searchState: SearchState<City>) {
         }
         SearchDisplayType.Results -> {
             searchState.searchResults?.let {
-                SearchResultList(
+                CityList(
                     itemList = it
                 ) { city ->
                     searchState.selectedItem = city
@@ -65,20 +58,20 @@ fun SearchDisplay(searchState: SearchState<City>) {
     }
 }
 
-@Composable
-private fun SearchResultList(
-    modifier: Modifier = Modifier,
-    itemList: List<City>,
-    onItemClick: (City) -> Unit
-) {
-    val scrollState = rememberLazyListState()
-
-    LazyColumn(state = scrollState, modifier = Modifier.semantics { contentDescription = GlobalConstants.CityListDescription }) {
-        items(items = itemList, key = { it.id }) {
-            CityRow(it, modifier = modifier.clickable { onItemClick(it) })
-        }
-    }
-}
+//@Composable
+//private fun SearchResultList(
+//    modifier: Modifier = Modifier,
+//    itemList: List<City>,
+//    onItemClick: (City) -> Unit
+//) {
+//    val scrollState = rememberLazyListState()
+//
+//    LazyColumn(state = scrollState, modifier = Modifier.semantics { contentDescription = GlobalConstants.CityListDescription }) {
+//        items(items = itemList, key = { it.id }) {
+//            CityRow(it, modifier = modifier.clickable { onItemClick(it) })
+//        }
+//    }
+//}
 
 @Composable
 fun <T> rememberSearchState(
