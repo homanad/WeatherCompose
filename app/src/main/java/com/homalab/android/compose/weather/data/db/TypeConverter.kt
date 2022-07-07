@@ -3,7 +3,7 @@ package com.homalab.android.compose.weather.data.db
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.homalab.android.compose.weather.domain.entity.*
+import com.homalab.android.compose.weather.domain.entity.subEntity.*
 
 class TypeConverter {
 

@@ -2,7 +2,7 @@ package com.homalab.android.compose.weather.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.homalab.android.compose.weather.domain.entity.*
+import com.homalab.android.compose.weather.domain.entity.subEntity.*
 
 @Entity
 data class WeatherDataEntity(

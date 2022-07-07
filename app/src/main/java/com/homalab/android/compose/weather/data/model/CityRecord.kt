@@ -2,7 +2,7 @@ package com.homalab.android.compose.weather.data.model
 
 import com.algolia.search.model.ObjectID
 import com.algolia.search.model.indexing.Indexable
-import com.homalab.android.compose.weather.domain.entity.Coord
+import com.homalab.android.compose.weather.domain.entity.subEntity.Coord
 import kotlinx.serialization.Serializable
 
 @Serializable

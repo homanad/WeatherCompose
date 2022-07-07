@@ -3,6 +3,7 @@ package com.homalab.android.compose.weather.data.repository
 import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSource
 import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSource
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.domain.entity.ForecastData
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import javax.inject.Inject
@@ -39,5 +40,9 @@ class WeatherRepositoryImpl @Inject constructor(
         return weatherLocalDataSource.getSavedCities()
     }
 
-//    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
+    override suspend fun getForecastData(): ForecastData {
+        TODO("Not yet implemented")
+    }
+
+    //    private fun isNetworkAvailable() = networkChecker.getConnectionType() != NetworkChecker.NONE
 }

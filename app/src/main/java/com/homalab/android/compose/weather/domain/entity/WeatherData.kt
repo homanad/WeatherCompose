@@ -1,5 +1,7 @@
 package com.homalab.android.compose.weather.domain.entity
 
+import com.homalab.android.compose.weather.domain.entity.subEntity.*
+
 data class WeatherData(
     val coord: Coord,
     val weather: List<WeatherItem>,

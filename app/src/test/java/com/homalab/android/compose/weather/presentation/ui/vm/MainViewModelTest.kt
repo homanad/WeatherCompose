@@ -3,7 +3,9 @@ package com.homalab.android.compose.weather.presentation.ui.vm
 import com.homalab.android.compose.weather.data.datasource.WeatherLocalDataSource
 import com.homalab.android.compose.weather.data.datasource.WeatherRemoteDataSource
 import com.homalab.android.compose.weather.data.repository.WeatherRepositoryImpl
-import com.homalab.android.compose.weather.domain.entity.*
+import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.domain.entity.WeatherData
+import com.homalab.android.compose.weather.domain.entity.subEntity.*
 import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
