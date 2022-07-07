@@ -69,4 +69,25 @@ class TypeConverter {
     fun convertStringToSys(json: String): Sys {
         return gson.fromJson(json, Sys::class.java)
     }
+
+    @TypeConverter
+    fun convertForecastToString(forecastItem: List<ForecastItem>): String {
+        return gson.toJson(forecastItem)
+    }
+
+    @TypeConverter
+    fun convertStringToForecast(json: String): List<ForecastItem> {
+        val myType = object : TypeToken<List<ForecastItem>>() {}.type
+        return gson.fromJson(json, myType)
+    }
+
+    @TypeConverter
+    fun convertForecastCityToString(forecastCity: ForecastCity): String {
+        return gson.toJson(forecastCity)
+    }
+
+    @TypeConverter
+    fun convertStringToForecastCity(json: String): ForecastCity {
+        return gson.fromJson(json, ForecastCity::class.java)
+    }
 }
