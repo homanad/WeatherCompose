@@ -56,6 +56,8 @@ fun TopBar(
     }
 
     LaunchedEffect(searchState.query.text) {
+        if (searchState.query.text.isEmpty()) return@LaunchedEffect
+
         searchState.searching = true
         if (searchState.searching) {
             delay(500)

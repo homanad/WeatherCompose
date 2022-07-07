@@ -12,6 +12,9 @@ val Dimension6 = 24.dp
 val Dimension7 = 28.dp
 val Dimension8 = 32.dp
 val Dimension9 = 36.dp
+val Dimension10 = 40.dp
+val Dimension11 = 44.dp
+val Dimension12 = 48.dp
 
 val WeatherConditionImageSize = 128.dp
 val IconPadding = 2.dp
