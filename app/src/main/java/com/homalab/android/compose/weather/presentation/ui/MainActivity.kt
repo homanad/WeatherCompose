@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -40,9 +41,7 @@ import com.homalab.android.compose.weather.presentation.ui.search.TopBar
 import com.homalab.android.compose.weather.presentation.ui.search.rememberSearchState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.presentation.ui.weather.WeatherDisplay
-import com.homalab.android.compose.weather.util.BackgroundImageAlpha
-import com.homalab.android.compose.weather.util.RecentlyBottomSheetPeekHeight
-import com.homalab.android.compose.weather.util.isInRange
+import com.homalab.android.compose.weather.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -68,7 +67,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class,
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class,
     ExperimentalMaterialApi::class
 )
 @Composable
@@ -129,7 +129,12 @@ private fun WeatherApp(
                     networkChecker = networkChecker
                 )
 
-                AnimatedContent(targetState = searchState.focused) { isFocused ->
+                AnimatedContent(
+                    targetState = searchState.focused,
+                    transitionSpec = {
+                        getDisplayEnterTransition() with getDisplayExitTransition()
+                    }
+                ) { isFocused ->
                     if (isFocused) {
                         SearchDisplay(searchState = searchState)
                     } else {
