@@ -5,16 +5,17 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -25,11 +26,11 @@ import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.presentation.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.presentation.ui.detail.DetailScreen
 import com.homalab.android.compose.weather.presentation.ui.home.HomeScreen
-import com.homalab.android.compose.weather.util.DoubleType
-import com.homalab.android.compose.weather.util.isInRange
+import com.homalab.android.compose.weather.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -45,13 +46,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavHost(this, networkChecker, rememberNavController())
+                    AppNavHost(this, networkChecker, rememberAnimatedNavController())
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     context: Context,
@@ -59,12 +61,17 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = NavConstants.Screen.Home,
         modifier = modifier
     ) {
-        composable(NavConstants.Screen.Home) {
+        composable(
+            route = NavConstants.Screen.Home,
+//            enterTransition = { getSlideUpEnterTransition() },
+            exitTransition = { getSlideUpExitTransition() },
+            popEnterTransition = { getSlideDownEnterTransition() }
+        ) {
             HomeScreen(
                 context = context,
                 networkChecker = networkChecker,
@@ -79,7 +86,9 @@ fun AppNavHost(
                 navArgument(NavConstants.Longitude) {
                     type = DoubleType
                 }
-            )
+            ),
+            enterTransition = { getSlideUpEnterTransition() },
+            popExitTransition = { getSlideDownExitTransition() }
         ) { entry ->
             val lat = entry.arguments?.getDouble(NavConstants.Latitude) ?: 0.0
             val lon = entry.arguments?.getDouble(NavConstants.Longitude) ?: 0.0
@@ -89,7 +98,7 @@ fun AppNavHost(
 }
 
 private fun navigateToDetail(navController: NavHostController, lat: Double, lon: Double) {
-    val destination =  NavConstants.Screen.Detail
+    val destination = NavConstants.Screen.Detail
         .replace("{${NavConstants.Latitude}}", lat.toString())
         .replace("{${NavConstants.Longitude}}", lon.toString())
     navController.navigate(destination)
