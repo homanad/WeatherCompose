@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.components
+package com.homalab.android.compose.weather.presentation.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

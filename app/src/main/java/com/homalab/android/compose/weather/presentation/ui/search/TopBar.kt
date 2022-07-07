@@ -1,6 +1,7 @@
 package com.homalab.android.compose.weather.presentation.ui.search
 
 import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,6 +65,10 @@ fun TopBar(
                 viewModel.search(searchState.query.text)
             else null
         searchState.searching = false
+    }
+
+    BackHandler {
+        if (searchState.focused) searchState.focused = false
     }
 
     Row(

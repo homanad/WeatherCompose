@@ -9,9 +9,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
@@ -28,8 +30,10 @@ import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.WeatherData
-import com.homalab.android.compose.weather.presentation.components.RecentlyBottomSheetScaffold
+import com.homalab.android.compose.weather.presentation.components.AppBottomSheetScaffold
 import com.homalab.android.compose.weather.presentation.theme.WeatherComposeTheme
+import com.homalab.android.compose.weather.presentation.ui.home.RecentlyViewedBottomSheetContent
+import com.homalab.android.compose.weather.presentation.ui.home.RecentlyViewedBottomSheetShape
 import com.homalab.android.compose.weather.presentation.ui.search.SearchDisplay
 import com.homalab.android.compose.weather.presentation.ui.search.SearchState
 import com.homalab.android.compose.weather.presentation.ui.search.TopBar
@@ -37,6 +41,7 @@ import com.homalab.android.compose.weather.presentation.ui.search.rememberSearch
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.presentation.ui.weather.WeatherDisplay
 import com.homalab.android.compose.weather.util.BackgroundImageAlpha
+import com.homalab.android.compose.weather.util.RecentlyBottomSheetPeekHeight
 import com.homalab.android.compose.weather.util.isInRange
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -63,7 +68,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 private fun WeatherApp(
     context: Context,
@@ -85,9 +92,22 @@ private fun WeatherApp(
         searchState.suggestions = mainState.savedCities ?: listOf()
     }
 
-    RecentlyBottomSheetScaffold(
-        itemList = mainState.savedCities ?: listOf(),
-        onItemClick = { searchState.selectedItem = it }
+    val state =
+        rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
+    AppBottomSheetScaffold(
+        scaffoldState = state,
+        sheetShape = RecentlyViewedBottomSheetShape,
+        sheetPeekHeight = RecentlyBottomSheetPeekHeight,
+        sheetContent = {
+            RecentlyViewedBottomSheetContent(
+                itemList = mainState.savedCities ?: listOf(),
+                onItemClick = { searchState.selectedItem = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            )
+        }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             mainState.backgroundResource?.let {

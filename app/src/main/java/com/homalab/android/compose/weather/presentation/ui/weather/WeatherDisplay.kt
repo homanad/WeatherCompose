@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -23,9 +22,13 @@ import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.presentation.components.ConditionCard
 import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
 import com.homalab.android.compose.weather.presentation.components.LargeSpacer
+import com.homalab.android.compose.weather.presentation.components.MessageText
 import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
-import com.homalab.android.compose.weather.util.*
+import com.homalab.android.compose.weather.util.Constants
+import com.homalab.android.compose.weather.util.Dimension2
+import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.WeatherConditionImageSize
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -33,16 +36,13 @@ fun WeatherDisplay(mainState: MainState) {
     if (mainState.weatherData != null) {
         WeatherInfo(mainState.weatherData!!, mainState)
     } else {
-        Text(
+        MessageText(
             text = stringResource(id = R.string.empty_weather_holder),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimension4)
-                .clickable {
-                    mainState.requestLocation = true
-                    if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
-                },
-            textAlign = TextAlign.Center
+            modifier = Modifier.clickable {
+                mainState.requestLocation = true
+                if (!mainState.permissionState.allPermissionsGranted) mainState.permissionState.launchMultiplePermissionRequest()
+
+            }
         )
     }
 }

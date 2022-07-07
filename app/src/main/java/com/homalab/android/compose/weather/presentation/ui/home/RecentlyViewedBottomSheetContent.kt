@@ -1,9 +1,9 @@
-package com.homalab.android.compose.weather.presentation.components
+package com.homalab.android.compose.weather.presentation.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,37 +17,6 @@ import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.util.*
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun RecentlyBottomSheetScaffold(
-    itemList: List<City>,
-    onItemClick: (City) -> Unit,
-    modifier: Modifier = Modifier,
-    contentBody: @Composable () -> Unit
-) {
-    val state =
-        rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
-
-    BottomSheetScaffold(
-        modifier = modifier,
-        scaffoldState = state,
-        sheetShape = BottomSheetShape,
-        sheetContent = {
-            RecentlyViewedBottomSheetContent(
-                itemList,
-                onItemClick,
-                Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-            )
-        },
-        sheetPeekHeight = RecentlyBottomSheetPeekHeight
-    ) {
-        contentBody.invoke()
-    }
-}
 
 @Composable
 fun RecentlyViewedBottomSheetContent(
@@ -90,7 +59,7 @@ fun RecentlyViewedBottomSheetContent(
     }
 }
 
-val BottomSheetShape = RoundedCornerShape(
+val RecentlyViewedBottomSheetShape = RoundedCornerShape(
     topStart = RecentlyBottomSheetCorner,
     topEnd = RecentlyBottomSheetCorner,
     bottomStart = Dimension0,
