@@ -34,6 +34,7 @@ class SearchCityBenchmark {
         searchBarInput.text = "Ho Chi Minh"
 
         val searchResult = device.findObject(By.desc(GlobalConstants.CityListDescription))
+        Thread.sleep(200)
         searchResult.children[0].click()
     }
 
@@ -54,7 +55,6 @@ class SearchCityBenchmark {
         bottomSheetLayout.drag(Point(bottomSheetLayout.visibleCenter.x, bounds.top - 1000))
 
         val cityList = device.findObject(By.desc(GlobalConstants.CityListDescription))
-
         Thread.sleep(200)
         cityList.children[Random.nextInt(5)].click()
     }
