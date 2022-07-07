@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.util.*
@@ -55,7 +58,9 @@ fun RecentlyViewedBottomSheetContent(
     onItemClick: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.semantics {
+        contentDescription = GlobalConstants.BottomSheetDescription
+    }) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
@@ -82,7 +87,9 @@ fun RecentlyViewedBottomSheetContent(
                     modifier = Modifier.padding(Dimension2)
                 )
             } else {
-                LazyColumn {
+                LazyColumn(modifier = Modifier.semantics {
+                    contentDescription = GlobalConstants.CityListDescription
+                }) {
                     items(items = itemList, key = { it.id }) {
                         CityRow(it, modifier = Modifier.clickable { onItemClick(it) })
                     }

@@ -73,7 +73,7 @@ private fun SearchResultList(
 ) {
     val scrollState = rememberLazyListState()
 
-    LazyColumn(state = scrollState, modifier = Modifier.semantics { contentDescription = GlobalConstants.SearchResultDescription }) {
+    LazyColumn(state = scrollState, modifier = Modifier.semantics { contentDescription = GlobalConstants.CityListDescription }) {
         items(items = itemList, key = { it.id }) {
             CityRow(it, modifier = modifier.clickable { onItemClick(it) })
         }
