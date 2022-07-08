@@ -22,9 +22,11 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.domain.entity.ForecastData
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.presentation.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.presentation.ui.detail.DetailScreen
+import com.homalab.android.compose.weather.presentation.ui.detail.rememberDetailState
 import com.homalab.android.compose.weather.presentation.ui.home.HomeScreen
 import com.homalab.android.compose.weather.util.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun AppNavHost(
     context: Context,
@@ -61,6 +63,7 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val mainState = rememberMainState()
     AnimatedNavHost(
         navController = navController,
         startDestination = NavConstants.Screen.Home,
@@ -75,7 +78,9 @@ fun AppNavHost(
             HomeScreen(
                 context = context,
                 networkChecker = networkChecker,
-                onDetailClick = { lat, lon -> navigateToDetail(navController, lat, lon) })
+                onDetailClick = { lat, lon -> navigateToDetail(navController, lat, lon) },
+                mainState = mainState
+            )
         }
         composable(
             route = NavConstants.Screen.Detail,
@@ -92,7 +97,11 @@ fun AppNavHost(
         ) { entry ->
             val lat = entry.arguments?.getDouble(NavConstants.Latitude) ?: 0.0
             val lon = entry.arguments?.getDouble(NavConstants.Longitude) ?: 0.0
-            DetailScreen(lat, lon)
+            DetailScreen(
+                lat,
+                lon,
+                rememberDetailState(mainState.forecastData)
+            )
         }
     }
 }
@@ -109,12 +118,14 @@ private fun navigateToDetail(navController: NavHostController, lat: Double, lon:
 class MainState(
     isRequestLocation: Boolean,
     weatherData: WeatherData?,
+    forecastData: ForecastData?,
     savedCity: List<City>?,
     permissionState: MultiplePermissionsState,
     isRefreshing: Boolean
 ) {
     var requestLocation by mutableStateOf(isRequestLocation)
     var weatherData by mutableStateOf(weatherData)
+    var forecastData by mutableStateOf(forecastData)
     var savedCities by mutableStateOf(savedCity)
     var permissionState by mutableStateOf(permissionState)
     var isRefreshing by mutableStateOf(isRefreshing)
@@ -154,6 +165,7 @@ class MainState(
 fun rememberMainState(
     isRequestLocation: Boolean = false,
     weatherData: WeatherData? = null,
+    forecastData: ForecastData? = null,
     savedCity: List<City> = listOf(),
     permissionState: MultiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
@@ -166,6 +178,7 @@ fun rememberMainState(
         MainState(
             isRequestLocation = isRequestLocation,
             weatherData = weatherData,
+            forecastData = forecastData,
             savedCity = savedCity,
             permissionState = permissionState,
             isRefreshing = false

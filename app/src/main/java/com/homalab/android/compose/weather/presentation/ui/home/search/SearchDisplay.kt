@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.ui.search
+package com.homalab.android.compose.weather.presentation.ui.home.search
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource

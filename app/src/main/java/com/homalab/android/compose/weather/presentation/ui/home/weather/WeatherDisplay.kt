@@ -1,10 +1,14 @@
-package com.homalab.android.compose.weather.presentation.ui.weather
+package com.homalab.android.compose.weather.presentation.ui.home.weather
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -25,16 +30,13 @@ import com.homalab.android.compose.weather.presentation.components.LargeSpacer
 import com.homalab.android.compose.weather.presentation.components.MessageText
 import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
-import com.homalab.android.compose.weather.util.Constants
-import com.homalab.android.compose.weather.util.Dimension2
-import com.homalab.android.compose.weather.util.TimeFormatter
-import com.homalab.android.compose.weather.util.WeatherConditionImageSize
+import com.homalab.android.compose.weather.util.*
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun WeatherDisplay(mainState: MainState) {
+fun WeatherDisplay(mainState: MainState, onDetailClick: () -> Unit) {
     if (mainState.weatherData != null) {
-        WeatherInfo(mainState.weatherData!!, mainState)
+        WeatherInfo(mainState.weatherData!!, mainState, onDetailClick)
     } else {
         MessageText(
             text = stringResource(id = R.string.empty_weather_holder),
@@ -51,6 +53,7 @@ fun WeatherDisplay(mainState: MainState) {
 private fun WeatherInfo(
     weatherData: WeatherData,
     mainState: MainState,
+    onDetailClick: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     LaunchedEffect(mainState.isRefreshing) {
@@ -58,7 +61,7 @@ private fun WeatherInfo(
             mainState.weatherData?.let {
                 mainState.weatherData =
                     viewModel.getCurrentWeather(it.id, it.coord.lat, it.coord.lon)
-                println("-------test: ${viewModel.getForecastData(it.coord.lat, it.coord.lon)}")
+                mainState.forecastData = viewModel.getForecastData(it.coord.lat, it.coord.lon)
             }
             mainState.isRefreshing = false
         }
@@ -169,6 +172,20 @@ private fun WeatherInfo(
                         weatherData.timeZone
                     )
                 )
+            }
+
+            Column(
+                modifier = Modifier.clickable { onDetailClick.invoke() },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.click_details),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimension1),
+                    textAlign = TextAlign.Center
+                )
+                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
             }
         }
     }

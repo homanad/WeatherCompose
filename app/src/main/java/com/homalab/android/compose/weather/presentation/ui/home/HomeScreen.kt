@@ -6,7 +6,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.BottomSheetValue
@@ -26,13 +25,13 @@ import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.presentation.components.AppBottomSheetScaffold
 import com.homalab.android.compose.weather.presentation.ui.MainState
+import com.homalab.android.compose.weather.presentation.ui.home.search.SearchDisplay
+import com.homalab.android.compose.weather.presentation.ui.home.search.SearchState
+import com.homalab.android.compose.weather.presentation.ui.home.search.TopBar
+import com.homalab.android.compose.weather.presentation.ui.home.search.rememberSearchState
+import com.homalab.android.compose.weather.presentation.ui.home.weather.WeatherDisplay
 import com.homalab.android.compose.weather.presentation.ui.rememberMainState
-import com.homalab.android.compose.weather.presentation.ui.search.SearchDisplay
-import com.homalab.android.compose.weather.presentation.ui.search.SearchState
-import com.homalab.android.compose.weather.presentation.ui.search.TopBar
-import com.homalab.android.compose.weather.presentation.ui.search.rememberSearchState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
-import com.homalab.android.compose.weather.presentation.ui.weather.WeatherDisplay
 import com.homalab.android.compose.weather.util.*
 
 @OptIn(
@@ -43,8 +42,8 @@ import com.homalab.android.compose.weather.util.*
 fun HomeScreen(
     context: Context,
     networkChecker: NetworkChecker,
+    mainState: MainState,
     viewModel: MainViewModel = hiltViewModel(),
-    mainState: MainState = rememberMainState(),
     searchState: SearchState<City> = rememberSearchState(),
     onDetailClick: (lat: Double, lon: Double) -> Unit
 ) {
@@ -53,16 +52,12 @@ fun HomeScreen(
             val item = searchState.selectedItem!!
             mainState.weatherData =
                 viewModel.getCurrentWeather(item.id, item.coord.lat, item.coord.lon)
-            println("-------test: ${viewModel.getForecastData(item.coord.lat, item.coord.lon)}")
+            mainState.forecastData = viewModel.getForecastData(item.coord.lat, item.coord.lon)
         } else {
             mainState.weatherData = viewModel.getLastWeather()
-            println(
-                "-------test: ${
-                    viewModel.getForecastData(
-                        mainState.weatherData!!.coord.lat,
-                        mainState.weatherData!!.coord.lon
-                    )
-                }"
+            mainState.forecastData = viewModel.getForecastData(
+                mainState.weatherData!!.coord.lat,
+                mainState.weatherData!!.coord.lon
             )
         }
     }
@@ -89,7 +84,7 @@ fun HomeScreen(
             )
         }
     ) {
-        Box(modifier = Modifier.fillMaxSize().clickable { onDetailClick(mainState.weatherData!!.coord.lat, mainState.weatherData!!.coord.lon) }) {
+        Box(modifier = Modifier.fillMaxSize()) {
             mainState.backgroundResource?.let {
                 Image(
                     painter = painterResource(id = it),
@@ -122,7 +117,12 @@ fun HomeScreen(
                     if (isFocused) {
                         SearchDisplay(searchState = searchState)
                     } else {
-                        WeatherDisplay(mainState = mainState)
+                        WeatherDisplay(mainState = mainState) {
+                            onDetailClick(
+                                mainState.weatherData!!.coord.lat,
+                                mainState.weatherData!!.coord.lon
+                            )
+                        }
                     }
                 }
             }

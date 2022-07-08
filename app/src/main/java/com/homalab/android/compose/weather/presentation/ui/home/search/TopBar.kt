@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.ui.search
+package com.homalab.android.compose.weather.presentation.ui.home.search
 
 import android.content.Context
 import androidx.activity.compose.BackHandler
@@ -49,7 +49,8 @@ fun TopBar(
                     CoroutineScope(Dispatchers.IO).launch {
                         mainState.weatherData =
                             viewModel.getCurrentWeather(-1, it.latitude, it.longitude)
-                        println("-------test: ${viewModel.getForecastData(it.latitude, it.longitude)}")
+                        mainState.forecastData =
+                            viewModel.getForecastData(it.latitude, it.longitude)
                     }
                 }
             }
