@@ -71,7 +71,7 @@ fun <T> LineChart(
         //draw horizontal lines & labels
         verticalAxisValues.forEachIndexed { index, fl ->
             val x = leftAreaWidth / 2.toFloat()
-            val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index)
+            val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index + 1)
 
             println("-------lineY: $y")
 
@@ -101,7 +101,7 @@ fun <T> LineChart(
         val deltaRange = verticalAxisValues.maxOf { it } - verticalAxisValues.minOf { it }
 
         var previousOffset: Offset? = null
-        val top = verticalAxisLength / verticalAxisValues.size
+        val calculatedHeight = verticalAxisLength - verticalAxisLength / verticalAxisValues.size
         chartData.forEachIndexed { index, t ->
             var x = barWidth * index
             x += leftAreaWidth
@@ -111,8 +111,8 @@ fun <T> LineChart(
             val valuePercent = deltaValue / deltaRange
 
 
-            val barHeightInPixel = valuePercent * (verticalAxisLength - top)
-            val y = verticalAxisLength - barHeightInPixel
+            val barHeightInPixel = valuePercent * calculatedHeight
+            val y = calculatedHeight - barHeightInPixel
 
             println("-------line value: ${lineValues(t)}")
             println("-------verticalAxisLength: $verticalAxisLength")
