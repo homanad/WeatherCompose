@@ -50,7 +50,7 @@ fun <T> LineChart(
                 .div(1.75)).toInt()
         val horizontalAxisLength = size.width - leftAreaWidth
 
-        val distanceBetweenVerticalAxisValues = (verticalAxisLength / verticalAxisValues.size)
+        val distanceBetweenVerticalAxisValues = (verticalAxisLength / (verticalAxisValues.size - 1))
 
         val axisThicknessPx = 1.dp.toPx()
 
@@ -71,7 +71,7 @@ fun <T> LineChart(
         //draw horizontal lines & labels
         verticalAxisValues.forEachIndexed { index, fl ->
             val x = leftAreaWidth / 2.toFloat()
-            val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index + 1)
+            val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index)
 
             println("-------lineY: $y")
 
@@ -101,18 +101,16 @@ fun <T> LineChart(
         val deltaRange = verticalAxisValues.maxOf { it } - verticalAxisValues.minOf { it }
 
         var previousOffset: Offset? = null
-        val calculatedHeight = verticalAxisLength - verticalAxisLength / verticalAxisValues.size
         chartData.forEachIndexed { index, t ->
             var x = barWidth * index
             x += leftAreaWidth
 
-//            val valuePercent = lineValues(t) / minValue
             val deltaValue = lineValues(t) - minValue
             val valuePercent = deltaValue / deltaRange
 
 
-            val barHeightInPixel = valuePercent * calculatedHeight
-            val y = calculatedHeight - barHeightInPixel
+            val barHeightInPixel = valuePercent * verticalAxisLength
+            val y = verticalAxisLength - barHeightInPixel
 
             println("-------line value: ${lineValues(t)}")
             println("-------verticalAxisLength: $verticalAxisLength")
@@ -302,4 +300,4 @@ val DefaultAxisLabelColor = Color.Gray
 val DefaultAxisLabelFontSize = 13.sp
 val DefaultAxisThickness = 1.dp
 
-val HorizontalLineSpacing = 40.dp
+val HorizontalLineSpacing = 80.dp

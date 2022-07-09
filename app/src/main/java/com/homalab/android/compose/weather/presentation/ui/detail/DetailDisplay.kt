@@ -67,8 +67,6 @@ fun DataChart(
 //
 //        verticalAxis.add(0f)
 
-        println("------test: ${9.8f.roundToTen()}")
-        println("------test: ${(-9.8f).roundToTen()}")
 
         LineChart(
             chartData = chartData,
@@ -81,16 +79,27 @@ fun DataChart(
 }
 
 fun generateMinMaxRange(min: Float, max: Float): List<Float> {
-    val minValue = min.roundToTen()
-    val maxValue = max.roundToTen()
+
+    println("------minValueBe: $min")
+    println("------maxValueBe: $max")
+
+    val minValue = min.roundDownTo()
+    val maxValue = max.roundUpTo()
+
+    println("------minValue: $minValue")
+    println("------maxValue: $maxValue")
 
     val list = mutableListOf<Float>()
-    for (i in minValue..maxValue step 10) {
+    for (i in minValue..maxValue step 5) {
         list.add(i.toFloat())
     }
     return list
 }
 
-fun Float.roundToTen(): Int {
-    return (round(this / 10) * 10).roundToInt()
+fun Float.roundUpTo(): Int {
+    return (round((this + 5) / 5) * 5).roundToInt()
+}
+
+fun Float.roundDownTo(): Int {
+    return (round((this - 5) / 5) * 5).roundToInt()
 }
