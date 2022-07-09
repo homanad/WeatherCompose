@@ -19,6 +19,8 @@ import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.Dimension1
 import com.homalab.android.compose.weather.util.Dimension2
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 @Composable
 fun DetailDisplay(
@@ -65,12 +67,30 @@ fun DataChart(
 //
 //        verticalAxis.add(0f)
 
+        println("------test: ${9.8f.roundToTen()}")
+        println("------test: ${(-9.8f).roundToTen()}")
+
         LineChart(
-            chartData = listOf(-10f, 10f, 20f, 30f),
-            lineValues = { it },
-            verticalAxisValues = listOf(-25f, -15f, -5f, 5f, 15f, 25f, 35f, 45f, 55f),
+            chartData = chartData,
+            lineValues = { it.temp },
+            verticalAxisValues = generateMinMaxRange(chartData.minOf { it.temp }, chartData.maxOf { it.temp }),
             strokeColor = Color.Black,
             dotColor = Color.Red
         )
     }
+}
+
+fun generateMinMaxRange(min: Float, max: Float): List<Float> {
+    val minValue = min.roundToTen()
+    val maxValue = max.roundToTen()
+
+    val list = mutableListOf<Float>()
+    for (i in minValue..maxValue step 10) {
+        list.add(i.toFloat())
+    }
+    return list
+}
+
+fun Float.roundToTen(): Int {
+    return (round(this / 10) * 10).roundToInt()
 }
