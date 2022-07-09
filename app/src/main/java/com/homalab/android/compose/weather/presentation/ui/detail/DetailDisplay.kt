@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
-import com.homalab.android.compose.weather.presentation.components.HorizontalDivider
-import com.homalab.android.compose.weather.presentation.components.LineChart
-import com.homalab.android.compose.weather.presentation.components.MessageText
-import com.homalab.android.compose.weather.presentation.components.SmallSpacer
+import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.Dimension1
@@ -39,7 +36,7 @@ fun DetailDisplay(
 @Composable
 fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        DataChart(title = "Temp", data = forecastDayData.items[1])
+        DataChart(title = "Temp", data = forecastDayData.items[2])
     }
 }
 
@@ -68,10 +65,10 @@ fun DataChart(
 //        verticalAxis.add(0f)
 
 
-        LineChart(
+        MultipleLinesChart(
             chartData = chartData,
-            lineValues = { it.temp },
-            verticalAxisValues = generateMinMaxRange(chartData.minOf { it.temp }, chartData.maxOf { it.temp }),
+//            lineValues = { it.temp },
+            verticalAxisValues = generateMinMaxRange(chartData.minOf { it.temp_min }, chartData.maxOf { it.temp_max }),
             strokeColor = Color.Black,
             dotColor = Color.Red
         )

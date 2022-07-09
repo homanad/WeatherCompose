@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.homalab.android.compose.weather.util.Dimension1
 
 @Composable
-fun <T> LineChart(
+fun <T> SingleLineChart(
     modifier: Modifier = Modifier,
     chartData: List<T>,
     lineValues: (T) -> Float,
