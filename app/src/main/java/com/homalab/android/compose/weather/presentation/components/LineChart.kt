@@ -101,6 +101,9 @@ fun <T> LineChart(
         val deltaRange = verticalAxisValues.maxOf { it } - verticalAxisValues.minOf { it }
 
         var previousOffset: Offset? = null
+
+        val circleOffsets = mutableListOf<Offset>()
+
         chartData.forEachIndexed { index, t ->
             var x = barWidth * index
             x += leftAreaWidth
@@ -123,11 +126,7 @@ fun <T> LineChart(
 
             val end = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
 
-            drawCircle(
-                color = dotColor,
-                center = end,
-                radius = strokeWidth.times(1.5f).toPx()
-            )
+            circleOffsets.add(end)
 
             previousOffset?.let {
                 val start = Offset(it.x + barWidth.div(2), it.y)
@@ -153,6 +152,14 @@ fun <T> LineChart(
                     }
                 )
             }
+        }
+
+        circleOffsets.forEach {
+            drawCircle(
+                color = dotColor,
+                center = it,
+                radius = strokeWidth.times(1.5f).toPx()
+            )
         }
     }
 }
