@@ -102,19 +102,19 @@ fun MultipleLinesChart(
         var previousOffsetNormal: Offset? = null
         var previousOffsetMax: Offset? = null
 
-        val circleOffsets = mutableListOf<Offset>()
+        val circleOffsets = mutableListOf<CircleEntity>()
 
-        chartData.forEachIndexed { index, t ->
+        chartData.forEachIndexed { index, main ->
             var x = barWidth * index
             x += leftAreaWidth
 
             //draw min
             val currentOffsetMin =
-                calculateOffset(x, t.temp_min, minValue, deltaRange, verticalAxisLength)
+                calculateOffset(x, main.temp_min, minValue, deltaRange, verticalAxisLength)
 
             val endMin = Offset((currentOffsetMin.x + barWidth.div(2)), currentOffsetMin.y)
 
-            circleOffsets.add(endMin)
+            circleOffsets.add(CircleEntity(Color.Green, endMin))
 
             previousOffsetMin?.let {
                 val start = Offset(it.x + barWidth.div(2), it.y)
@@ -125,41 +125,46 @@ fun MultipleLinesChart(
                     strokeWidth = strokeWidth.toPx()
                 )
             }
-
             previousOffsetMin = currentOffsetMin
+            //
 
-            drawContext.canvas.nativeCanvas.apply {
-                drawText(
-                    "test",
-                    (currentOffsetMin.x + barWidth.div(2)),
-                    verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
-                    Paint().apply {
-                        textSize = horizontalAxisLabelFontSize.toPx()
-                        color = horizontalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+            //draw max
+            val currentOffsetMax =
+                calculateOffset(x, main.temp_max, minValue, deltaRange, verticalAxisLength)
+
+            val endMax = Offset((currentOffsetMax.x + barWidth.div(2)), currentOffsetMax.y)
+
+            circleOffsets.add(CircleEntity(Color.Red, endMax))
+
+            previousOffsetMax?.let {
+                val start = Offset(it.x + barWidth.div(2), it.y)
+                drawLine(
+                    start = start,
+                    end = endMax,
+                    color = Color.Red,
+                    strokeWidth = strokeWidth.toPx()
                 )
             }
+            previousOffsetMax = currentOffsetMax
+            //
 
-            //////
             //draw normal
             val currentOffsetNormal =
-                calculateOffset(x, t.temp, minValue, deltaRange, verticalAxisLength)
+                calculateOffset(x, main.temp, minValue, deltaRange, verticalAxisLength)
 
             val endNormal = Offset((currentOffsetNormal.x + barWidth.div(2)), currentOffsetNormal.y)
 
-            circleOffsets.add(endNormal)
+            circleOffsets.add(CircleEntity(Color.Yellow, endNormal))
 
             previousOffsetNormal?.let {
                 val start = Offset(it.x + barWidth.div(2), it.y)
                 drawLine(
                     start = start,
                     end = endNormal,
-                    color = Color.Cyan,
+                    color = Color.Yellow,
                     strokeWidth = strokeWidth.toPx()
                 )
             }
-
             previousOffsetNormal = currentOffsetNormal
 
             drawContext.canvas.nativeCanvas.apply {
@@ -174,46 +179,12 @@ fun MultipleLinesChart(
                     }
                 )
             }
-
-            ////
-            //draw max
-            val currentOffsetMax =
-                calculateOffset(x, t.temp_max, minValue, deltaRange, verticalAxisLength)
-
-            val endMax = Offset((currentOffsetMax.x + barWidth.div(2)), currentOffsetMax.y)
-
-            circleOffsets.add(endMax)
-
-            previousOffsetMax?.let {
-                val start = Offset(it.x + barWidth.div(2), it.y)
-                drawLine(
-                    start = start,
-                    end = endMax,
-                    color = Color.Magenta,
-                    strokeWidth = strokeWidth.toPx()
-                )
-            }
-
-            previousOffsetMax = currentOffsetMax
-
-            drawContext.canvas.nativeCanvas.apply {
-                drawText(
-                    "test",
-                    (currentOffsetMax.x + barWidth.div(2)),
-                    verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
-                    Paint().apply {
-                        textSize = horizontalAxisLabelFontSize.toPx()
-                        color = horizontalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
-                )
-            }
         }
 
         circleOffsets.forEach {
             drawCircle(
-                color = dotColor,
-                center = it,
+                color = it.color,
+                center = it.offset,
                 radius = strokeWidth.times(1.5f).toPx()
             )
         }
@@ -227,8 +198,6 @@ fun calculateOffset(
     deltaRange: Float,
     verticalAxisLength: Float
 ): Offset {
-
-
     val deltaValue = value - minValue
     val valuePercent = deltaValue / deltaRange
 
@@ -244,3 +213,5 @@ fun calculateOffset(
 
     return Offset(x, y)
 }
+
+data class CircleEntity(val color: Color, val offset: Offset)

@@ -11,13 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
-import com.homalab.android.compose.weather.presentation.components.*
+import com.homalab.android.compose.weather.domain.entity.subEntity.Main
+import com.homalab.android.compose.weather.presentation.components.HorizontalDivider
+import com.homalab.android.compose.weather.presentation.components.MessageText
+import com.homalab.android.compose.weather.presentation.components.MultipleLinesChart
+import com.homalab.android.compose.weather.presentation.components.SmallSpacer
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.Dimension1
 import com.homalab.android.compose.weather.util.Dimension2
-import kotlin.math.round
-import kotlin.math.roundToInt
+import kotlin.math.ceil
+import kotlin.math.floor
 
 @Composable
 fun DetailDisplay(
@@ -57,18 +61,13 @@ fun DataChart(
             HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
         }
 
-        val chartData = data.list.map {
-            it.main
-        }
-//        val verticalAxis = chartData.map { it.temp }.toMutableList()
-//
-//        verticalAxis.add(0f)
-
+        val chartData = data.list.map { it.main }
 
         MultipleLinesChart(
             chartData = chartData,
-//            lineValues = { it.temp },
-            verticalAxisValues = generateMinMaxRange(chartData.minOf { it.temp_min }, chartData.maxOf { it.temp_max }),
+            verticalAxisValues = generateMinMaxRange(
+                chartData.minOf { it.temp_min },
+                chartData.maxOf { it.temp_max }),
             strokeColor = Color.Black,
             dotColor = Color.Red
         )
@@ -76,27 +75,49 @@ fun DataChart(
 }
 
 fun generateMinMaxRange(min: Float, max: Float): List<Float> {
-
-    println("------minValueBe: $min")
-    println("------maxValueBe: $max")
-
-    val minValue = min.roundDownTo()
-    val maxValue = max.roundUpTo()
-
-    println("------minValue: $minValue")
-    println("------maxValue: $maxValue")
+    val minValue = floor(min).toInt()
+    val maxValue = ceil(max).toInt()
 
     val list = mutableListOf<Float>()
-    for (i in minValue..maxValue step 5) {
+    for (i in minValue..maxValue) {
         list.add(i.toFloat())
     }
     return list
 }
 
-fun Float.roundUpTo(): Int {
-    return (round((this + 5) / 5) * 5).roundToInt()
-}
-
-fun Float.roundDownTo(): Int {
-    return (round((this - 5) / 5) * 5).roundToInt()
+fun getTestChartData(): List<Main> {
+    return listOf(
+        Main(
+            temp_min = 13f,
+            temp = 15f,
+            temp_max = 17f,
+            feels_like = 1f,
+            pressure = 1f,
+            humidity = 1f
+        ),
+        Main(
+            temp_min = 14f,
+            temp = 16f,
+            temp_max = 18f,
+            feels_like = 1f,
+            pressure = 1f,
+            humidity = 1f
+        ),
+        Main(
+            temp_min = 15f,
+            temp = 17f,
+            temp_max = 19f,
+            feels_like = 1f,
+            pressure = 1f,
+            humidity = 1f
+        ),
+        Main(
+            temp_min = 16f,
+            temp = 18f,
+            temp_max = 20f,
+            feels_like = 1f,
+            pressure = 1f,
+            humidity = 1f
+        ),
+    )
 }
