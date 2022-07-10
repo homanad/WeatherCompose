@@ -12,14 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.Main
-import com.homalab.android.compose.weather.presentation.components.HorizontalDivider
-import com.homalab.android.compose.weather.presentation.components.MessageText
-import com.homalab.android.compose.weather.presentation.components.MultipleLinesChart
-import com.homalab.android.compose.weather.presentation.components.SmallSpacer
+import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.Dimension1
 import com.homalab.android.compose.weather.util.Dimension2
+import com.homalab.android.compose.weather.util.Dimension4
+import com.homalab.android.compose.weather.util.TimeFormatter
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -40,20 +39,21 @@ fun DetailDisplay(
 @Composable
 fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        DataChart(title = "Temp", data = forecastDayData.items[2])
+        DataChart(title = "Temp", data = forecastDayData.items[0], forecastDayData.city.timeZone)
     }
 }
 
 @Composable
 fun DataChart(
     title: String,
-    data: ForecastDayItem
+    data: ForecastDayItem,
+    timeZone: Int
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Dimension2, end = Dimension2),
+                .padding(start = Dimension2, end = Dimension2, bottom = Dimension2),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = title)
@@ -61,15 +61,40 @@ fun DataChart(
             HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
         }
 
-        val chartData = data.list.map { it.main }
+        val minData = MultipleChartData(
+            dotColor = Color.Green,
+            lineColor = Color.Green,
+            values = data.list.map {
+                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp_min)
+            }
+        )
+
+        val normalData = MultipleChartData(
+            dotColor = Color.Yellow,
+            lineColor = Color.Yellow,
+            values = data.list.map {
+                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp)
+            }
+        )
+
+        val maxData = MultipleChartData(
+            dotColor = Color.Red,
+            lineColor = Color.Red,
+            values = data.list.map {
+                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp_max)
+            }
+        )
+        val multipleChartData = listOf(minData, maxData, normalData)
 
         MultipleLinesChart(
-            chartData = chartData,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimension4),
+            chartData = multipleChartData,
             verticalAxisValues = generateMinMaxRange(
-                chartData.minOf { it.temp_min },
-                chartData.maxOf { it.temp_max }),
-            strokeColor = Color.Black,
-            dotColor = Color.Red
+                minData.values.minOf { it.value },
+                maxData.values.maxOf { it.value }
+            )
         )
     }
 }

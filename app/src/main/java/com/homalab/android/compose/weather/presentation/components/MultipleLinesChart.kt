@@ -14,28 +14,23 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.homalab.android.compose.weather.domain.entity.subEntity.Main
 
 @Composable
 fun MultipleLinesChart(
     modifier: Modifier = Modifier,
-    chartData: List<Main>,
-//    lineValues: (Main) -> Float,
+    chartData: List<MultipleChartData>,
     verticalAxisValues: List<Float>,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     verticalAxisLabelColor: Color = DefaultAxisLabelColor,
     verticalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     axisColor: Color = Color.Gray,
-    strokeWidth: Dp = DefaultStrokeWidth,
-    strokeColor: Color,
-    dotColor: Color
+    strokeWidth: Dp = DefaultStrokeWidth
 ) {
     val chartHeight = HorizontalLineSpacing * verticalAxisValues.size
 
     Canvas(
         modifier = modifier
-            .fillMaxWidth()
             .height(chartHeight)
     ) {
         val bottomAreaHeight = horizontalAxisLabelFontSize.toPx()
@@ -94,83 +89,55 @@ fun MultipleLinesChart(
         }
 
         //draw line values
-        val barWidth = (drawContext.size.width - leftAreaWidth) / chartData.size
+        val barWidth = (drawContext.size.width - leftAreaWidth) / chartData.maxOf { it.values.size }
+
         val minValue = verticalAxisValues.minOf { it }
         val deltaRange = verticalAxisValues.maxOf { it } - verticalAxisValues.minOf { it }
 
-        var previousOffsetMin: Offset? = null
-        var previousOffsetNormal: Offset? = null
-        var previousOffsetMax: Offset? = null
-
         val circleOffsets = mutableListOf<CircleEntity>()
+        val textOffsets = mutableListOf<TextEntity>()
 
-        chartData.forEachIndexed { index, main ->
-            var x = barWidth * index
-            x += leftAreaWidth
+        chartData.forEach { multipleChartData ->
+            var previousOffset: Offset? = null
 
-            //draw min
-            val currentOffsetMin =
-                calculateOffset(x, main.temp_min, minValue, deltaRange, verticalAxisLength)
+            multipleChartData.values.forEachIndexed { index, multipleChartValue ->
+                var x = barWidth * index
+                x += leftAreaWidth
 
-            val endMin = Offset((currentOffsetMin.x + barWidth.div(2)), currentOffsetMin.y)
+                val currentOffset =
+                    calculateOffset(
+                        x,
+                        multipleChartValue.value,
+                        minValue,
+                        deltaRange,
+                        verticalAxisLength
+                    )
 
-            circleOffsets.add(CircleEntity(Color.Green, endMin))
+                val endOffset = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
 
-            previousOffsetMin?.let {
-                val start = Offset(it.x + barWidth.div(2), it.y)
-                drawLine(
-                    start = start,
-                    end = endMin,
-                    color = Color.Green,
-                    strokeWidth = strokeWidth.toPx()
-                )
+                circleOffsets.add(CircleEntity(multipleChartData.dotColor, endOffset))
+
+                val newTextEntity = TextEntity(multipleChartValue.label, currentOffset)
+                if (!textOffsets.contains(newTextEntity)) textOffsets.add(newTextEntity)
+
+                previousOffset?.let {
+                    val start = Offset(it.x + barWidth.div(2), it.y)
+                    drawLine(
+                        start = start,
+                        end = endOffset,
+                        color = multipleChartData.lineColor,
+                        strokeWidth = strokeWidth.toPx()
+                    )
+                }
+                previousOffset = currentOffset
             }
-            previousOffsetMin = currentOffsetMin
-            //
+        }
 
-            //draw max
-            val currentOffsetMax =
-                calculateOffset(x, main.temp_max, minValue, deltaRange, verticalAxisLength)
-
-            val endMax = Offset((currentOffsetMax.x + barWidth.div(2)), currentOffsetMax.y)
-
-            circleOffsets.add(CircleEntity(Color.Red, endMax))
-
-            previousOffsetMax?.let {
-                val start = Offset(it.x + barWidth.div(2), it.y)
-                drawLine(
-                    start = start,
-                    end = endMax,
-                    color = Color.Red,
-                    strokeWidth = strokeWidth.toPx()
-                )
-            }
-            previousOffsetMax = currentOffsetMax
-            //
-
-            //draw normal
-            val currentOffsetNormal =
-                calculateOffset(x, main.temp, minValue, deltaRange, verticalAxisLength)
-
-            val endNormal = Offset((currentOffsetNormal.x + barWidth.div(2)), currentOffsetNormal.y)
-
-            circleOffsets.add(CircleEntity(Color.Yellow, endNormal))
-
-            previousOffsetNormal?.let {
-                val start = Offset(it.x + barWidth.div(2), it.y)
-                drawLine(
-                    start = start,
-                    end = endNormal,
-                    color = Color.Yellow,
-                    strokeWidth = strokeWidth.toPx()
-                )
-            }
-            previousOffsetNormal = currentOffsetNormal
-
-            drawContext.canvas.nativeCanvas.apply {
+        drawContext.canvas.nativeCanvas.apply {
+            textOffsets.forEach {
                 drawText(
-                    "test",
-                    (currentOffsetNormal.x + barWidth.div(2)),
+                    it.text,
+                    (it.offset.x + barWidth.div(2)),
                     verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
                     Paint().apply {
                         textSize = horizontalAxisLabelFontSize.toPx()
@@ -215,3 +182,15 @@ fun calculateOffset(
 }
 
 data class CircleEntity(val color: Color, val offset: Offset)
+data class TextEntity(val text: String, val offset: Offset)
+
+data class MultipleChartData(
+    val dotColor: Color,
+    val lineColor: Color,
+    val values: List<MultipleChartValue>
+)
+
+data class MultipleChartValue(
+    val label: String,
+    val value: Float
+)
