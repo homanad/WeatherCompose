@@ -2,18 +2,19 @@ package com.homalab.android.compose.weather.presentation.components
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+
 
 @Composable
 fun MultipleLinesChart(
@@ -22,6 +23,8 @@ fun MultipleLinesChart(
     verticalAxisValues: List<Float>,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
+    showHorizontalLines: Boolean = true,
+    horizontalLineStyle: HorizontalLineStyle = HorizontalLineStyle.DASH,
     verticalAxisLabelColor: Color = DefaultAxisLabelColor,
     verticalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     axisColor: Color = Color.Gray,
@@ -81,11 +84,22 @@ fun MultipleLinesChart(
                 )
             }
 
-            drawRect(
-                color = axisColor,
-                topLeft = Offset(leftAreaWidth.toFloat(), y),
-                size = Size(horizontalAxisLength, axisThicknessPx)
-            )
+//            drawRect(
+//                color = axisColor,
+//                topLeft = Offset(leftAreaWidth.toFloat(), y),
+//                size = Size(horizontalAxisLength, axisThicknessPx)
+//            )
+            //don't draw min line
+            if (showHorizontalLines && index != 0)
+                drawLine(
+                    start = Offset(leftAreaWidth.toFloat(), y),
+                    end = Offset(leftAreaWidth.toFloat() + horizontalAxisLength, y),
+                    color = axisColor,
+                    strokeWidth = axisThicknessPx,
+                    pathEffect = if (horizontalLineStyle == HorizontalLineStyle.DASH) PathEffect.dashPathEffect(
+                        floatArrayOf(10f, 10f), 5f
+                    ) else null
+                )
         }
 
         //draw line values
@@ -194,3 +208,7 @@ data class MultipleChartValue(
     val label: String,
     val value: Float
 )
+
+enum class HorizontalLineStyle {
+    DASH, STROKE
+}
