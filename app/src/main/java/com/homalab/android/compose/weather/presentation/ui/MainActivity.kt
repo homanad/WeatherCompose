@@ -6,11 +6,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -64,44 +69,57 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ) {
     val mainState = rememberMainState()
-    AnimatedNavHost(
-        navController = navController,
-        startDestination = NavConstants.Screen.Home,
-        modifier = modifier
-    ) {
-        composable(
-            route = NavConstants.Screen.Home,
-//            enterTransition = { getSlideUpEnterTransition() },
-            exitTransition = { getSlideUpExitTransition() },
-            popEnterTransition = { getSlideDownEnterTransition() }
-        ) {
-            HomeScreen(
-                context = context,
-                networkChecker = networkChecker,
-                onDetailClick = { lat, lon -> navigateToDetail(navController, lat, lon) },
-                mainState = mainState
+    Box(modifier = Modifier.fillMaxSize()) {
+        mainState.backgroundResource?.let {
+            Image(
+                painter = painterResource(id = it),
+                contentDescription = null,
+                modifier = Modifier
+                    .matchParentSize()
+                    .alpha(BackgroundImageAlpha),
+                contentScale = ContentScale.FillBounds
             )
         }
-        composable(
-            route = NavConstants.Screen.Detail,
-            arguments = listOf(
-                navArgument(NavConstants.Latitude) {
-                    type = DoubleType
-                },
-                navArgument(NavConstants.Longitude) {
-                    type = DoubleType
-                }
-            ),
-            enterTransition = { getSlideUpEnterTransition() },
-            popExitTransition = { getSlideDownExitTransition() }
-        ) { entry ->
-            val lat = entry.arguments?.getDouble(NavConstants.Latitude) ?: 0.0
-            val lon = entry.arguments?.getDouble(NavConstants.Longitude) ?: 0.0
-            DetailScreen(
-                lat,
-                lon,
-                rememberDetailState(mainState.forecastData)
-            )
+
+        AnimatedNavHost(
+            navController = navController,
+            startDestination = NavConstants.Screen.Home,
+            modifier = modifier
+        ) {
+            composable(
+                route = NavConstants.Screen.Home,
+//            enterTransition = { getSlideUpEnterTransition() },
+                exitTransition = { getSlideUpExitTransition() },
+                popEnterTransition = { getSlideDownEnterTransition() }
+            ) {
+                HomeScreen(
+                    context = context,
+                    networkChecker = networkChecker,
+                    onDetailClick = { lat, lon -> navigateToDetail(navController, lat, lon) },
+                    mainState = mainState
+                )
+            }
+            composable(
+                route = NavConstants.Screen.Detail,
+                arguments = listOf(
+                    navArgument(NavConstants.Latitude) {
+                        type = DoubleType
+                    },
+                    navArgument(NavConstants.Longitude) {
+                        type = DoubleType
+                    }
+                ),
+                enterTransition = { getSlideUpEnterTransition() },
+                popExitTransition = { getSlideDownExitTransition() }
+            ) { entry ->
+                val lat = entry.arguments?.getDouble(NavConstants.Latitude) ?: 0.0
+                val lon = entry.arguments?.getDouble(NavConstants.Longitude) ?: 0.0
+                DetailScreen(
+                    lat,
+                    lon,
+                    rememberDetailState(mainState.forecastData)
+                )
+            }
         }
     }
 }

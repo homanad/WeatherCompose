@@ -1,11 +1,10 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.homalab.android.compose.weather.domain.entity.ForecastData
-import com.homalab.android.compose.weather.presentation.components.LargeSpacer
-import com.homalab.android.compose.weather.presentation.components.MessageText
 import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 
@@ -17,16 +16,16 @@ fun DetailScreen(
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
 
-    Column {
+//    Column {
 
-        MessageText(text = "DETAIL \n lat: $lat & lon: $lon")
-
-        LargeSpacer()
+//        MessageText(text = "DETAIL \n lat: $lat & lon: $lon")
+//
+//        LargeSpacer()
 
 //        MessageText(text = "Forecast data: ${detailState.forecastData}")
 
-        DetailDisplay(forecastDayData = detailState.forecastData?.toForecastDayData())
-    }
+    DetailDisplay(forecastDayData = detailState.forecastData?.toForecastDayData(), modifier = Modifier.fillMaxSize())
+//    }
 
 }
 

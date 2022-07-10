@@ -5,6 +5,7 @@ import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 
@@ -16,6 +17,7 @@ fun AppBottomSheetScaffold(
     sheetShape: Shape,
     sheetPeekHeight: Dp,
     sheetContent: @Composable () -> Unit,
+    backgroundColor: Color,
     contentBody: @Composable () -> Unit
 ) {
     BottomSheetScaffold(
@@ -23,7 +25,8 @@ fun AppBottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetShape = sheetShape,
         sheetContent = { sheetContent.invoke() },
-        sheetPeekHeight = sheetPeekHeight
+        sheetPeekHeight = sheetPeekHeight,
+        backgroundColor = backgroundColor
     ) {
         contentBody.invoke()
     }

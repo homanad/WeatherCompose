@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,10 +16,7 @@ import com.homalab.android.compose.weather.domain.entity.subEntity.Main
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
-import com.homalab.android.compose.weather.util.Dimension1
-import com.homalab.android.compose.weather.util.Dimension2
-import com.homalab.android.compose.weather.util.Dimension4
-import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -39,6 +37,16 @@ fun DetailDisplay(
 @Composable
 fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
+        Text(
+            modifier = Modifier.padding(Dimension3),
+            text = forecastDayData.city.name,
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+
+
+        DefaultSpacer()
+
         DataChart(title = "Temp", data = forecastDayData.items[0], forecastDayData.city.timeZone)
     }
 }

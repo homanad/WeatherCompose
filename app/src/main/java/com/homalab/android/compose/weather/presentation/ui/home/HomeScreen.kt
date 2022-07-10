@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.with
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomSheetState
@@ -15,10 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.homalab.android.compose.weather.data.util.NetworkChecker
@@ -30,9 +26,11 @@ import com.homalab.android.compose.weather.presentation.ui.home.search.SearchSta
 import com.homalab.android.compose.weather.presentation.ui.home.search.TopBar
 import com.homalab.android.compose.weather.presentation.ui.home.search.rememberSearchState
 import com.homalab.android.compose.weather.presentation.ui.home.weather.WeatherDisplay
-import com.homalab.android.compose.weather.presentation.ui.rememberMainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
-import com.homalab.android.compose.weather.util.*
+import com.homalab.android.compose.weather.util.Dimension2
+import com.homalab.android.compose.weather.util.RecentlyBottomSheetPeekHeight
+import com.homalab.android.compose.weather.util.getDisplayEnterTransition
+import com.homalab.android.compose.weather.util.getDisplayExitTransition
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class,
@@ -82,47 +80,35 @@ fun HomeScreen(
                     .wrapContentHeight()
                     .background(MaterialTheme.colorScheme.primaryContainer)
             )
-        }
+        },
+        backgroundColor = Color.Transparent
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            mainState.backgroundResource?.let {
-                Image(
-                    painter = painterResource(id = it),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .matchParentSize()
-                        .alpha(BackgroundImageAlpha),
-                    contentScale = ContentScale.FillBounds
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = RecentlyBottomSheetPeekHeight + Dimension2)
+        ) {
+            TopBar(
+                mainState = mainState,
+                searchState = searchState,
+                context = context,
+                networkChecker = networkChecker
+            )
 
-            Column(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .padding(bottom = RecentlyBottomSheetPeekHeight + Dimension2)
-            ) {
-                TopBar(
-                    mainState = mainState,
-                    searchState = searchState,
-                    context = context,
-                    networkChecker = networkChecker
-                )
-
-                AnimatedContent(
-                    targetState = searchState.focused,
-                    transitionSpec = {
-                        getDisplayEnterTransition() with getDisplayExitTransition()
-                    }
-                ) { isFocused ->
-                    if (isFocused) {
-                        SearchDisplay(searchState = searchState)
-                    } else {
-                        WeatherDisplay(mainState = mainState) {
-                            onDetailClick(
-                                mainState.weatherData!!.coord.lat,
-                                mainState.weatherData!!.coord.lon
-                            )
-                        }
+            AnimatedContent(
+                targetState = searchState.focused,
+                transitionSpec = {
+                    getDisplayEnterTransition() with getDisplayExitTransition()
+                }
+            ) { isFocused ->
+                if (isFocused) {
+                    SearchDisplay(searchState = searchState)
+                } else {
+                    WeatherDisplay(mainState = mainState) {
+                        onDetailClick(
+                            mainState.weatherData!!.coord.lat,
+                            mainState.weatherData!!.coord.lon
+                        )
                     }
                 }
             }
