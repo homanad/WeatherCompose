@@ -42,7 +42,7 @@ fun DetailBackLayerInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        DataChart(
+        TemperatureChart(
             title = stringResource(id = R.string.temperature),
             data = forecastDayItem,
             timeZone
@@ -52,7 +52,7 @@ fun DetailBackLayerInfo(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun DataChart(
+fun TemperatureChart(
     title: String,
     data: ForecastDayItem,
     timeZone: Int
@@ -130,12 +130,22 @@ fun generateMinMaxRange(min: Float, max: Float): List<Float> {
     val minValue = floor(min).toInt()
     val maxValue = ceil(max).toInt()
 
+    val delta = maxValue - minValue
+    val step = ceil(delta.toFloat() / MAX_HORIZONTAL_LINE).toInt()
+
     val list = mutableListOf<Float>()
-    for (i in minValue..maxValue) {
-        list.add(i.toFloat())
+    var value = minValue - step
+    while (value < maxValue) {
+        value += step
+        list.add(value.toFloat())
     }
+//    for (i in minValue..maxValue step step) {
+//        list.add(i.toFloat()) //TODO fix step out of value
+//    }
     return list
 }
+
+private const val MAX_HORIZONTAL_LINE = 5
 
 fun getTestChartData(): List<Main> {
     return listOf(
