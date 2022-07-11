@@ -1,39 +1,97 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BackdropScaffold
+import androidx.compose.material.BackdropValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBackdropScaffoldState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.homalab.android.compose.weather.domain.entity.ForecastData
+import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
+import com.homalab.android.compose.weather.util.Dimension0
+import com.homalab.android.compose.weather.util.Dimension2
+import com.homalab.android.compose.weather.util.TimeFormatter
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DetailScreen(
     lat: Double,
     lon: Double,
     detailState: DetailState,
+    modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     LaunchedEffect(lat, lon) {
-        detailState.forecastData = mainViewModel.getForecastData(lat, lon)
+        detailState.forecastDayData = mainViewModel.getForecastData(lat, lon)?.toForecastDayData()
     }
-    DetailDisplay(
-        forecastDayData = detailState.forecastData?.toForecastDayData(),
-        modifier = Modifier.fillMaxSize()
-    )
+
+    Column {
+        Text(
+            modifier = Modifier.padding(Dimension2),
+            text = detailState.forecastDayData?.city?.name ?: "",
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+        BackdropScaffold(
+            modifier = modifier,
+            scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
+            frontLayerShape = BottomSheetShape,
+            frontLayerScrimColor = Color.Unspecified,
+            appBar = {
+                DayTabs(
+                    items = detailState.forecastDayData?.items?.map {
+                        TimeFormatter.formatDetailDayTime(
+                            it.dt,
+                            detailState.forecastDayData?.city?.timeZone ?: 0
+                        )
+                    } ?: listOf(),
+                    selectedTab = detailState.selectedTab,
+                    onTabSelected = { detailState.selectedTab = it }
+                )
+            },
+            backLayerContent = {
+                DetailDisplay(
+                    forecastDayData = detailState.forecastDayData,
+                    modifier = Modifier.fillMaxSize()
+                )
+            },
+            backLayerBackgroundColor = Color.Transparent,
+            frontLayerContent = { }) {
+
+        }
+    }
 }
 
 @Stable
 class DetailState(
-    forecastData: ForecastData?
+    forecastDayData: ForecastDayData?,
+    selectedTab: Int
 ) {
-    var forecastData by mutableStateOf(forecastData)
+    var forecastDayData by mutableStateOf(forecastDayData)
+    var selectedTab by mutableStateOf(selectedTab)
 }
 
 @Composable
 fun rememberDetailState(
-    forecastData: ForecastData? = null
+    forecastDayData: ForecastDayData? = null,
+    selectedTab: Int = 0
 ) = remember {
-    DetailState(forecastData)
+    DetailState(forecastDayData, selectedTab)
 }
+
+val BottomSheetShape = RoundedCornerShape(
+    topStart = 20.dp,
+    topEnd = 20.dp,
+    bottomStart = Dimension0,
+    bottomEnd = Dimension0
+)

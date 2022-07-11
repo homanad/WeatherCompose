@@ -37,14 +37,6 @@ fun DetailDisplay(
 @Composable
 fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        Text(
-            modifier = Modifier.padding(Dimension3),
-            text = forecastDayData.city.name,
-            style = MaterialTheme.typography.headlineLarge
-        )
-
-        DefaultSpacer()
-
         DataChart(
             title = stringResource(id = R.string.temperature),
             data = forecastDayData.items[0],

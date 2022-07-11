@@ -11,6 +11,8 @@ object TimeFormatter {
 
     private const val CHART_TIME_PATTERN = "HH:mm"
 
+    private const val DETAIL_DAY_PATTERN = "dd MMM"
+
 //    private const val ONLY_DAY_PATTERN = "dd MM yyyy z"
 
     fun formatFullTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
@@ -37,6 +39,13 @@ object TimeFormatter {
     fun formatChartTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
         val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
         val dateFormat = SimpleDateFormat(CHART_TIME_PATTERN, Locale.getDefault())
+
+        return dateFormat.format(date)
+    }
+
+    fun formatDetailDayTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
+        val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
+        val dateFormat = SimpleDateFormat(DETAIL_DAY_PATTERN, Locale.getDefault())
 
         return dateFormat.format(date)
     }

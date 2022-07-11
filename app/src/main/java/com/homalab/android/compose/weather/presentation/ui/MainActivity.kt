@@ -29,6 +29,7 @@ import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.ForecastData
 import com.homalab.android.compose.weather.domain.entity.WeatherData
+import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.theme.WeatherComposeTheme
 import com.homalab.android.compose.weather.presentation.ui.detail.DetailScreen
 import com.homalab.android.compose.weather.presentation.ui.detail.rememberDetailState
@@ -117,7 +118,7 @@ fun AppNavHost(
                 DetailScreen(
                     lat,
                     lon,
-                    rememberDetailState(mainState.forecastData)
+                    rememberDetailState(mainState.forecastData?.toForecastDayData())
                 )
             }
         }
