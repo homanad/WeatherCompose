@@ -40,6 +40,6 @@ fun getSlideDownExitTransition(): ExitTransition {
         targetOffsetY = { fullHeight -> fullHeight })
 }
 
-private const val DURATION_LONG = 600
+const val DURATION_LONG = 600
 private const val DURATION_MEDIUM = 400
 private const val DURATION_SMALL = 200

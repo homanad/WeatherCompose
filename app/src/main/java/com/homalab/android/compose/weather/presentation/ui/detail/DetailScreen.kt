@@ -1,5 +1,8 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,11 +22,12 @@ import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
+import com.homalab.android.compose.weather.util.DURATION_LONG
 import com.homalab.android.compose.weather.util.Dimension0
 import com.homalab.android.compose.weather.util.Dimension2
 import com.homalab.android.compose.weather.util.TimeFormatter
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun DetailScreen(
     lat: Double,
@@ -68,8 +72,31 @@ fun DetailScreen(
                 )
             },
             backLayerBackgroundColor = Color.Transparent,
-            frontLayerContent = { }) {
-        }
+            frontLayerContent = {
+                AnimatedContent(
+                    targetState = detailState.selectedTab,
+                    transitionSpec = {
+                        val direction = if (initialState < targetState)
+                            AnimatedContentScope.SlideDirection.Left else AnimatedContentScope.SlideDirection.Right
+
+                        slideIntoContainer(
+                            towards = direction,
+                            animationSpec = tween(DURATION_LONG)
+                        ) with slideOutOfContainer(
+                            towards = direction,
+                            animationSpec = tween(DURATION_LONG)
+                        ) using SizeTransform(
+                            clip = false,
+                            sizeAnimationSpec = { _, _ ->
+                                tween(DURATION_LONG, easing = EaseInOut)
+                            }
+                        )
+                    }
+                ) {
+                    DetailFrontLayerDisplay(forecastDayItem = detailState.forecastDayItem)
+                }
+            }
+        )
     }
 }
 
