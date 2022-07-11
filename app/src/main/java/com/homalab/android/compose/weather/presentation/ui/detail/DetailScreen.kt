@@ -15,25 +15,20 @@ fun DetailScreen(
     detailState: DetailState,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
-
-//    Column {
-
-//        MessageText(text = "DETAIL \n lat: $lat & lon: $lon")
-//
-//        LargeSpacer()
-
-//        MessageText(text = "Forecast data: ${detailState.forecastData}")
-
-    DetailDisplay(forecastDayData = detailState.forecastData?.toForecastDayData(), modifier = Modifier.fillMaxSize())
-//    }
-
+    LaunchedEffect(lat, lon) {
+        detailState.forecastData = mainViewModel.getForecastData(lat, lon)
+    }
+    DetailDisplay(
+        forecastDayData = detailState.forecastData?.toForecastDayData(),
+        modifier = Modifier.fillMaxSize()
+    )
 }
 
 @Stable
 class DetailState(
     forecastData: ForecastData?
 ) {
-    val forecastData by mutableStateOf(forecastData)
+    var forecastData by mutableStateOf(forecastData)
 }
 
 @Composable

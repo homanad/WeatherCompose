@@ -21,6 +21,7 @@ fun MultipleLinesChart(
     modifier: Modifier = Modifier,
     chartData: List<MultipleChartData>,
     verticalAxisValues: List<Float>,
+    verticalAxisLabelTransform: (Float) -> String,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     showHorizontalLines: Boolean = true,
@@ -42,7 +43,7 @@ fun MultipleLinesChart(
         println("----------------")
 
         val leftAreaWidth =
-            (verticalAxisValues[verticalAxisValues.size - 1].toString().length * verticalAxisLabelFontSize.toPx()
+            (verticalAxisLabelTransform(verticalAxisValues.first()).length * verticalAxisLabelFontSize.toPx()
                 .div(1.75)).toInt()
         val horizontalAxisLength = size.width - leftAreaWidth
 
@@ -73,7 +74,7 @@ fun MultipleLinesChart(
 
             drawContext.canvas.nativeCanvas.run {
                 drawText(
-                    fl.toString(),
+                    verticalAxisLabelTransform(fl),
                     x,
                     y + verticalAxisLabelFontSize.toPx() / 2,
                     Paint().apply {

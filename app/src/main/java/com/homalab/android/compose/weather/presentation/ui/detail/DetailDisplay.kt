@@ -43,11 +43,13 @@ fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) 
             style = MaterialTheme.typography.headlineLarge
         )
 
-
-
         DefaultSpacer()
 
-        DataChart(title = "Temp", data = forecastDayData.items[0], forecastDayData.city.timeZone)
+        DataChart(
+            title = stringResource(id = R.string.temperature),
+            data = forecastDayData.items[0],
+            forecastDayData.city.timeZone
+        )
     }
 }
 
@@ -102,7 +104,8 @@ fun DataChart(
             verticalAxisValues = generateMinMaxRange(
                 minData.values.minOf { it.value },
                 maxData.values.maxOf { it.value }
-            )
+            ),
+            verticalAxisLabelTransform = { String.format(Constants.C_DEGREE_PATTERN, it.toInt()) }
         )
     }
 }
