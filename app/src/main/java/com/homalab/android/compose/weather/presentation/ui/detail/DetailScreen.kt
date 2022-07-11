@@ -1,8 +1,10 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -85,12 +87,13 @@ fun DetailScreen(
                         ) with slideOutOfContainer(
                             towards = direction,
                             animationSpec = tween(DURATION_LONG)
-                        ) using SizeTransform(
-                            clip = false,
-                            sizeAnimationSpec = { _, _ ->
-                                tween(DURATION_LONG, easing = EaseInOut)
-                            }
                         )
+//                        using SizeTransform(
+//                            clip = false,
+//                            sizeAnimationSpec = { _, _ ->
+//                                tween(DURATION_LONG, easing = EaseInOut)
+//                            }
+//                        )
                     }
                 ) {
                     DetailFrontLayerDisplay(forecastDayItem = detailState.forecastDayItem)

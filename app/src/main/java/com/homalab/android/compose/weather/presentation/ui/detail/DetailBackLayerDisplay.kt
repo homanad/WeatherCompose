@@ -1,5 +1,7 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,8 +35,13 @@ fun DetailBackLayerDisplay(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun DetailBackLayerInfo(forecastDayItem: ForecastDayItem, timeZone: Int, modifier: Modifier = Modifier) {
+fun DetailBackLayerInfo(
+    forecastDayItem: ForecastDayItem,
+    timeZone: Int,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier) {
         DataChart(
             title = stringResource(id = R.string.temperature),
@@ -44,6 +51,7 @@ fun DetailBackLayerInfo(forecastDayItem: ForecastDayItem, timeZone: Int, modifie
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DataChart(
     title: String,
@@ -87,17 +95,35 @@ fun DataChart(
         )
         val multipleChartData = listOf(minData, maxData, normalData)
 
-        MultipleLinesChart(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimension4),
-            chartData = multipleChartData,
-            verticalAxisValues = generateMinMaxRange(
-                minData.values.minOf { it.value },
-                maxData.values.maxOf { it.value }
-            ),
-            verticalAxisLabelTransform = { String.format(Constants.C_DEGREE_PATTERN, it.toInt()) }
-        )
+        AnimatedContent(
+            targetState = multipleChartData,
+            transitionSpec = {
+                expandHorizontally(
+                    animationSpec = tween(DURATION_DOUBLE_LONG, delayMillis = DURATION_SMALL),
+                    expandFrom = Alignment.Start
+                ) with shrinkHorizontally(
+                    animationSpec = tween(DURATION_SMALL),
+                    shrinkTowards = Alignment.Start
+                )
+            }
+        ) { chartData ->
+            MultipleLinesChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimension4),
+                chartData = chartData,
+                verticalAxisValues = generateMinMaxRange(
+                    minData.values.minOf { it.value },
+                    maxData.values.maxOf { it.value }
+                ),
+                verticalAxisLabelTransform = {
+                    String.format(
+                        Constants.C_DEGREE_PATTERN,
+                        it.toInt()
+                    )
+                }
+            )
+        }
     }
 }
 

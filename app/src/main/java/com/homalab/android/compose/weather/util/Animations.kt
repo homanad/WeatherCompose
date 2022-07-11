@@ -41,5 +41,6 @@ fun getSlideDownExitTransition(): ExitTransition {
 }
 
 const val DURATION_LONG = 600
+const val DURATION_DOUBLE_LONG = 1200
 private const val DURATION_MEDIUM = 400
-private const val DURATION_SMALL = 200
+const val DURATION_SMALL = 200
