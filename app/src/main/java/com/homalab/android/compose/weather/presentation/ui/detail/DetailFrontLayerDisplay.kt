@@ -20,8 +20,13 @@ import com.homalab.android.compose.weather.util.WeatherConditionImageSize
 fun DetailFrontLayerDisplay(
     forecastDayItem: ForecastDayItem?
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(modifier = Modifier.fillMaxWidth(), text = "This day", textAlign = TextAlign.Center)
+//    Surface(modifier = Modifier.fillMaxSize()) {
+    Column {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "This day",
+            textAlign = TextAlign.Center
+        )
 
         DefaultSpacer()
 
@@ -49,5 +54,6 @@ fun DetailFrontLayerDisplay(
                 }
             }
         }
+//        }
     }
 }

@@ -35,7 +35,6 @@ fun DetailBackLayerDisplay(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DetailBackLayerInfo(
     forecastDayItem: ForecastDayItem,

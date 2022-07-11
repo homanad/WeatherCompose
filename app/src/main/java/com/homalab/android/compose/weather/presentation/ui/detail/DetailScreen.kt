@@ -5,9 +5,7 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.with
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
@@ -70,7 +68,7 @@ fun DetailScreen(
                 DetailBackLayerDisplay(
                     forecastDayItem = detailState.forecastDayItem,
                     timeZone = detailState.forecastDayData?.city?.timeZone ?: 0,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
                 )
             },
             backLayerBackgroundColor = Color.Transparent,
