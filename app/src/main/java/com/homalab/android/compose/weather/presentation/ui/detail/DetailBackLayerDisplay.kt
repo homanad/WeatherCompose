@@ -19,13 +19,13 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 @Composable
-fun DetailDisplay(
+fun DetailBackLayerDisplay(
     forecastDayItem: ForecastDayItem?,
     timeZone: Int,
     modifier: Modifier = Modifier,
 ) {
     if (forecastDayItem != null) {
-        DetailInfo(forecastDayItem = forecastDayItem, timeZone, modifier)
+        DetailBackLayerInfo(forecastDayItem = forecastDayItem, timeZone, modifier)
     } else {
         MessageText(
             text = stringResource(id = R.string.network_unavailable)
@@ -34,7 +34,7 @@ fun DetailDisplay(
 }
 
 @Composable
-fun DetailInfo(forecastDayItem: ForecastDayItem, timeZone: Int, modifier: Modifier = Modifier) {
+fun DetailBackLayerInfo(forecastDayItem: ForecastDayItem, timeZone: Int, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         DataChart(
             title = stringResource(id = R.string.temperature),

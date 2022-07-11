@@ -61,7 +61,7 @@ fun DetailScreen(
                 )
             },
             backLayerContent = {
-                DetailDisplay(
+                DetailBackLayerDisplay(
                     forecastDayItem = detailState.forecastDayItem,
                     timeZone = detailState.forecastDayData?.city?.timeZone ?: 0,
                     modifier = Modifier.fillMaxSize()
@@ -69,7 +69,6 @@ fun DetailScreen(
             },
             backLayerBackgroundColor = Color.Transparent,
             frontLayerContent = { }) {
-
         }
     }
 }
