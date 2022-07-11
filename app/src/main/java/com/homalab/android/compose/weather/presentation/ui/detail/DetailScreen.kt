@@ -1,11 +1,12 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.with
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
@@ -68,7 +69,9 @@ fun DetailScreen(
                 DetailBackLayerDisplay(
                     forecastDayItem = detailState.forecastDayItem,
                     timeZone = detailState.forecastDayData?.city?.timeZone ?: 0,
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                 )
             },
             backLayerBackgroundColor = Color.Transparent,
@@ -85,13 +88,11 @@ fun DetailScreen(
                         ) with slideOutOfContainer(
                             towards = direction,
                             animationSpec = tween(DURATION_LONG)
+                        ) using SizeTransform(
+                            sizeAnimationSpec = { _, _ ->
+                                tween(DURATION_LONG, easing = EaseInOut)
+                            }
                         )
-//                        using SizeTransform(
-//                            clip = false,
-//                            sizeAnimationSpec = { _, _ ->
-//                                tween(DURATION_LONG, easing = EaseInOut)
-//                            }
-//                        )
                     }
                 ) {
                     DetailFrontLayerDisplay(forecastDayItem = detailState.forecastDayItem)
