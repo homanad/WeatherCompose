@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.Main
 import com.homalab.android.compose.weather.presentation.components.*
-import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.*
 import kotlin.math.ceil
@@ -22,11 +20,12 @@ import kotlin.math.floor
 
 @Composable
 fun DetailDisplay(
-    forecastDayData: ForecastDayData?,
+    forecastDayItem: ForecastDayItem?,
+    timeZone: Int,
     modifier: Modifier = Modifier,
 ) {
-    if (forecastDayData != null) {
-        DetailInfo(forecastDayData = forecastDayData, modifier)
+    if (forecastDayItem != null) {
+        DetailInfo(forecastDayItem = forecastDayItem, timeZone, modifier)
     } else {
         MessageText(
             text = stringResource(id = R.string.network_unavailable)
@@ -35,12 +34,12 @@ fun DetailDisplay(
 }
 
 @Composable
-fun DetailInfo(forecastDayData: ForecastDayData, modifier: Modifier = Modifier) {
+fun DetailInfo(forecastDayItem: ForecastDayItem, timeZone: Int, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         DataChart(
             title = stringResource(id = R.string.temperature),
-            data = forecastDayData.items[0],
-            forecastDayData.city.timeZone
+            data = forecastDayItem,
+            timeZone
         )
     }
 }

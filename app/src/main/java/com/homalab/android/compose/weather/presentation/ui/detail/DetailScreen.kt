@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
+import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.Dimension0
@@ -61,7 +62,8 @@ fun DetailScreen(
             },
             backLayerContent = {
                 DetailDisplay(
-                    forecastDayData = detailState.forecastDayData,
+                    forecastDayItem = detailState.forecastDayItem,
+                    timeZone = detailState.forecastDayData?.city?.timeZone ?: 0,
                     modifier = Modifier.fillMaxSize()
                 )
             },
@@ -75,10 +77,13 @@ fun DetailScreen(
 @Stable
 class DetailState(
     forecastDayData: ForecastDayData?,
-    selectedTab: Int
+    selectedTab: Int = 0
 ) {
     var forecastDayData by mutableStateOf(forecastDayData)
     var selectedTab by mutableStateOf(selectedTab)
+
+    val forecastDayItem: ForecastDayItem?
+        get() = forecastDayData?.items?.get(selectedTab)
 }
 
 @Composable
