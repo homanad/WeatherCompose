@@ -1,6 +1,5 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,9 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import coil.compose.rememberAsyncImagePainter
 import com.homalab.android.compose.weather.domain.entity.subEntity.ForecastItem
 import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
+import com.homalab.android.compose.weather.presentation.components.WeatherConditionLoader
 import com.homalab.android.compose.weather.util.Constants
 import com.homalab.android.compose.weather.util.Dimension2
 import com.homalab.android.compose.weather.util.TimeFormatter
@@ -35,13 +34,17 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
                 text = forecastItem.weather[0].description,
                 style = MaterialTheme.typography.titleSmall
             )
-            Image(
-                painter = rememberAsyncImagePainter(
-                    Constants.OPEN_WEATHER_ICON_URL_PATTERN.format(
-                        forecastItem.weather[0].icon
-                    )
-                ),
-                contentDescription = null,
+//            Image(
+//                painter = rememberAsyncImagePainter(
+//                    Constants.OPEN_WEATHER_ICON_URL_PATTERN.format(
+//                        forecastItem.weather[0].icon
+//                    )
+//                ),
+//                contentDescription = null,
+//                modifier = Modifier.size(WeatherDayConditionImageSize)
+//            )
+            WeatherConditionLoader(
+                conditionId = forecastItem.weather[0].id,
                 modifier = Modifier.size(WeatherDayConditionImageSize)
             )
 

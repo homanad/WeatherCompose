@@ -1,12 +1,10 @@
 package com.homalab.android.compose.weather.presentation.ui.home.weather
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,16 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.WeatherData
-import com.homalab.android.compose.weather.presentation.components.ConditionCard
-import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
-import com.homalab.android.compose.weather.presentation.components.LargeSpacer
-import com.homalab.android.compose.weather.presentation.components.MessageText
+import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.ui.MainState
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
 import com.homalab.android.compose.weather.util.*
@@ -95,13 +89,17 @@ private fun WeatherInfo(
 
             LargeSpacer()
 
-            Image(
-                painter = rememberAsyncImagePainter(
-                    Constants.OPEN_WEATHER_ICON_URL_PATTERN.format(
-                        weather.icon
-                    )
-                ),
-                contentDescription = null,
+//            Image(
+//                painter = rememberAsyncImagePainter(
+//                    Constants.OPEN_WEATHER_ICON_URL_PATTERN.format(
+//                        weather.icon
+//                    )
+//                ),
+//                contentDescription = null,
+//                modifier = Modifier.size(WeatherConditionImageSize)
+//            )
+            WeatherConditionLoader(
+                conditionId = weather.id,
                 modifier = Modifier.size(WeatherConditionImageSize)
             )
 
