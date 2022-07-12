@@ -42,11 +42,15 @@ fun DetailBackLayerInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        TemperatureChart(
-            title = stringResource(id = R.string.temperature),
-            data = forecastDayItem,
-            timeZone
-        )
+//        TemperatureChart(
+//            title = stringResource(id = R.string.temperature),
+//            data = forecastDayItem,
+//            timeZone
+//        )
+//
+//        DefaultSpacer()
+
+        RainChart()
     }
 }
 
@@ -126,6 +130,19 @@ fun TemperatureChart(
     }
 }
 
+@Composable
+fun RainChart() {
+    val barChartData = getTestBarChartData()
+    BarChart(
+        modifier = Modifier.fillMaxWidth(),
+        chartData = barChartData,
+        verticalAxisValues = generateMinMaxRangeForBarChart(
+            barChartData.minOf { it.barValue },
+            barChartData.maxOf { it.barValue }),
+        verticalAxisLabelTransform = { it.toString() }
+    )
+}
+
 fun generateMinMaxRange(min: Float, max: Float): List<Float> {
     val minValue = floor(min).toInt()
     val maxValue = ceil(max).toInt()
@@ -142,6 +159,22 @@ fun generateMinMaxRange(min: Float, max: Float): List<Float> {
 //    for (i in minValue..maxValue step step) {
 //        list.add(i.toFloat()) //TODO fix step out of value
 //    }
+    return list
+}
+
+fun generateMinMaxRangeForBarChart(min: Float, max: Float): List<Float> {
+    val minValue = floor(min).toInt()
+    val maxValue = ceil(max).toInt()
+
+    val delta = maxValue - minValue
+    val step = ceil(delta.toFloat() / MAX_HORIZONTAL_LINE).toInt()
+
+    val list = mutableListOf<Float>()
+    var value = minValue - step * 2
+    while (value < maxValue) {
+        value += step
+        list.add(value.toFloat())
+    }
     return list
 }
 
@@ -181,5 +214,14 @@ fun getTestChartData(): List<Main> {
             pressure = 1f,
             humidity = 1f
         ),
+    )
+}
+
+fun getTestBarChartData(): List<BarChartData> {
+    return listOf(
+        BarChartData(Color.Blue, 21f, "Blue"),
+        BarChartData(Color.Black, 25f, "Black"),
+        BarChartData(Color.Gray, 30f, "Gray"),
+        BarChartData(Color.Yellow, 30f, "Yellow"),
     )
 }

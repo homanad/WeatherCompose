@@ -107,7 +107,7 @@ fun MultipleLinesChart(
         val barWidth = (drawContext.size.width - leftAreaWidth) / chartData.maxOf { it.values.size }
 
         val minValue = verticalAxisValues.minOf { it }
-        val deltaRange = verticalAxisValues.maxOf { it } - verticalAxisValues.minOf { it }
+        val deltaRange = verticalAxisValues.maxOf { it } - minValue
 
         val circleOffsets = mutableListOf<CircleEntity>()
         val textOffsets = mutableListOf<TextEntity>()
