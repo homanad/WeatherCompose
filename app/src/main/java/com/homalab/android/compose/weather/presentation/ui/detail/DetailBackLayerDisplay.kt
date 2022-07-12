@@ -53,7 +53,6 @@ fun DetailBackLayerInfo(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TemperatureChart(
     title: String,
@@ -159,7 +158,9 @@ fun RainChart(
                     .padding(Dimension4),
                 chartData = chartData,
                 verticalAxisValues = verticalAxisValues,
-                verticalAxisLabelTransform = { it.toString() }
+                verticalAxisLabelTransform = {
+                    String.format(Constants.MM_PATTERN, it.toInt())
+                }
             )
         }
     }

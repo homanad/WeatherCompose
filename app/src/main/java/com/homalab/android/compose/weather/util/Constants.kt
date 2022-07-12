@@ -8,6 +8,8 @@ object Constants {
 
     const val C_DEGREE_PATTERN = "%1s °C"
 
+    const val MM_PATTERN = "%1smm"
+
     const val C_DEGREE_MIN_MAX_PATTERN = "%1s °C / %2s °C"
 
     const val CONDITION_PATTERN = "%1s / %2s"

@@ -98,7 +98,7 @@ fun DetailScreen(
                     DetailFrontLayerDisplay(forecastDayItem = detailState.forecastDayItem)
                 }
             },
-            stickyFrontLayer = false
+            stickyFrontLayer = true
         )
     }
 }

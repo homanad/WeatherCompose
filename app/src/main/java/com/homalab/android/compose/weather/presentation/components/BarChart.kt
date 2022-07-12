@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.homalab.android.compose.weather.util.Dimension3
 
 @Composable
 fun BarChart(
@@ -35,8 +36,8 @@ fun BarChart(
     Canvas(modifier = modifier.height(chartHeight)) {
         val bottomAreaHeight = horizontalAxisLabelFontSize.toPx()
         val leftAreaWidth =
-            (verticalAxisLabelTransform(verticalAxisValues.first()).length * verticalAxisLabelFontSize.toPx()
-                .div(1.75)).toInt()
+            (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
+                .div(1.75)).toInt() + Dimension3.toPx() //TODO fix padding
 
         val verticalAxisLength = size.height - bottomAreaHeight
         val horizontalAxisLength = size.width - leftAreaWidth

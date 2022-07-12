@@ -43,7 +43,7 @@ fun MultipleLinesChart(
         println("----------------")
 
         val leftAreaWidth =
-            (verticalAxisLabelTransform(verticalAxisValues.first()).length * verticalAxisLabelFontSize.toPx()
+            (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
                 .div(1.75)).toInt()
         val horizontalAxisLength = size.width - leftAreaWidth
 
