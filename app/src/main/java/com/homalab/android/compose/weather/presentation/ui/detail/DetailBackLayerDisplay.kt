@@ -3,10 +3,8 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,71 +37,53 @@ fun DetailBackLayerInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        TemperatureChart(
-            title = stringResource(id = R.string.temperature),
-            data = forecastDayItem,
-        )
+        TemperatureChart(data = forecastDayItem)
 
         DefaultSpacer()
 
-        RainChart(
-            title = stringResource(id = R.string.rain),
-            data = forecastDayItem,
-        )
+        RainChart(data = forecastDayItem)
     }
 }
 
 @Composable
 fun TemperatureChart(
-    title: String,
     data: ForecastDayItem,
 ) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = Dimension2, end = Dimension2, bottom = Dimension2),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = title)
-            SmallSpacer()
-            HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
+    val minData = MultipleChartData(
+        dotColor = Color.Green,
+        lineColor = Color.Green,
+        values = data.list.map {
+            MultipleChartValue(
+                TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                it.main.temp_min
+            )
         }
+    )
 
-        val minData = MultipleChartData(
-            dotColor = Color.Green,
-            lineColor = Color.Green,
-            values = data.list.map {
-                MultipleChartValue(
-                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
-                    it.main.temp_min
-                )
-            }
-        )
+    val normalData = MultipleChartData(
+        dotColor = Color.Yellow,
+        lineColor = Color.Yellow,
+        values = data.list.map {
+            MultipleChartValue(
+                TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                it.main.temp
+            )
+        }
+    )
 
-        val normalData = MultipleChartData(
-            dotColor = Color.Yellow,
-            lineColor = Color.Yellow,
-            values = data.list.map {
-                MultipleChartValue(
-                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
-                    it.main.temp
-                )
-            }
-        )
+    val maxData = MultipleChartData(
+        dotColor = Color.Red,
+        lineColor = Color.Red,
+        values = data.list.map {
+            MultipleChartValue(
+                TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                it.main.temp_max
+            )
+        }
+    )
+    val multipleChartData = listOf(minData, maxData, normalData)
 
-        val maxData = MultipleChartData(
-            dotColor = Color.Red,
-            lineColor = Color.Red,
-            values = data.list.map {
-                MultipleChartValue(
-                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
-                    it.main.temp_max
-                )
-            }
-        )
-        val multipleChartData = listOf(minData, maxData, normalData)
-
+    TitledChart(title = stringResource(id = R.string.temperature), modifier = titledChardModifier) {
         ChartAnimatedContent(
             targetState = multipleChartData,
         ) { chartData ->
@@ -129,35 +109,24 @@ fun TemperatureChart(
 
 @Composable
 fun RainChart(
-    title: String,
     data: ForecastDayItem,
 ) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = Dimension2, end = Dimension2, bottom = Dimension2),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = title)
-            SmallSpacer()
-            HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
-        }
 //    val barChartData = getTestBarChartData()
-        val barChartData = data.list.map {
-            BarChartData(
-                Color.Cyan,
-                barValue = it.rain?.`3h` ?: 0f,
-                TimeFormatter.formatChartTime(it.dt, data.timeZone)
-            )
-        }
+    val barChartData = data.list.map {
+        BarChartData(
+            Color.Cyan,
+            barValue = it.rain?.`3h` ?: 0f,
+            TimeFormatter.formatChartTime(it.dt, data.timeZone)
+        )
+    }
 
-        var verticalAxisValues = generateMinMaxRangeForBarChart(
-            barChartData.minOf { it.barValue },
-            barChartData.maxOf { it.barValue })
+    var verticalAxisValues = generateMinMaxRangeForBarChart(
+        barChartData.minOf { it.barValue },
+        barChartData.maxOf { it.barValue })
 
-        if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
+    if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
 
+    TitledChart(title = stringResource(id = R.string.rain), modifier = titledChardModifier) {
         ChartAnimatedContent(targetState = barChartData) { chartData ->
             BarChart(
                 modifier = Modifier
