@@ -53,10 +53,9 @@ fun HomeScreen(
             mainState.forecastData = viewModel.getForecastData(item.coord.lat, item.coord.lon)
         } else {
             mainState.weatherData = viewModel.getLastWeather()
-            mainState.forecastData = viewModel.getForecastData(
-                mainState.weatherData!!.coord.lat,
-                mainState.weatherData!!.coord.lon
-            )
+            mainState.weatherData?.let {
+                mainState.forecastData = viewModel.getForecastData(it.coord.lat, it.coord.lon)
+            }
         }
     }
 

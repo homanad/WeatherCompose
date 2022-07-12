@@ -42,15 +42,15 @@ fun DetailBackLayerInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-//        TemperatureChart(
-//            title = stringResource(id = R.string.temperature),
-//            data = forecastDayItem,
-//            timeZone
-//        )
-//
-//        DefaultSpacer()
+        TemperatureChart(
+            title = stringResource(id = R.string.temperature),
+            data = forecastDayItem,
+            timeZone
+        )
 
-        RainChart()
+        DefaultSpacer()
+
+        RainChart(title = stringResource(id = R.string.rain), data = forecastDayItem, timeZone)
     }
 }
 
@@ -131,16 +131,46 @@ fun TemperatureChart(
 }
 
 @Composable
-fun RainChart() {
-    val barChartData = getTestBarChartData()
-    BarChart(
-        modifier = Modifier.fillMaxWidth(),
-        chartData = barChartData,
-        verticalAxisValues = generateMinMaxRangeForBarChart(
+fun RainChart(
+    title: String,
+    data: ForecastDayItem,
+    timeZone: Int
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = Dimension2, end = Dimension2, bottom = Dimension2),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = title)
+            SmallSpacer()
+            HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
+        }
+//    val barChartData = getTestBarChartData()
+        val barChartData = data.list.map {
+            BarChartData(
+                Color.Cyan,
+                barValue = it.rain?.`3h` ?: 0f,
+                TimeFormatter.formatChartTime(it.dt, timeZone)
+            )
+        }
+
+        var verticalAxisValues = generateMinMaxRangeForBarChart(
             barChartData.minOf { it.barValue },
-            barChartData.maxOf { it.barValue }),
-        verticalAxisLabelTransform = { it.toString() }
-    )
+            barChartData.maxOf { it.barValue })
+
+        if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
+
+        BarChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimension4),
+            chartData = barChartData,
+            verticalAxisValues = verticalAxisValues,
+            verticalAxisLabelTransform = { it.toString() }
+        )
+    }
 }
 
 fun generateMinMaxRange(min: Float, max: Float): List<Float> {
@@ -170,7 +200,7 @@ fun generateMinMaxRangeForBarChart(min: Float, max: Float): List<Float> {
     val step = ceil(delta.toFloat() / MAX_HORIZONTAL_LINE).toInt()
 
     val list = mutableListOf<Float>()
-    var value = minValue - step * 2
+    var value = minValue - step
     while (value < maxValue) {
         value += step
         list.add(value.toFloat())
