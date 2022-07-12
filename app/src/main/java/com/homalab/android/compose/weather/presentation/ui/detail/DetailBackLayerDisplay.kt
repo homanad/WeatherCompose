@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
-import com.homalab.android.compose.weather.domain.entity.subEntity.Main
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.*
@@ -98,17 +97,8 @@ fun TemperatureChart(
         )
         val multipleChartData = listOf(minData, maxData, normalData)
 
-        AnimatedContent(
+        ChartAnimatedContent(
             targetState = multipleChartData,
-            transitionSpec = {
-                expandHorizontally(
-                    animationSpec = tween(DURATION_DOUBLE_LONG, delayMillis = DURATION_SMALL),
-                    expandFrom = Alignment.Start
-                ) with shrinkHorizontally(
-                    animationSpec = tween(DURATION_SMALL),
-                    shrinkTowards = Alignment.Start
-                )
-            }
         ) { chartData ->
             MultipleLinesChart(
                 modifier = Modifier
@@ -162,18 +152,20 @@ fun RainChart(
 
         if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
 
-        BarChart(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimension4),
-            chartData = barChartData,
-            verticalAxisValues = verticalAxisValues,
-            verticalAxisLabelTransform = { it.toString() }
-        )
+        ChartAnimatedContent(targetState = barChartData) { chartData ->
+            BarChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimension4),
+                chartData = chartData,
+                verticalAxisValues = verticalAxisValues,
+                verticalAxisLabelTransform = { it.toString() }
+            )
+        }
     }
 }
 
-fun generateMinMaxRange(min: Float, max: Float): List<Float> {
+private fun generateMinMaxRange(min: Float, max: Float): List<Float> {
     val minValue = floor(min).toInt()
     val maxValue = ceil(max).toInt()
 
@@ -210,48 +202,21 @@ fun generateMinMaxRangeForBarChart(min: Float, max: Float): List<Float> {
 
 private const val MAX_HORIZONTAL_LINE = 5
 
-fun getTestChartData(): List<Main> {
-    return listOf(
-        Main(
-            temp_min = 13f,
-            temp = 15f,
-            temp_max = 17f,
-            feels_like = 1f,
-            pressure = 1f,
-            humidity = 1f
-        ),
-        Main(
-            temp_min = 14f,
-            temp = 16f,
-            temp_max = 18f,
-            feels_like = 1f,
-            pressure = 1f,
-            humidity = 1f
-        ),
-        Main(
-            temp_min = 15f,
-            temp = 17f,
-            temp_max = 19f,
-            feels_like = 1f,
-            pressure = 1f,
-            humidity = 1f
-        ),
-        Main(
-            temp_min = 16f,
-            temp = 18f,
-            temp_max = 20f,
-            feels_like = 1f,
-            pressure = 1f,
-            humidity = 1f
-        ),
-    )
-}
-
-fun getTestBarChartData(): List<BarChartData> {
-    return listOf(
-        BarChartData(Color.Blue, 21f, "Blue"),
-        BarChartData(Color.Black, 25f, "Black"),
-        BarChartData(Color.Gray, 30f, "Gray"),
-        BarChartData(Color.Yellow, 30f, "Yellow"),
-    )
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun <T> ChartAnimatedContent(targetState: T, content: @Composable (target: T) -> Unit) {
+    AnimatedContent(
+        targetState = targetState,
+        transitionSpec = {
+            expandHorizontally(
+                animationSpec = tween(DURATION_DOUBLE_LONG, delayMillis = DURATION_SMALL),
+                expandFrom = Alignment.Start
+            ) with shrinkHorizontally(
+                animationSpec = tween(DURATION_SMALL),
+                shrinkTowards = Alignment.Start
+            )
+        }
+    ) { target ->
+        content.invoke(target)
+    }
 }
