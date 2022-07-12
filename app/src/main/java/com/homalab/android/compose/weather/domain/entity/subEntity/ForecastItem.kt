@@ -7,6 +7,7 @@ data class ForecastItem(
     val wind: Wind,
     val visibility: Int,
     val pop: Float,
+    val clouds: Cloud,
     val rain: ForecastRain?,
     val sys: ForecastSys,
     val dt_txt: String

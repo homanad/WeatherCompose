@@ -14,6 +14,7 @@
 
     <string name="temperature">Temperature</string>
     <string name="rain">Rain</string>
+    <string name="clouds">Clouds</string>
 
     <string name="recently_viewed">Recently viewed</string>
     <string name="no_history">No history</string>

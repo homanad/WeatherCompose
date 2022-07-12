@@ -53,6 +53,11 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
             DefaultSpacer()
 
             Text(text = TimeFormatter.formatChartTime(forecastItem.dt, timeZone))
+
+//            DefaultSpacer()
+//
+//            Text(text = "Clouds: ${forecastItem.clouds.all}%")
+
         }
     }
 }
