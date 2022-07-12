@@ -68,7 +68,6 @@ fun DetailScreen(
             backLayerContent = {
                 DetailBackLayerDisplay(
                     forecastDayItem = detailState.forecastDayItem,
-                    timeZone = detailState.forecastDayData?.city?.timeZone ?: 0,
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()

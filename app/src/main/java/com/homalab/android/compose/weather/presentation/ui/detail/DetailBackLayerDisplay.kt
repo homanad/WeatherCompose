@@ -22,11 +22,10 @@ import kotlin.math.floor
 @Composable
 fun DetailBackLayerDisplay(
     forecastDayItem: ForecastDayItem?,
-    timeZone: Int,
     modifier: Modifier = Modifier,
 ) {
     if (forecastDayItem != null) {
-        DetailBackLayerInfo(forecastDayItem = forecastDayItem, timeZone, modifier)
+        DetailBackLayerInfo(forecastDayItem = forecastDayItem, modifier)
     } else {
         MessageText(
             text = stringResource(id = R.string.network_unavailable)
@@ -37,19 +36,20 @@ fun DetailBackLayerDisplay(
 @Composable
 fun DetailBackLayerInfo(
     forecastDayItem: ForecastDayItem,
-    timeZone: Int,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         TemperatureChart(
             title = stringResource(id = R.string.temperature),
             data = forecastDayItem,
-            timeZone
         )
 
         DefaultSpacer()
 
-        RainChart(title = stringResource(id = R.string.rain), data = forecastDayItem, timeZone)
+        RainChart(
+            title = stringResource(id = R.string.rain),
+            data = forecastDayItem,
+        )
     }
 }
 
@@ -57,7 +57,6 @@ fun DetailBackLayerInfo(
 fun TemperatureChart(
     title: String,
     data: ForecastDayItem,
-    timeZone: Int
 ) {
     Column {
         Row(
@@ -75,7 +74,10 @@ fun TemperatureChart(
             dotColor = Color.Green,
             lineColor = Color.Green,
             values = data.list.map {
-                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp_min)
+                MultipleChartValue(
+                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                    it.main.temp_min
+                )
             }
         )
 
@@ -83,7 +85,10 @@ fun TemperatureChart(
             dotColor = Color.Yellow,
             lineColor = Color.Yellow,
             values = data.list.map {
-                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp)
+                MultipleChartValue(
+                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                    it.main.temp
+                )
             }
         )
 
@@ -91,7 +96,10 @@ fun TemperatureChart(
             dotColor = Color.Red,
             lineColor = Color.Red,
             values = data.list.map {
-                MultipleChartValue(TimeFormatter.formatChartTime(it.dt, timeZone), it.main.temp_max)
+                MultipleChartValue(
+                    TimeFormatter.formatChartTime(it.dt, data.timeZone),
+                    it.main.temp_max
+                )
             }
         )
         val multipleChartData = listOf(minData, maxData, normalData)
@@ -123,7 +131,6 @@ fun TemperatureChart(
 fun RainChart(
     title: String,
     data: ForecastDayItem,
-    timeZone: Int
 ) {
     Column {
         Row(
@@ -141,7 +148,7 @@ fun RainChart(
             BarChartData(
                 Color.Cyan,
                 barValue = it.rain?.`3h` ?: 0f,
-                TimeFormatter.formatChartTime(it.dt, timeZone)
+                TimeFormatter.formatChartTime(it.dt, data.timeZone)
             )
         }
 

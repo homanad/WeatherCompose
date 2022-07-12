@@ -17,6 +17,7 @@ val Dimension11 = 44.dp
 val Dimension12 = 48.dp
 
 val WeatherConditionImageSize = 128.dp
+val WeatherDayConditionImageSize = 60.dp
 val IconPadding = 2.dp
 val SearchBarHeight = 56.dp
 val SpacerLineSize = 1.dp

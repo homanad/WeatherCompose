@@ -14,7 +14,8 @@ import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.util.Constants
 import com.homalab.android.compose.weather.util.Dimension1
-import com.homalab.android.compose.weather.util.WeatherConditionImageSize
+import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.WeatherDayConditionImageSize
 
 @Composable
 fun DetailFrontLayerDisplay(
@@ -42,6 +43,7 @@ fun DetailFrontLayerDisplay(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = it.weather[0].main)
+                    Text(text = it.weather[0].description)
                     Image(
                         painter = rememberAsyncImagePainter(
                             Constants.OPEN_WEATHER_ICON_URL_PATTERN.format(
@@ -49,8 +51,10 @@ fun DetailFrontLayerDisplay(
                             )
                         ),
                         contentDescription = null,
-                        modifier = Modifier.size(WeatherConditionImageSize)
+                        modifier = Modifier.size(WeatherDayConditionImageSize)
                     )
+                    Text(text = TimeFormatter.formatChartTime(it.dt, 0))
+
                 }
             }
         }

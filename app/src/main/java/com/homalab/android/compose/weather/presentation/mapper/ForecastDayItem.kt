@@ -10,5 +10,6 @@ data class ForecastDayData(
 
 data class ForecastDayItem(
     val dt: Long,
+    val timeZone: Int,
     val list: List<ForecastItem>
 )

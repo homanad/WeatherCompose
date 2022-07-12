@@ -17,7 +17,7 @@ fun ForecastData.toForecastDayData(): ForecastDayData {
     }
     val forecastDayItem = map.keys.map {
         val itemList = map[it]!!
-        ForecastDayItem(itemList[0].dt, itemList)
+        ForecastDayItem(itemList[0].dt, city.timeZone, itemList)
     }
     return ForecastDayData(city, forecastDayItem)
 }
