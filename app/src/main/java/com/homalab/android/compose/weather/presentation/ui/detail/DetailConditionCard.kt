@@ -48,7 +48,7 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
             )
 
             Text(
-                text = Constants.C_DEGREE_PATTERN.format(forecastItem.main.feels_like),
+                text = formatCDegree(forecastItem.main.feels_like),
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -66,7 +66,7 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
 
                 SmallHorizontalSpacer()
 
-                Text(text = TextTransformer.transformVisibility(forecastItem.visibility))
+                Text(text = transformVisibility(forecastItem.visibility))
             }
 
             DefaultVerticalSpacer()

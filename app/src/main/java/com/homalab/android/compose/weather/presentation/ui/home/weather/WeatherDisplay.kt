@@ -83,7 +83,7 @@ private fun WeatherInfo(
             LargeVerticalSpacer()
 
             Text(
-                text = Constants.C_DEGREE_PATTERN.format(weatherData.main.temp),
+                text = formatCDegree(weatherData.main.temp),
                 style = MaterialTheme.typography.displayLarge
             )
 
@@ -106,17 +106,15 @@ private fun WeatherInfo(
             LargeVerticalSpacer()
 
             Text(
-                text = Constants.CONDITION_PATTERN.format(weather.main, weather.description),
+                text = formatCondition(weather.main, weather.description),
                 style = MaterialTheme.typography.titleLarge
             )
 
             DefaultVerticalSpacer()
 
             Text(
-                text = Constants.C_DEGREE_MIN_MAX_PATTERN.format(
-                    weatherData.main.temp_min,
-                    weatherData.main.temp_max
-                ), style = MaterialTheme.typography.titleMedium
+                text = formatMinMaxDegree(weatherData.main.temp_min, weatherData.main.temp_max),
+                style = MaterialTheme.typography.titleMedium
             )
 
             DefaultVerticalSpacer()
@@ -156,10 +154,7 @@ private fun WeatherInfo(
                 ConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.wind),
-                    description = Constants.WIND_PATTERN.format(
-                        weatherData.wind.speed,
-                        weatherData.wind.deg
-                    )
+                    description = formatWind(weatherData.wind.speed, weatherData.wind.deg)
                 )
 
                 ConditionCard(

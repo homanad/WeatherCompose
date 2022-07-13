@@ -100,10 +100,7 @@ fun TemperatureChart(
                     maxData.values.maxOf { it.value }
                 ),
                 verticalAxisLabelTransform = {
-                    String.format(
-                        Constants.C_DEGREE_PATTERN,
-                        it.toInt()
-                    )
+                    formatCDegree(it)
                 }
             )
         }
@@ -137,9 +134,7 @@ fun RainChart(
                     .padding(Dimension4),
                 chartData = chartData,
                 verticalAxisValues = verticalAxisValues,
-                verticalAxisLabelTransform = {
-                    String.format(Constants.MM_PATTERN, it.toInt())
-                }
+                verticalAxisLabelTransform = { formatMm(it) }
             )
         }
     }
