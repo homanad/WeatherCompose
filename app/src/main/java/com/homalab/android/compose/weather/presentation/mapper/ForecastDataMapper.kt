@@ -8,7 +8,7 @@ import com.homalab.android.compose.weather.util.TimeFormatter
 fun ForecastData.toForecastDayData(): ForecastDayData {
     val map = mutableMapOf<Long, MutableList<ForecastItem>>()
     list.forEach {
-        val time = TimeFormatter.formatForecastTime(it.dt, city.timeZone)
+        val time = TimeFormatter.getStartOfForecastTime(it.dt, city.timeZone)
         if (map[time] == null) {
             map[time] = mutableListOf(it)
         } else {

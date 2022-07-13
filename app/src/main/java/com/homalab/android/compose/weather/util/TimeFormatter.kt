@@ -15,42 +15,26 @@ object TimeFormatter {
 
 //    private const val ONLY_DAY_PATTERN = "dd MM yyyy z"
 
-    fun formatFullTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
+    private fun formatTime(unixSeconds: Long, shiftTimeZoneSeconds: Int, pattern: String): String {
         val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
-        val dateFormat = SimpleDateFormat(FULL_TIME_PATTERN, Locale.getDefault())
+        val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
 
         return dateFormat.format(date)
     }
 
-    fun formatSunEventTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
-        val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
-        val dateFormat = SimpleDateFormat(SUN_EVENT_TIME_PATTERN, Locale.getDefault())
+    fun formatFullTime(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
+        formatTime(unixSeconds, shiftTimeZoneSeconds, FULL_TIME_PATTERN)
 
-        return dateFormat.format(date)
-    }
+    fun formatSunEventTime(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
+        formatTime(unixSeconds, shiftTimeZoneSeconds, SUN_EVENT_TIME_PATTERN)
 
-//    fun formatForecastTimeString(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
-//        val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
-//        val dateFormat = SimpleDateFormat(ONLY_DAY_PATTERN, Locale.getDefault())
-//
-//        return dateFormat.format(date)
-//    }
+    fun formatChartTime(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
+        formatTime(unixSeconds, shiftTimeZoneSeconds, CHART_TIME_PATTERN)
 
-    fun formatChartTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
-        val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
-        val dateFormat = SimpleDateFormat(CHART_TIME_PATTERN, Locale.getDefault())
+    fun formatDetailDayTime(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
+        formatTime(unixSeconds, shiftTimeZoneSeconds, DETAIL_DAY_PATTERN)
 
-        return dateFormat.format(date)
-    }
-
-    fun formatDetailDayTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): String {
-        val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
-        val dateFormat = SimpleDateFormat(DETAIL_DAY_PATTERN, Locale.getDefault())
-
-        return dateFormat.format(date)
-    }
-
-    fun formatForecastTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): Long {
+    fun getStartOfForecastTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = (unixSeconds - shiftTimeZoneSeconds) * 1000
         calendar[Calendar.HOUR_OF_DAY] = 0
