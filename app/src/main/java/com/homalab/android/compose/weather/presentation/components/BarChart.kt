@@ -61,6 +61,19 @@ fun BarChart(
         )
 
         //draw horizontal lines & labels
+        val verticalValuesTextPaint = Paint().apply {
+            textSize = verticalAxisLabelFontSize.toPx()
+            color = verticalAxisLabelColor.toArgb()
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+        }
+
+        val horizontalValuesTextPaint = Paint().apply {
+            textSize = horizontalAxisLabelFontSize.toPx()
+            color = horizontalAxisLabelColor.toArgb()
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+        }
         verticalAxisValues.forEachIndexed { index, fl ->
             val x = leftAreaWidth / 2.toFloat()
             val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index)
@@ -70,11 +83,7 @@ fun BarChart(
                     verticalAxisLabelTransform(fl),
                     x,
                     y + verticalAxisLabelFontSize.toPx() / 2,
-                    Paint().apply {
-                        textSize = verticalAxisLabelFontSize.toPx()
-                        color = verticalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+                    verticalValuesTextPaint
                 )
             }
 
@@ -124,11 +133,7 @@ fun BarChart(
                     barChartData.label,
                     center,
                     verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
-                    Paint().apply {
-                        textSize = horizontalAxisLabelFontSize.toPx()
-                        color = horizontalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+                    horizontalValuesTextPaint
                 )
             }
         }

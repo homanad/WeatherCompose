@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun MultipleLinesChart(
@@ -53,12 +55,14 @@ fun MultipleLinesChart(
         textSize = verticalAxisLabelFontSizePx
         color = verticalAxisLabelColor.toArgb()
         textAlign = Paint.Align.CENTER
+        isAntiAlias = true
     }
 
     val horizontalValuesPaint = Paint().apply {
         textSize = horizontalAxisLabelFontSizePx
         color = horizontalAxisLabelColor.toArgb()
         textAlign = Paint.Align.CENTER
+        isAntiAlias = true
     }
 
     Canvas(modifier = modifier.height(chartHeight)) {
@@ -249,3 +253,11 @@ fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
 
 @Composable
 fun TextUnit.toPx() = LocalDensity.current.run { this@toPx.toPx() }
+
+val DefaultStrokeWidth = 4.dp
+val DefaultAxisLabelColor = Color(0xFF3D3D3D)
+val DefaultAxisLabelFontSize = 13.sp
+val DefaultAxisThickness = 1.dp
+val DefaultContentPadding = 4.dp
+
+val HorizontalLineSpacing = 30.dp
