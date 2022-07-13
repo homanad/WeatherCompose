@@ -23,7 +23,7 @@ fun TitledChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = title)
-            SmallSpacer()
+            SmallVerticalSpacer()
             HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
         }
         chartContent.invoke()

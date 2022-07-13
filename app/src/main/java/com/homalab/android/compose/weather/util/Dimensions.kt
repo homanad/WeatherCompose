@@ -25,3 +25,5 @@ val SpacerLineSize = 1.dp
 val RecentlyBottomSheetBarWidth = 80.dp
 val RecentlyBottomSheetPeekHeight = 44.dp
 val RecentlyBottomSheetCorner = 20.dp
+
+val VisibilityImageSize = 20.dp

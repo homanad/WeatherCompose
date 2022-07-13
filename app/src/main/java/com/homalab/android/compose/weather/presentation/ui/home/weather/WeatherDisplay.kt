@@ -72,22 +72,22 @@ private fun WeatherInfo(
 
             val weather = weatherData.weather[0]
 
-            LargeSpacer()
+            LargeVerticalSpacer()
 
             Text(text = weatherData.name, style = MaterialTheme.typography.headlineLarge)
 
-            DefaultSpacer()
+            DefaultVerticalSpacer()
 
             Text(text = TimeFormatter.formatFullTime(weatherData.dt, weatherData.timeZone))
 
-            LargeSpacer()
+            LargeVerticalSpacer()
 
             Text(
                 text = Constants.C_DEGREE_PATTERN.format(weatherData.main.temp),
                 style = MaterialTheme.typography.displayLarge
             )
 
-            LargeSpacer()
+            LargeVerticalSpacer()
 
 //            Image(
 //                painter = rememberAsyncImagePainter(
@@ -103,14 +103,14 @@ private fun WeatherInfo(
                 modifier = Modifier.size(WeatherConditionImageSize)
             )
 
-            LargeSpacer()
+            LargeVerticalSpacer()
 
             Text(
                 text = Constants.CONDITION_PATTERN.format(weather.main, weather.description),
                 style = MaterialTheme.typography.titleLarge
             )
 
-            DefaultSpacer()
+            DefaultVerticalSpacer()
 
             Text(
                 text = Constants.C_DEGREE_MIN_MAX_PATTERN.format(
@@ -119,7 +119,7 @@ private fun WeatherInfo(
                 ), style = MaterialTheme.typography.titleMedium
             )
 
-            DefaultSpacer()
+            DefaultVerticalSpacer()
 
             val cardModifier = Modifier.padding(Dimension2)
 

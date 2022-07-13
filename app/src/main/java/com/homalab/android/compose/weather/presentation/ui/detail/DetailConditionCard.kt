@@ -1,8 +1,7 @@
 package com.homalab.android.compose.weather.presentation.ui.detail
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -10,13 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.ForecastItem
-import com.homalab.android.compose.weather.presentation.components.DefaultSpacer
+import com.homalab.android.compose.weather.presentation.components.DefaultVerticalSpacer
+import com.homalab.android.compose.weather.presentation.components.SmallHorizontalSpacer
 import com.homalab.android.compose.weather.presentation.components.WeatherConditionLoader
-import com.homalab.android.compose.weather.util.Constants
-import com.homalab.android.compose.weather.util.Dimension2
-import com.homalab.android.compose.weather.util.TimeFormatter
-import com.homalab.android.compose.weather.util.WeatherDayConditionImageSize
+import com.homalab.android.compose.weather.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,14 +52,26 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
                 style = MaterialTheme.typography.titleLarge
             )
 
-            DefaultSpacer()
+            DefaultVerticalSpacer()
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_visibility),
+                    contentDescription = null,
+                    modifier = Modifier.size(VisibilityImageSize)
+                )
+
+                SmallHorizontalSpacer()
+
+                Text(text = forecastItem.visibility.toString())
+            }
+
+            DefaultVerticalSpacer()
 
             Text(text = TimeFormatter.formatChartTime(forecastItem.dt, timeZone))
-
-//            DefaultSpacer()
-//
-//            Text(text = "Clouds: ${forecastItem.clouds.all}%")
-
         }
     }
 }
