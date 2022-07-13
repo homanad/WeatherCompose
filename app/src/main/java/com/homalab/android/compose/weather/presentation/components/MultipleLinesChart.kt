@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun MultipleLinesChart(
@@ -24,61 +24,61 @@ fun MultipleLinesChart(
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     showHorizontalLines: Boolean = true,
+    horizontalLineSpacing: Dp = HorizontalLineSpacing,
     horizontalLineStyle: HorizontalLineStyle = HorizontalLineStyle.DASH,
     verticalAxisLabelColor: Color = DefaultAxisLabelColor,
     verticalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     axisColor: Color = Color.Gray,
-    strokeWidth: Dp = DefaultStrokeWidth
+    strokeWidth: Dp = DefaultStrokeWidth,
+    axisThickness: Dp = DefaultAxisThickness,
+    contentPadding: Dp = DefaultContentPadding
 ) {
-    val chartHeight = HorizontalLineSpacing * verticalAxisValues.size
+    val chartHeight = horizontalLineSpacing * verticalAxisValues.size
+    val horizontalAxisLabelFontSizePx = horizontalAxisLabelFontSize.toPx()
+    val verticalAxisLabelFontSizePx = verticalAxisLabelFontSize.toPx()
 
-    Canvas(
-        modifier = modifier
-            .height(chartHeight)
-    ) {
-        val valueLabelAreaHeight = horizontalAxisLabelFontSize.toPx()
-        val chartLabelAreaHeight =
-            valueLabelAreaHeight + 4.dp.toPx() + horizontalAxisLabelFontSize.toPx()
+    val contentPaddingPx = contentPadding.toPx()
+    val axisThicknessPx = axisThickness.toPx()
 
-        val bottomAreaHeight = valueLabelAreaHeight + chartLabelAreaHeight
+    val chartLabelAreaHeight =
+        horizontalAxisLabelFontSizePx + contentPaddingPx + horizontalAxisLabelFontSizePx
 
-        val verticalAxisLength = size.height - bottomAreaHeight
+    val bottomAreaHeight = horizontalAxisLabelFontSizePx + chartLabelAreaHeight
+    val leftAreaWidth =
+        (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSizePx
+            .div(1.75)).toInt()
 
-        val leftAreaWidth =
-            (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
-                .div(1.75)).toInt()
-        val horizontalAxisLength = size.width - leftAreaWidth
-
-        val distanceBetweenVerticalAxisValues = (verticalAxisLength / (verticalAxisValues.size - 1))
-
-        val axisThicknessPx = 1.dp.toPx()
+    Canvas(modifier = modifier.height(chartHeight)) {
+        val verticalAxisHeight = size.height - bottomAreaHeight
+        val horizontalAxisWidth = size.width - leftAreaWidth
+        val verticalAxisValuesDistance = (verticalAxisHeight / (verticalAxisValues.size - 1))
 
         //draw horizontal axis
         drawRect(
             color = axisColor,
-            topLeft = Offset(leftAreaWidth.toFloat(), verticalAxisLength),
-            size = Size(horizontalAxisLength, axisThicknessPx)
+            topLeft = Offset(leftAreaWidth.toFloat(), verticalAxisHeight),
+            size = Size(horizontalAxisWidth, axisThicknessPx)
         )
 
         //draw vertical axis
         drawRect(
             color = axisColor,
             topLeft = Offset(leftAreaWidth.toFloat(), 0.0f),
-            size = Size(axisThicknessPx, verticalAxisLength)
+            size = Size(axisThicknessPx, verticalAxisHeight)
         )
 
         //draw horizontal lines & labels
         verticalAxisValues.forEachIndexed { index, fl ->
             val x = leftAreaWidth / 2.toFloat()
-            val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index)
+            val y = verticalAxisHeight - (verticalAxisValuesDistance).times(index)
 
             drawContext.canvas.nativeCanvas.run {
                 drawText(
                     verticalAxisLabelTransform(fl),
                     x,
-                    y + verticalAxisLabelFontSize.toPx() / 2,
+                    y + verticalAxisLabelFontSizePx / 2,
                     Paint().apply {
-                        textSize = verticalAxisLabelFontSize.toPx()
+                        textSize = verticalAxisLabelFontSizePx
                         color = verticalAxisLabelColor.toArgb()
                         textAlign = Paint.Align.CENTER
                     }
@@ -89,7 +89,7 @@ fun MultipleLinesChart(
             if (showHorizontalLines && index != 0)
                 drawLine(
                     start = Offset(leftAreaWidth.toFloat(), y),
-                    end = Offset(leftAreaWidth.toFloat() + horizontalAxisLength, y),
+                    end = Offset(leftAreaWidth.toFloat() + horizontalAxisWidth, y),
                     color = axisColor,
                     strokeWidth = axisThicknessPx,
                     pathEffect = if (horizontalLineStyle == HorizontalLineStyle.DASH) PathEffect.dashPathEffect(
@@ -120,7 +120,7 @@ fun MultipleLinesChart(
                         multipleChartValue.value,
                         minValue,
                         deltaRange,
-                        verticalAxisLength
+                        verticalAxisHeight
                     )
 
                 val endOffset = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
@@ -143,30 +143,31 @@ fun MultipleLinesChart(
             }
 
             drawContext.canvas.nativeCanvas.apply {
-                val width = horizontalAxisLength / chartData.size
+                val width = horizontalAxisWidth / chartData.size
                 var x = width * i
                 x += leftAreaWidth
 
                 val part = width.div(4)
 
                 x += part
-                val top = verticalAxisLength + chartLabelAreaHeight
+                val top = verticalAxisHeight + chartLabelAreaHeight
                 drawRect(x,
-                    top - horizontalAxisLabelFontSize.toPx(),
+                    top - horizontalAxisLabelFontSizePx,
                     x + part,
-                    top + horizontalAxisLabelFontSize.toPx() / 2,
+                    top + horizontalAxisLabelFontSizePx / 2,
                     Paint().apply {
                         color = multipleChartData.lineColor.toArgb()
-                    })
+                    }
+                )
 
-                val textWidth = multipleChartData.label.length * verticalAxisLabelFontSize.toPx()
+                val textWidth = multipleChartData.label.length * verticalAxisLabelFontSizePx
 
                 drawText(
                     multipleChartData.label,
                     (x + part + textWidth / 2),
-                    verticalAxisLength + chartLabelAreaHeight,
+                    verticalAxisHeight + chartLabelAreaHeight,
                     Paint().apply {
-                        textSize = horizontalAxisLabelFontSize.toPx()
+                        textSize = horizontalAxisLabelFontSizePx
                         color = horizontalAxisLabelColor.toArgb()
                         textAlign = Paint.Align.CENTER
                     }
@@ -179,9 +180,9 @@ fun MultipleLinesChart(
                 drawText(
                     it.text,
                     (it.offset.x + barWidth.div(2)),
-                    verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
+                    verticalAxisHeight + horizontalAxisLabelFontSizePx,
                     Paint().apply {
-                        textSize = horizontalAxisLabelFontSize.toPx()
+                        textSize = horizontalAxisLabelFontSizePx
                         color = horizontalAxisLabelColor.toArgb()
                         textAlign = Paint.Align.CENTER
                     }
@@ -232,3 +233,9 @@ data class MultipleChartValue(
 enum class HorizontalLineStyle {
     DASH, STROKE
 }
+
+@Composable
+fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
+
+@Composable
+fun TextUnit.toPx() = LocalDensity.current.run { this@toPx.toPx() }

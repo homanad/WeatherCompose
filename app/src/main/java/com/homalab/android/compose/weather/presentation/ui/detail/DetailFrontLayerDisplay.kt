@@ -94,7 +94,8 @@ fun DetailFrontLayerDisplay(
                     chartData = listOf(cloudsData, humidityData),
                     verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
                     verticalAxisLabelTransform = { it.toInt().toString() + " %" },
-                    showHorizontalLines = false
+                    showHorizontalLines = true,
+                    horizontalLineStyle = HorizontalLineStyle.STROKE
                 )
             }
         }

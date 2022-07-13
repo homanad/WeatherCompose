@@ -168,5 +168,6 @@ val DefaultStrokeWidth = Dimension1
 val DefaultAxisLabelColor = Color.Gray
 val DefaultAxisLabelFontSize = 13.sp
 val DefaultAxisThickness = 1.dp
+val DefaultContentPadding = 4.dp
 
 val HorizontalLineSpacing = 30.dp
