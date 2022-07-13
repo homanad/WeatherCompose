@@ -202,7 +202,8 @@ data class TextEntity(val text: String, val offset: Offset)
 data class MultipleChartData(
     val dotColor: Color,
     val lineColor: Color,
-    val values: List<MultipleChartValue>
+    val values: List<MultipleChartValue>,
+    val label: String
 )
 
 data class MultipleChartValue(

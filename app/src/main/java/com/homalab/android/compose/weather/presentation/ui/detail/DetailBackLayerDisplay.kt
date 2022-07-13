@@ -57,7 +57,8 @@ fun TemperatureChart(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
                 it.main.temp_min
             )
-        }
+        },
+        label = "min"
     )
 
     val normalData = MultipleChartData(
@@ -68,7 +69,8 @@ fun TemperatureChart(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
                 it.main.temp
             )
-        }
+        },
+        label = "normal"
     )
 
     val maxData = MultipleChartData(
@@ -79,7 +81,8 @@ fun TemperatureChart(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
                 it.main.temp_max
             )
-        }
+        },
+        label = "max"
     )
     val multipleChartData = listOf(minData, maxData, normalData)
 

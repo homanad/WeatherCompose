@@ -76,13 +76,15 @@ fun DetailFrontLayerDisplay(
                 val cloudsData = MultipleChartData(
                     dotColor = Color.Black,
                     lineColor = Color.Black,
-                    values = cloudsValues
+                    values = cloudsValues,
+                    label = "clouds"
                 )
 
                 val humidityData = MultipleChartData(
                     dotColor = Color.Green,
                     lineColor = Color.Green,
-                    values = humidityValues
+                    values = humidityValues,
+                    label = "humidity"
                 )
 
                 MultipleLinesChart(
