@@ -95,7 +95,8 @@ fun DetailFrontLayerDisplay(
                     verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
                     verticalAxisLabelTransform = { it.toInt().toString() + " %" },
                     showHorizontalLines = true,
-                    horizontalLineStyle = HorizontalLineStyle.STROKE
+                    horizontalLineStyle = HorizontalLineStyle.STROKE,
+                    drawCirclePoint = false
                 )
             }
         }

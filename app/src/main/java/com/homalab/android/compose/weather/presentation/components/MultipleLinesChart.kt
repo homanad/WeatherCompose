@@ -30,6 +30,7 @@ fun MultipleLinesChart(
     verticalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     axisColor: Color = Color.Gray,
     strokeWidth: Dp = DefaultStrokeWidth,
+    drawCirclePoint: Boolean = true,
     axisThickness: Dp = DefaultAxisThickness,
     contentPadding: Dp = DefaultContentPadding
 ) {
@@ -47,6 +48,18 @@ fun MultipleLinesChart(
     val leftAreaWidth =
         (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSizePx
             .div(1.75)).toInt()
+
+    val verticalValuesPaint = Paint().apply {
+        textSize = verticalAxisLabelFontSizePx
+        color = verticalAxisLabelColor.toArgb()
+        textAlign = Paint.Align.CENTER
+    }
+
+    val horizontalValuesPaint = Paint().apply {
+        textSize = horizontalAxisLabelFontSizePx
+        color = horizontalAxisLabelColor.toArgb()
+        textAlign = Paint.Align.CENTER
+    }
 
     Canvas(modifier = modifier.height(chartHeight)) {
         val verticalAxisHeight = size.height - bottomAreaHeight
@@ -77,11 +90,7 @@ fun MultipleLinesChart(
                     verticalAxisLabelTransform(fl),
                     x,
                     y + verticalAxisLabelFontSizePx / 2,
-                    Paint().apply {
-                        textSize = verticalAxisLabelFontSizePx
-                        color = verticalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+                    verticalValuesPaint
                 )
             }
 
@@ -125,7 +134,12 @@ fun MultipleLinesChart(
 
                 val endOffset = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
 
-                circleOffsets.add(CircleEntity(multipleChartData.dotColor, endOffset))
+                if (drawCirclePoint) circleOffsets.add(
+                    CircleEntity(
+                        multipleChartData.dotColor,
+                        endOffset
+                    )
+                )
 
                 val newTextEntity = TextEntity(multipleChartValue.label, currentOffset)
                 if (!textOffsets.contains(newTextEntity)) textOffsets.add(newTextEntity)
@@ -142,6 +156,7 @@ fun MultipleLinesChart(
                 previousOffset = currentOffset
             }
 
+            val labelRectPaint = Paint()
             drawContext.canvas.nativeCanvas.apply {
                 val width = horizontalAxisWidth / chartData.size
                 var x = width * i
@@ -151,13 +166,14 @@ fun MultipleLinesChart(
 
                 x += part
                 val top = verticalAxisHeight + chartLabelAreaHeight
-                drawRect(x,
+
+                labelRectPaint.color = multipleChartData.lineColor.toArgb()
+                drawRect(
+                    x,
                     top - horizontalAxisLabelFontSizePx,
                     x + part,
                     top + horizontalAxisLabelFontSizePx / 2,
-                    Paint().apply {
-                        color = multipleChartData.lineColor.toArgb()
-                    }
+                    labelRectPaint
                 )
 
                 val textWidth = multipleChartData.label.length * verticalAxisLabelFontSizePx
@@ -166,11 +182,7 @@ fun MultipleLinesChart(
                     multipleChartData.label,
                     (x + part + textWidth / 2),
                     verticalAxisHeight + chartLabelAreaHeight,
-                    Paint().apply {
-                        textSize = horizontalAxisLabelFontSizePx
-                        color = horizontalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+                    horizontalValuesPaint
                 )
             }
         }
@@ -181,11 +193,7 @@ fun MultipleLinesChart(
                     it.text,
                     (it.offset.x + barWidth.div(2)),
                     verticalAxisHeight + horizontalAxisLabelFontSizePx,
-                    Paint().apply {
-                        textSize = horizontalAxisLabelFontSizePx
-                        color = horizontalAxisLabelColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                    }
+                    horizontalValuesPaint
                 )
             }
         }
