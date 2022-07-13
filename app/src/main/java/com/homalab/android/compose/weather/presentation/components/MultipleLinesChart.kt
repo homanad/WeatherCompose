@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun MultipleLinesChart(
     modifier: Modifier = Modifier,
@@ -37,10 +36,13 @@ fun MultipleLinesChart(
         modifier = modifier
             .height(chartHeight)
     ) {
-        val bottomAreaHeight = horizontalAxisLabelFontSize.toPx()
-        val verticalAxisLength = size.height - bottomAreaHeight
+        val valueLabelAreaHeight = horizontalAxisLabelFontSize.toPx()
+        val chartLabelAreaHeight =
+            valueLabelAreaHeight + 4.dp.toPx() + horizontalAxisLabelFontSize.toPx()
 
-        println("----------------")
+        val bottomAreaHeight = valueLabelAreaHeight + chartLabelAreaHeight
+
+        val verticalAxisLength = size.height - bottomAreaHeight
 
         val leftAreaWidth =
             (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
@@ -70,8 +72,6 @@ fun MultipleLinesChart(
             val x = leftAreaWidth / 2.toFloat()
             val y = verticalAxisLength - (distanceBetweenVerticalAxisValues).times(index)
 
-            println("-------lineY: $y")
-
             drawContext.canvas.nativeCanvas.run {
                 drawText(
                     verticalAxisLabelTransform(fl),
@@ -85,11 +85,6 @@ fun MultipleLinesChart(
                 )
             }
 
-//            drawRect(
-//                color = axisColor,
-//                topLeft = Offset(leftAreaWidth.toFloat(), y),
-//                size = Size(horizontalAxisLength, axisThicknessPx)
-//            )
             //don't draw min line
             if (showHorizontalLines && index != 0)
                 drawLine(
@@ -112,7 +107,7 @@ fun MultipleLinesChart(
         val circleOffsets = mutableListOf<CircleEntity>()
         val textOffsets = mutableListOf<TextEntity>()
 
-        chartData.forEach { multipleChartData ->
+        chartData.forEachIndexed { i, multipleChartData ->
             var previousOffset: Offset? = null
 
             multipleChartData.values.forEachIndexed { index, multipleChartValue ->
@@ -145,6 +140,37 @@ fun MultipleLinesChart(
                     )
                 }
                 previousOffset = currentOffset
+            }
+
+            drawContext.canvas.nativeCanvas.apply {
+                val width = horizontalAxisLength / chartData.size
+                var x = width * i
+                x += leftAreaWidth
+
+                val part = width.div(4)
+
+                x += part
+                val top = verticalAxisLength + chartLabelAreaHeight
+                drawRect(x,
+                    top - horizontalAxisLabelFontSize.toPx(),
+                    x + part,
+                    top + horizontalAxisLabelFontSize.toPx() / 2,
+                    Paint().apply {
+                        color = multipleChartData.lineColor.toArgb()
+                    })
+
+                val textWidth = multipleChartData.label.length * verticalAxisLabelFontSize.toPx()
+
+                drawText(
+                    multipleChartData.label,
+                    (x + part + textWidth / 2),
+                    verticalAxisLength + chartLabelAreaHeight,
+                    Paint().apply {
+                        textSize = horizontalAxisLabelFontSize.toPx()
+                        color = horizontalAxisLabelColor.toArgb()
+                        textAlign = Paint.Align.CENTER
+                    }
+                )
             }
         }
 
@@ -185,14 +211,6 @@ fun calculateOffset(
 
     val barHeightInPixel = valuePercent * verticalAxisLength
     val y = verticalAxisLength - barHeightInPixel
-
-    println("-------line value: $value")
-    println("-------verticalAxisLength: $verticalAxisLength")
-    println("-------valuePercent: $valuePercent")
-    println("-------barHeightInPixel: $barHeightInPixel")
-    println("-------y: $y")
-    println("----------------")
-
     return Offset(x, y)
 }
 
