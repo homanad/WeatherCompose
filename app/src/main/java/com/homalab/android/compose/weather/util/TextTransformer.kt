@@ -44,3 +44,7 @@ fun formatWind(speed: Float, degree: Int): String {
 fun formatHPa(value: Int): String {
     return HPA_PATTERN.format(value)
 }
+
+fun formatPercent(value: Int): String {
+    return "$value %"
+}

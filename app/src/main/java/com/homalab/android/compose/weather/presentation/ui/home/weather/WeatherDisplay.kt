@@ -125,19 +125,19 @@ private fun WeatherInfo(
                 ConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.feels_like),
-                    description = weatherData.main.feels_like.toString()
+                    description = formatCDegree(weatherData.main.feels_like)
                 )
 
                 ConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.pressure),
-                    description = weatherData.main.pressure.toString()
+                    description = formatHPa(weatherData.main.pressure)
                 )
 
                 ConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.humidity),
-                    description = weatherData.main.humidity.toString()
+                    description = formatPercent(weatherData.main.humidity)
                 )
             }
 

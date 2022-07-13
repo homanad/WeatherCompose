@@ -61,7 +61,7 @@ fun DetailFrontLayerDisplay(
                     )
                     humidityValues.add(
                         MultipleChartValue(
-                            value = forecastItem.main.humidity,
+                            value = forecastItem.main.humidity.toFloat(),
                             label = TimeFormatter.formatChartTime(
                                 forecastItem.dt,
                                 forecastDayItem.timeZone
@@ -90,7 +90,7 @@ fun DetailFrontLayerDisplay(
                         .padding(Dimension4),
                     chartData = listOf(cloudsData, humidityData),
                     verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
-                    verticalAxisLabelTransform = { it.toInt().toString() + " %" },
+                    verticalAxisLabelTransform = { formatPercent(it.toInt()) },
                     showHorizontalLines = true,
                     horizontalLineStyle = HorizontalLineStyle.STROKE,
                     drawCirclePoint = false
