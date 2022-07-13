@@ -13,6 +13,10 @@ import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
+import com.homalab.android.compose.weather.presentation.theme.RainColor
+import com.homalab.android.compose.weather.presentation.theme.TemperatureMaxColor
+import com.homalab.android.compose.weather.presentation.theme.TemperatureMinColor
+import com.homalab.android.compose.weather.presentation.theme.TemperatureNormalColor
 import com.homalab.android.compose.weather.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -50,8 +54,8 @@ fun TemperatureChart(
     data: ForecastDayItem,
 ) {
     val minData = MultipleChartData(
-        dotColor = Color.Green,
-        lineColor = Color.Green,
+        dotColor = TemperatureMinColor,
+        lineColor = TemperatureMinColor,
         values = data.list.map {
             MultipleChartValue(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
@@ -62,8 +66,8 @@ fun TemperatureChart(
     )
 
     val normalData = MultipleChartData(
-        dotColor = Color.Yellow,
-        lineColor = Color.Yellow,
+        dotColor = TemperatureNormalColor,
+        lineColor = TemperatureNormalColor,
         values = data.list.map {
             MultipleChartValue(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
@@ -74,8 +78,8 @@ fun TemperatureChart(
     )
 
     val maxData = MultipleChartData(
-        dotColor = Color.Red,
-        lineColor = Color.Red,
+        dotColor = TemperatureMaxColor,
+        lineColor = TemperatureMaxColor,
         values = data.list.map {
             MultipleChartValue(
                 TimeFormatter.formatChartTime(it.dt, data.timeZone),
@@ -84,9 +88,9 @@ fun TemperatureChart(
         },
         label = stringResource(id = R.string.max)
     )
-    val multipleChartData = listOf(minData, maxData, normalData)
+    val multipleChartData = listOf(minData, normalData, maxData)
 
-    TitledChart(title = stringResource(id = R.string.temperature), modifier = titledChardModifier) {
+    TitledChart(title = stringResource(id = R.string.temperature), modifier = titledChartModifier) {
         ChartAnimatedContent(
             targetState = multipleChartData,
         ) { chartData ->
@@ -114,7 +118,7 @@ fun RainChart(
 //    val barChartData = getTestBarChartData()
     val barChartData = data.list.map {
         BarChartData(
-            Color.Cyan,
+            RainColor,
             barValue = it.rain?.`3h` ?: 0f,
             TimeFormatter.formatChartTime(it.dt, data.timeZone)
         )
@@ -126,7 +130,7 @@ fun RainChart(
 
     if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
 
-    TitledChart(title = stringResource(id = R.string.rain), modifier = titledChardModifier) {
+    TitledChart(title = stringResource(id = R.string.rain), modifier = titledChartModifier) {
         ChartAnimatedContent(targetState = barChartData) { chartData ->
             BarChart(
                 modifier = Modifier

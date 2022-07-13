@@ -30,6 +30,6 @@ fun TitledChart(
     }
 }
 
-val titledChardModifier = Modifier
+val titledChartModifier = Modifier
     .fillMaxWidth()
     .padding(start = Dimension2, end = Dimension2, bottom = Dimension2)

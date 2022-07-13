@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
+import com.homalab.android.compose.weather.presentation.theme.CloudsColor
+import com.homalab.android.compose.weather.presentation.theme.HumidityColor
+import com.homalab.android.compose.weather.presentation.theme.PressureColor
+import com.homalab.android.compose.weather.presentation.theme.SeaLevelColor
 import com.homalab.android.compose.weather.util.*
 
 @Composable
@@ -44,7 +47,7 @@ fun DetailFrontLayerDisplay(
         forecastDayItem?.list?.let {
             TitledChart(
                 title = stringResource(id = R.string.clouds) + " & " + stringResource(id = R.string.humidity),
-                modifier = titledChardModifier
+                modifier = titledChartModifier
             ) {
                 val cloudsValues = mutableListOf<MultipleChartValue>()
                 val humidityValues = mutableListOf<MultipleChartValue>()
@@ -71,15 +74,15 @@ fun DetailFrontLayerDisplay(
                 }
 
                 val cloudsData = MultipleChartData(
-                    dotColor = Color.Black,
-                    lineColor = Color.Black,
+                    dotColor = CloudsColor,
+                    lineColor = CloudsColor,
                     values = cloudsValues,
                     label = stringResource(id = R.string.clouds)
                 )
 
                 val humidityData = MultipleChartData(
-                    dotColor = Color.Green,
-                    lineColor = Color.Green,
+                    dotColor = HumidityColor,
+                    lineColor = HumidityColor,
                     values = humidityValues,
                     label = stringResource(id = R.string.humidity)
                 )
@@ -123,15 +126,15 @@ fun DetailFrontLayerDisplay(
                 }
 
                 val seaLevelData = MultipleChartData(
-                    dotColor = Color.Black,
-                    lineColor = Color.Black,
+                    dotColor = SeaLevelColor,
+                    lineColor = SeaLevelColor,
                     values = seaLevelValues,
                     label = stringResource(id = R.string.sea_level)
                 )
 
                 val pressureData = MultipleChartData(
-                    dotColor = Color.Green,
-                    lineColor = Color.Green,
+                    dotColor = PressureColor,
+                    lineColor = PressureColor,
                     values = pressureValues,
                     label = stringResource(id = R.string.pressure)
                 )
