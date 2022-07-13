@@ -46,29 +46,50 @@ fun DetailFrontLayerDisplay(
 
         forecastDayItem?.list?.let {
             TitledChart(
-                title = stringResource(id = R.string.clouds),
+                title = stringResource(id = R.string.clouds) + " & " + stringResource(id = R.string.humidity),
                 modifier = titledChardModifier
             ) {
-                val cloudsData = it.map { forecastItem ->
-                    MultipleChartValue(
-                        value = forecastItem.clouds.all.toFloat(),
-                        label = TimeFormatter.formatChartTime(
-                            forecastItem.dt,
-                            forecastDayItem.timeZone
+                val cloudsValues = mutableListOf<MultipleChartValue>()
+                val humidityValues = mutableListOf<MultipleChartValue>()
+
+                it.forEach { forecastItem ->
+                    cloudsValues.add(
+                        MultipleChartValue(
+                            value = forecastItem.clouds.all.toFloat(),
+                            label = TimeFormatter.formatChartTime(
+                                forecastItem.dt,
+                                forecastDayItem.timeZone
+                            )
+                        )
+                    )
+                    humidityValues.add(
+                        MultipleChartValue(
+                            value = forecastItem.main.humidity,
+                            label = TimeFormatter.formatChartTime(
+                                forecastItem.dt,
+                                forecastDayItem.timeZone
+                            )
                         )
                     )
                 }
 
-                val chartData = MultipleChartData(
+                val cloudsData = MultipleChartData(
                     dotColor = Color.Black,
                     lineColor = Color.Black,
-                    values = cloudsData
+                    values = cloudsValues
                 )
+
+                val humidityData = MultipleChartData(
+                    dotColor = Color.Green,
+                    lineColor = Color.Green,
+                    values = humidityValues
+                )
+
                 MultipleLinesChart(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(Dimension4),
-                    chartData = listOf(chartData),
+                    chartData = listOf(cloudsData, humidityData),
                     verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
                     verticalAxisLabelTransform = { it.toInt().toString() + " %" },
                     showHorizontalLines = false
