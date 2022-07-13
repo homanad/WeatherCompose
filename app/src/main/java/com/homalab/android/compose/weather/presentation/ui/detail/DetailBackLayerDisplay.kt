@@ -140,7 +140,7 @@ fun RainChart(
     }
 }
 
-private fun generateMinMaxRange(min: Float, max: Float): List<Float> {
+fun generateMinMaxRange(min: Float, max: Float): List<Float> {
     val minValue = floor(min).toInt()
     val maxValue = ceil(max).toInt()
 

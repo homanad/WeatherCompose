@@ -99,6 +99,59 @@ fun DetailFrontLayerDisplay(
                     drawCirclePoint = false
                 )
             }
+
+            TitledChart(title = stringResource(id = R.string.sea_level) + " & " + stringResource(id = R.string.pressure)) {
+                val seaLevelValues = mutableListOf<MultipleChartValue>()
+                val pressureValues = mutableListOf<MultipleChartValue>()
+
+                it.forEach { forecastItem ->
+                    seaLevelValues.add(
+                        MultipleChartValue(
+                            value = forecastItem.main.sea_level.toFloat(),
+                            label = TimeFormatter.formatChartTime(
+                                forecastItem.dt,
+                                forecastDayItem.timeZone
+                            )
+                        )
+                    )
+                    pressureValues.add(
+                        MultipleChartValue(
+                            value = forecastItem.main.sea_level.toFloat(),
+                            label = TimeFormatter.formatChartTime(
+                                forecastItem.dt,
+                                forecastDayItem.timeZone
+                            )
+                        )
+                    )
+                }
+
+                val seaLevelData = MultipleChartData(
+                    dotColor = Color.Black,
+                    lineColor = Color.Black,
+                    values = seaLevelValues,
+                    label = "sea level"
+                )
+
+                val pressureData = MultipleChartData(
+                    dotColor = Color.Green,
+                    lineColor = Color.Green,
+                    values = pressureValues,
+                    label = "pressure"
+                )
+
+                MultipleLinesChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimension4),
+                    chartData = listOf(seaLevelData, pressureData),
+                    verticalAxisValues = generateMinMaxRange(seaLevelValues.map { it.value }
+                        .minOf { it }, seaLevelValues.map { it.value }.maxOf { it }),
+                    verticalAxisLabelTransform = { it.toInt().toString() },
+                    showHorizontalLines = true,
+                    horizontalLineStyle = HorizontalLineStyle.STROKE,
+                    drawCirclePoint = false
+                )
+            }
         }
     }
 }
