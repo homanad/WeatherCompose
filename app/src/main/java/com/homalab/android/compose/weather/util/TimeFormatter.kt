@@ -13,7 +13,7 @@ object TimeFormatter {
 
     private const val DETAIL_DAY_PATTERN = "dd MMM"
 
-//    private const val ONLY_DAY_PATTERN = "dd MM yyyy z"
+    private const val ONLY_DAY_PATTERN = "dd MMM yyyy"
 
     private fun formatTime(unixSeconds: Long, shiftTimeZoneSeconds: Int, pattern: String): String {
         val date = Date((unixSeconds - shiftTimeZoneSeconds) * 1000)
@@ -33,6 +33,9 @@ object TimeFormatter {
 
     fun formatDetailDayTime(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
         formatTime(unixSeconds, shiftTimeZoneSeconds, DETAIL_DAY_PATTERN)
+
+    fun formatDetailDay(unixSeconds: Long, shiftTimeZoneSeconds: Int) =
+        formatTime(unixSeconds, shiftTimeZoneSeconds, ONLY_DAY_PATTERN)
 
     fun getStartOfForecastTime(unixSeconds: Long, shiftTimeZoneSeconds: Int): Long {
         val calendar = Calendar.getInstance()

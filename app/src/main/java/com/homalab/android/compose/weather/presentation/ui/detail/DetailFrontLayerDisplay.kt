@@ -3,9 +3,11 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
@@ -17,16 +19,30 @@ import com.homalab.android.compose.weather.util.*
 
 @Composable
 fun DetailFrontLayerDisplay(
-    forecastDayItem: ForecastDayItem?
+    forecastDayItem: ForecastDayItem?,
+    modifier: Modifier = Modifier
 ) {
-    Column {
-//        Text(
-//            modifier = Modifier.fillMaxWidth(),
-//            text = "This day",
-//            textAlign = TextAlign.Center
-//        )
+    if (forecastDayItem != null) {
+        DetailFrontLayerInfo(forecastDayItem = forecastDayItem, modifier)
+    } else {
+        MessageText(
+            text = stringResource(id = R.string.network_unavailable)
+        )
+    }
+}
 
-//        SmallSpacer()
+@Composable
+fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        DefaultVerticalSpacer()
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = TimeFormatter.formatDetailDay(forecastDayItem.dt, forecastDayItem.timeZone),
+            textAlign = TextAlign.Center
+        )
+
+        SmallVerticalSpacer()
 
         Row(
             modifier = Modifier
@@ -35,7 +51,7 @@ fun DetailFrontLayerDisplay(
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.Center
         ) {
-            forecastDayItem?.list?.forEach {
+            forecastDayItem.list.forEach {
                 DetailConditionCard(
                     modifier = Modifier.padding(start = Dimension1, end = Dimension1),
                     forecastItem = it,
@@ -44,7 +60,7 @@ fun DetailFrontLayerDisplay(
             }
         }
 
-        forecastDayItem?.list?.let {
+        forecastDayItem.list.let {
             TitledChart(
                 title = stringResource(id = R.string.clouds) + " & " + stringResource(id = R.string.humidity),
                 modifier = titledChartModifier
