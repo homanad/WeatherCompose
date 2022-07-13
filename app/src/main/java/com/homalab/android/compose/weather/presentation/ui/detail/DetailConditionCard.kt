@@ -66,7 +66,7 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
 
                 SmallHorizontalSpacer()
 
-                Text(text = forecastItem.visibility.toString())
+                Text(text = TextTransformer.transformVisibility(forecastItem.visibility))
             }
 
             DefaultVerticalSpacer()
