@@ -7,6 +7,7 @@ private const val MM_PATTERN = "%smm"
 private const val C_DEGREE_MIN_MAX_PATTERN = "%1s °C / %2s °C"
 private const val CONDITION_PATTERN = "%1s / %2s"
 private const val WIND_PATTERN = "%1s m/s - %2s°"
+private const val HPA_PATTERN = "%s hPa"
 
 fun transformVisibility(visibility: Int): String {
     val km = visibility.toFloat() / 1000
@@ -38,4 +39,8 @@ fun formatCondition(main: String, description: String): String {
 
 fun formatWind(speed: Float, degree: Int): String {
     return WIND_PATTERN.format(speed, degree)
+}
+
+fun formatHPa(value: Int): String {
+    return HPA_PATTERN.format(value)
 }

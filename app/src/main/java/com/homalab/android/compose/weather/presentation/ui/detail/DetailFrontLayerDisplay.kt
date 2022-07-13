@@ -10,10 +10,7 @@ import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
-import com.homalab.android.compose.weather.util.Dimension1
-import com.homalab.android.compose.weather.util.Dimension2
-import com.homalab.android.compose.weather.util.Dimension4
-import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.*
 
 @Composable
 fun DetailFrontLayerDisplay(
@@ -146,7 +143,7 @@ fun DetailFrontLayerDisplay(
                     chartData = listOf(seaLevelData, pressureData),
                     verticalAxisValues = generateMinMaxRange(seaLevelValues.map { it.value }
                         .minOf { it }, seaLevelValues.map { it.value }.maxOf { it }),
-                    verticalAxisLabelTransform = { it.toInt().toString() },
+                    verticalAxisLabelTransform = { formatHPa(it.toInt()) },
                     showHorizontalLines = true,
                     horizontalLineStyle = HorizontalLineStyle.STROKE,
                     drawCirclePoint = false

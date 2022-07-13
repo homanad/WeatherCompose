@@ -120,7 +120,7 @@ fun RainChart(
         )
     }
 
-    var verticalAxisValues = generateMinMaxRangeForBarChart(
+    var verticalAxisValues = generateMinMaxRange(
         barChartData.minOf { it.barValue },
         barChartData.maxOf { it.barValue })
 
@@ -156,22 +156,6 @@ fun generateMinMaxRange(min: Float, max: Float): List<Float> {
 //    for (i in minValue..maxValue step step) {
 //        list.add(i.toFloat()) //TODO fix step out of value
 //    }
-    return list
-}
-
-fun generateMinMaxRangeForBarChart(min: Float, max: Float): List<Float> {
-    val minValue = floor(min).toInt()
-    val maxValue = ceil(max).toInt()
-
-    val delta = maxValue - minValue
-    val step = ceil(delta.toFloat() / MAX_HORIZONTAL_LINE).toInt()
-
-    val list = mutableListOf<Float>()
-    var value = minValue - step
-    while (value < maxValue) {
-        value += step
-        list.add(value.toFloat())
-    }
     return list
 }
 
