@@ -74,14 +74,14 @@ fun DetailFrontLayerDisplay(
                     dotColor = Color.Black,
                     lineColor = Color.Black,
                     values = cloudsValues,
-                    label = "clouds"
+                    label = stringResource(id = R.string.clouds)
                 )
 
                 val humidityData = MultipleChartData(
                     dotColor = Color.Green,
                     lineColor = Color.Green,
                     values = humidityValues,
-                    label = "humidity"
+                    label = stringResource(id = R.string.humidity)
                 )
 
                 MultipleLinesChart(
@@ -126,14 +126,14 @@ fun DetailFrontLayerDisplay(
                     dotColor = Color.Black,
                     lineColor = Color.Black,
                     values = seaLevelValues,
-                    label = "sea level"
+                    label = stringResource(id = R.string.sea_level)
                 )
 
                 val pressureData = MultipleChartData(
                     dotColor = Color.Green,
                     lineColor = Color.Green,
                     values = pressureValues,
-                    label = "pressure"
+                    label = stringResource(id = R.string.pressure)
                 )
 
                 MultipleLinesChart(

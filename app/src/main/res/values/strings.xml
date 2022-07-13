@@ -27,4 +27,8 @@
     <string name="last_three_hours_pattern">Last 3 hours: %s</string>
 
     <string name="click_details">Click to see details</string>
+
+    <string name="min">Min</string>
+    <string name="normal">Normal</string>
+    <string name="max">Max</string>
 </resources>

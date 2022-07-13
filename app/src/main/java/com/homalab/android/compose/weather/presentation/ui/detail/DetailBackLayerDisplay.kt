@@ -58,7 +58,7 @@ fun TemperatureChart(
                 it.main.temp_min
             )
         },
-        label = "min"
+        label = stringResource(id = R.string.min)
     )
 
     val normalData = MultipleChartData(
@@ -70,7 +70,7 @@ fun TemperatureChart(
                 it.main.temp
             )
         },
-        label = "normal"
+        label = stringResource(id = R.string.normal)
     )
 
     val maxData = MultipleChartData(
@@ -82,7 +82,7 @@ fun TemperatureChart(
                 it.main.temp_max
             )
         },
-        label = "max"
+        label = stringResource(id = R.string.max)
     )
     val multipleChartData = listOf(minData, maxData, normalData)
 
