@@ -1,5 +1,5 @@
 package com.homalab.android.compose.weather.domain.entity.subEntity
 
-data class Cloud(
+data class Clouds(
     val all: Int
 )

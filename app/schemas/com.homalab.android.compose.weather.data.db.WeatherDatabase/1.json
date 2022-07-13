@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c292da0cd82cdd4a925636e4b0834b51",
+    "identityHash": "b93f07618123dabc8ef77a364c1e83cc",
     "entities": [
       {
         "tableName": "WeatherDataEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `coord` TEXT NOT NULL, `weather` TEXT NOT NULL, `base` TEXT NOT NULL, `main` TEXT NOT NULL, `visibility` INTEGER NOT NULL, `wind` TEXT NOT NULL, `dt` INTEGER NOT NULL, `sys` TEXT NOT NULL, `timeZone` INTEGER NOT NULL, `name` TEXT NOT NULL, `cod` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `coord` TEXT NOT NULL, `weather` TEXT NOT NULL, `base` TEXT NOT NULL, `main` TEXT NOT NULL, `visibility` INTEGER NOT NULL, `wind` TEXT NOT NULL, `rain` TEXT, `snow` TEXT, `clouds` TEXT NOT NULL, `dt` INTEGER NOT NULL, `sys` TEXT NOT NULL, `timeZone` INTEGER NOT NULL, `name` TEXT NOT NULL, `cod` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,6 +47,24 @@
           {
             "fieldPath": "wind",
             "columnName": "wind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rain",
+            "columnName": "rain",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "snow",
+            "columnName": "snow",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "clouds",
+            "columnName": "clouds",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -95,12 +113,51 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "ForecastDataEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lon` REAL NOT NULL, `lat` REAL NOT NULL, `list` TEXT NOT NULL, `city` TEXT NOT NULL, PRIMARY KEY(`lon`, `lat`))",
+        "fields": [
+          {
+            "fieldPath": "lon",
+            "columnName": "lon",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "lat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "list",
+            "columnName": "list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "lon",
+            "lat"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c292da0cd82cdd4a925636e4b0834b51')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b93f07618123dabc8ef77a364c1e83cc')"
     ]
   }
 }

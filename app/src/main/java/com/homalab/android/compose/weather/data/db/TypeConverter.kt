@@ -51,13 +51,23 @@ class TypeConverter {
     }
 
     @TypeConverter
-    fun convertCloudToString(cloud: Cloud): String {
-        return gson.toJson(cloud)
+    fun convertCloudsToString(clouds: Clouds): String {
+        return gson.toJson(clouds)
     }
 
     @TypeConverter
-    fun convertStringToCloud(json: String): Cloud {
-        return gson.fromJson(json, Cloud::class.java)
+    fun convertStringToClouds(json: String): Clouds {
+        return gson.fromJson(json, Clouds::class.java)
+    }
+
+    @TypeConverter
+    fun convertRainOrSnowToString(rain: RainOrSnow?): String {
+        return gson.toJson(rain)
+    }
+
+    @TypeConverter
+    fun convertStringToRainOrSnow(json: String): RainOrSnow? {
+        return gson.fromJson(json, RainOrSnow::class.java)
     }
 
     @TypeConverter
