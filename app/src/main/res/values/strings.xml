@@ -15,11 +15,16 @@
     <string name="temperature">Temperature</string>
     <string name="rain">Rain</string>
     <string name="clouds">Clouds</string>
+    <string name="snow">Snow</string>
 
     <string name="sea_level">Sea level</string>
 
     <string name="recently_viewed">Recently viewed</string>
     <string name="no_history">No history</string>
+
+    <string name="no_data">No data</string>
+    <string name="last_one_hour_pattern">Last 1 hour: %s</string>
+    <string name="last_three_hours_pattern">Last 3 hours: %s</string>
 
     <string name="click_details">Click to see details</string>
 </resources>

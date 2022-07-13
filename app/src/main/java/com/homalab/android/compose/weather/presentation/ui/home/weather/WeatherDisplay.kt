@@ -119,8 +119,24 @@ private fun WeatherInfo(
 
             DefaultVerticalSpacer()
 
-            val cardModifier = Modifier.padding(Dimension2)
+            Row {
+                weatherData.rain?.let {
+                    RainOrSnowCard(
+                        title = stringResource(id = R.string.rain),
+                        rainOrSnow = weatherData.rain,
+                        modifier = Modifier.padding(Dimension2)
+                    )
+                }
+                weatherData.snow?.let {
+                    RainOrSnowCard(
+                        title = stringResource(id = R.string.snow),
+                        rainOrSnow = weatherData.snow,
+                        modifier = Modifier.padding(Dimension2)
+                    )
+                }
+            }
 
+            val cardModifier = Modifier.padding(Dimension2)
             Row {
                 ConditionCard(
                     cardModifier,
