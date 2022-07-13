@@ -137,7 +137,8 @@ fun MultipleLinesChart(
                 if (drawCirclePoint) circleOffsets.add(
                     CircleEntity(
                         multipleChartData.dotColor,
-                        endOffset
+                        endOffset,
+                        multipleChartData.dotRatio
                     )
                 )
 
@@ -202,7 +203,7 @@ fun MultipleLinesChart(
             drawCircle(
                 color = it.color,
                 center = it.offset,
-                radius = strokeWidth.times(1.5f).toPx()
+                radius = strokeWidth.times(it.ratio).toPx()
             )
         }
     }
@@ -223,14 +224,15 @@ fun calculateOffset(
     return Offset(x, y)
 }
 
-data class CircleEntity(val color: Color, val offset: Offset)
+data class CircleEntity(val color: Color, val offset: Offset, val ratio: Float)
 data class TextEntity(val text: String, val offset: Offset)
 
 data class MultipleChartData(
     val dotColor: Color,
     val lineColor: Color,
     val values: List<MultipleChartValue>,
-    val label: String
+    val label: String,
+    val dotRatio: Float = 1.5f
 )
 
 data class MultipleChartValue(
