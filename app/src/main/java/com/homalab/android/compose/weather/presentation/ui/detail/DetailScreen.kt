@@ -46,7 +46,8 @@ fun DetailScreen(
 
     LaunchedEffect(detailState.isRefreshing) {
         if (detailState.isRefreshing) {
-            detailState.forecastDayData = mainViewModel.getForecastData(lat, lon)?.toForecastDayData()
+            detailState.forecastDayData =
+                mainViewModel.getForecastData(lat, lon)?.toForecastDayData()
             detailState.isRefreshing = false
         }
     }
@@ -129,7 +130,7 @@ fun DetailScreen(
                     )
                 }
             },
-            stickyFrontLayer = true
+            stickyFrontLayer = detailState.forecastDayData != null
         )
     }
 }

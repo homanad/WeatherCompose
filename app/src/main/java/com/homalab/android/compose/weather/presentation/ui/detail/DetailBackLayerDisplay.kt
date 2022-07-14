@@ -2,6 +2,7 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,9 +36,10 @@ fun DetailBackLayerDisplay(
         if (forecastDayItem != null) {
             DetailBackLayerInfo(forecastDayItem = forecastDayItem, modifier)
         } else {
-            MessageText(
-                text = stringResource(id = R.string.network_unavailable)
-            )
+            Column(modifier = Modifier.clickable { detailState.isRefreshing = true }) {
+                MessageText(text = stringResource(id = R.string.network_unavailable))
+                MessageText(text = stringResource(id = R.string.tap_to_reload))
+            }
         }
     }
 }
