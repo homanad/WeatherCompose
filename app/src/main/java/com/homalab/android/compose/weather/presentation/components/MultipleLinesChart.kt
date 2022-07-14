@@ -36,20 +36,27 @@ fun MultipleLinesChart(
     axisThickness: Dp = DefaultAxisThickness,
     contentPadding: Dp = DefaultContentPadding
 ) {
-    val chartHeight = horizontalLineSpacing * verticalAxisValues.size
+    val visibleChartHeight = horizontalLineSpacing * (verticalAxisValues.size - 1)
+    val horizontalAxisLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
+    val descriptionLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
+
+    val chartHeight = visibleChartHeight + horizontalAxisLabelHeight + descriptionLabelHeight
+
     val horizontalAxisLabelFontSizePx = horizontalAxisLabelFontSize.toPx()
     val verticalAxisLabelFontSizePx = verticalAxisLabelFontSize.toPx()
 
     val contentPaddingPx = contentPadding.toPx()
     val axisThicknessPx = axisThickness.toPx()
 
+    val horizontalLabelAreaHeight =
+        (visibleChartHeight + horizontalAxisLabelHeight).toPx()
     val chartLabelAreaHeight =
-        horizontalAxisLabelFontSizePx + contentPaddingPx + horizontalAxisLabelFontSizePx
-
-    val bottomAreaHeight = horizontalAxisLabelFontSizePx + chartLabelAreaHeight
+        (visibleChartHeight + horizontalAxisLabelHeight + descriptionLabelHeight).toPx()
+//
+//    val bottomAreaHeight = horizontalAxisLabelFontSizePx + chartLabelAreaHeight
     val leftAreaWidth =
         (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSizePx
-            .div(1.75)).toInt()
+            .div(1.75)).toInt() + contentPaddingPx
 
     val verticalValuesPaint = Paint().apply {
         textSize = verticalAxisLabelFontSizePx
@@ -66,21 +73,21 @@ fun MultipleLinesChart(
     }
 
     Canvas(modifier = modifier.height(chartHeight)) {
-        val verticalAxisHeight = size.height - bottomAreaHeight
+        val verticalAxisHeight = visibleChartHeight.toPx()
         val horizontalAxisWidth = size.width - leftAreaWidth
         val verticalAxisValuesDistance = (verticalAxisHeight / (verticalAxisValues.size - 1))
 
         //draw horizontal axis
         drawRect(
             color = axisColor,
-            topLeft = Offset(leftAreaWidth.toFloat(), verticalAxisHeight),
+            topLeft = Offset(leftAreaWidth, verticalAxisHeight),
             size = Size(horizontalAxisWidth, axisThicknessPx)
         )
 
         //draw vertical axis
         drawRect(
             color = axisColor,
-            topLeft = Offset(leftAreaWidth.toFloat(), 0.0f),
+            topLeft = Offset(leftAreaWidth, 0.0f),
             size = Size(axisThicknessPx, verticalAxisHeight)
         )
 
@@ -101,8 +108,8 @@ fun MultipleLinesChart(
             //don't draw min line
             if (showHorizontalLines && index != 0)
                 drawLine(
-                    start = Offset(leftAreaWidth.toFloat(), y),
-                    end = Offset(leftAreaWidth.toFloat() + horizontalAxisWidth, y),
+                    start = Offset(leftAreaWidth, y),
+                    end = Offset(leftAreaWidth + horizontalAxisWidth, y),
                     color = axisColor,
                     strokeWidth = axisThicknessPx,
                     pathEffect = if (horizontalLineStyle == HorizontalLineStyle.DASH) PathEffect.dashPathEffect(
@@ -170,14 +177,13 @@ fun MultipleLinesChart(
                 val part = width.div(4)
 
                 x += part
-                val top = verticalAxisHeight + chartLabelAreaHeight
 
                 labelRectPaint.color = multipleChartData.lineColor.toArgb()
                 drawRect(
                     x,
-                    top - horizontalAxisLabelFontSizePx,
+                    chartLabelAreaHeight - horizontalAxisLabelFontSizePx,
                     x + part,
-                    top + horizontalAxisLabelFontSizePx / 2,
+                    chartLabelAreaHeight + horizontalAxisLabelFontSizePx / 2,
                     labelRectPaint
                 )
 
@@ -186,7 +192,7 @@ fun MultipleLinesChart(
                 drawText(
                     multipleChartData.label,
                     (x + part + textWidth / 2),
-                    verticalAxisHeight + chartLabelAreaHeight,
+                    chartLabelAreaHeight,
                     horizontalValuesPaint
                 )
             }
@@ -197,7 +203,7 @@ fun MultipleLinesChart(
                 drawText(
                     it.text,
                     (it.offset.x + barWidth.div(2)),
-                    verticalAxisHeight + horizontalAxisLabelFontSizePx,
+                    horizontalLabelAreaHeight,
                     horizontalValuesPaint
                 )
             }
@@ -254,10 +260,13 @@ fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
 @Composable
 fun TextUnit.toPx() = LocalDensity.current.run { this@toPx.toPx() }
 
+@Composable
+fun TextUnit.toDp() = LocalDensity.current.run { this@toDp.toDp() }
+
 val DefaultStrokeWidth = 4.dp
 val DefaultAxisLabelColor = Color(0xFF3D3D3D)
 val DefaultAxisLabelFontSize = 13.sp
 val DefaultAxisThickness = 1.dp
-val DefaultContentPadding = 4.dp
+val DefaultContentPadding = 8.dp
 
 val HorizontalLineSpacing = 30.dp
