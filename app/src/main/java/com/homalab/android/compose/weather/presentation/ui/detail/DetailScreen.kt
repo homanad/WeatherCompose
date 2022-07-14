@@ -3,6 +3,7 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -86,6 +87,7 @@ fun DetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
+                        .verticalScroll(rememberScrollState())
                 )
             },
             backLayerBackgroundColor = Color.Transparent,
