@@ -3,7 +3,6 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,16 +69,21 @@ fun DetailScreen(
             frontLayerShape = BottomSheetShape,
             frontLayerScrimColor = Color.Unspecified,
             appBar = {
-                DayTabs(
-                    items = detailState.forecastDayData?.items?.map {
-                        TimeFormatter.formatDetailDayTime(
-                            it.dt,
-                            detailState.forecastDayData?.city?.timeZone ?: 0
-                        )
-                    } ?: listOf(),
-                    selectedTab = detailState.selectedTab,
-                    onTabSelected = { detailState.selectedTab = it }
-                )
+                detailState.forecastDayData?.items?.let {
+                    DayTabs(
+                        items = it.map { forecastDayItem ->
+                            TimeFormatter.formatDetailDayTime(
+                                forecastDayItem.dt,
+                                forecastDayItem.timeZone
+                            )
+                        },
+                        selectedTab = detailState.selectedTab,
+                        onTabSelected = { detailState.selectedTab = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    )
+                }
             },
             backLayerContent = {
                 DetailBackLayerDisplay(
