@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.ui.detail
+package com.homalab.android.compose.weather.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -12,10 +12,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.ForecastItem
-import com.homalab.android.compose.weather.presentation.components.DefaultVerticalSpacer
-import com.homalab.android.compose.weather.presentation.components.SmallHorizontalSpacer
-import com.homalab.android.compose.weather.presentation.components.WeatherConditionLoader
 import com.homalab.android.compose.weather.util.*
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeConditionCard(modifier: Modifier = Modifier, title: String, description: String) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(Dimension4),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = title, style = MaterialTheme.typography.bodyLarge)
+            DefaultVerticalSpacer()
+            Text(text = description, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

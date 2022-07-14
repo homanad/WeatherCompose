@@ -138,19 +138,19 @@ private fun WeatherInfo(
 
             val cardModifier = Modifier.padding(Dimension2)
             Row {
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.feels_like),
                     description = formatCDegree(weatherData.main.feels_like)
                 )
 
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.pressure),
                     description = formatHPa(weatherData.main.pressure)
                 )
 
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.humidity),
                     description = formatPercent(weatherData.main.humidity)
@@ -158,7 +158,7 @@ private fun WeatherInfo(
             }
 
             Row {
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.sunrise),
                     description = TimeFormatter.formatSunEventTime(
@@ -167,13 +167,13 @@ private fun WeatherInfo(
                     )
                 )
 
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.wind),
                     description = formatWind(weatherData.wind.speed, weatherData.wind.deg)
                 )
 
-                ConditionCard(
+                HomeConditionCard(
                     cardModifier,
                     title = stringResource(id = R.string.sunset),
                     description = TimeFormatter.formatSunEventTime(
