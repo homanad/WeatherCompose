@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
@@ -24,14 +26,19 @@ import kotlin.math.floor
 fun DetailBackLayerDisplay(
     forecastDayItem: ForecastDayItem?,
     modifier: Modifier = Modifier,
+    detailState: DetailState
 ) {
     DefaultVerticalSpacer()
-    if (forecastDayItem != null) {
-        DetailBackLayerInfo(forecastDayItem = forecastDayItem, modifier)
-    } else {
-        MessageText(
-            text = stringResource(id = R.string.network_unavailable)
-        )
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = detailState.isRefreshing),
+        onRefresh = { detailState.isRefreshing = true }) {
+        if (forecastDayItem != null) {
+            DetailBackLayerInfo(forecastDayItem = forecastDayItem, modifier)
+        } else {
+            MessageText(
+                text = stringResource(id = R.string.network_unavailable)
+            )
+        }
     }
 }
 

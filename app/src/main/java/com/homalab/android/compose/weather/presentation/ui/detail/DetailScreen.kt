@@ -44,6 +44,13 @@ fun DetailScreen(
         detailState.forecastDayData = mainViewModel.getForecastData(lat, lon)?.toForecastDayData()
     }
 
+    LaunchedEffect(detailState.isRefreshing) {
+        if (detailState.isRefreshing) {
+            detailState.forecastDayData = mainViewModel.getForecastData(lat, lon)?.toForecastDayData()
+            detailState.isRefreshing = false
+        }
+    }
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -91,7 +98,8 @@ fun DetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    detailState = detailState
                 )
             },
             backLayerBackgroundColor = Color.Transparent,
@@ -129,10 +137,12 @@ fun DetailScreen(
 @Stable
 class DetailState(
     forecastDayData: ForecastDayData?,
-    selectedTab: Int = 0
+    selectedTab: Int = 0,
+    isRefreshing: Boolean = false
 ) {
     var forecastDayData by mutableStateOf(forecastDayData)
     var selectedTab by mutableStateOf(selectedTab)
+    var isRefreshing by mutableStateOf(isRefreshing)
 
     val forecastDayItem: ForecastDayItem?
         get() = forecastDayData?.items?.get(selectedTab)
