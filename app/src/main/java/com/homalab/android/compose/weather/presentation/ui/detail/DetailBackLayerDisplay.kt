@@ -42,8 +42,6 @@ fun DetailBackLayerInfo(
     Column(modifier = modifier) {
         TemperatureChart(data = forecastDayItem)
 
-        DefaultVerticalSpacer()
-
         RainChart(data = forecastDayItem)
     }
 }

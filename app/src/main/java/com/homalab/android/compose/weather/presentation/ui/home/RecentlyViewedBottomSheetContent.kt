@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.semantics
 import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.City
+import com.homalab.android.compose.weather.presentation.components.RoundedLine
 import com.homalab.android.compose.weather.util.*
 
 @Composable
@@ -31,14 +32,7 @@ fun RecentlyViewedBottomSheetContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Spacer(
-                modifier = Modifier
-                    .padding(Dimension1)
-                    .height(Dimension1)
-                    .width(RecentlyBottomSheetBarWidth)
-                    .clip(RoundedCornerShape(Dimension1))
-                    .background(Color.Gray),
-            )
+            RoundedLine()
 
             Text(
                 text = stringResource(id = R.string.recently_viewed),
