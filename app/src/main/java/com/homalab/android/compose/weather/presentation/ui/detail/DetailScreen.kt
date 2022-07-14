@@ -3,21 +3,24 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberBackdropScaffoldState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,10 +28,7 @@ import com.homalab.android.compose.weather.presentation.mapper.ForecastDayData
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.mapper.toForecastDayData
 import com.homalab.android.compose.weather.presentation.ui.vm.MainViewModel
-import com.homalab.android.compose.weather.util.DURATION_LONG
-import com.homalab.android.compose.weather.util.Dimension0
-import com.homalab.android.compose.weather.util.Dimension2
-import com.homalab.android.compose.weather.util.TimeFormatter
+import com.homalab.android.compose.weather.util.*
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -37,6 +37,7 @@ fun DetailScreen(
     lon: Double,
     detailState: DetailState,
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     LaunchedEffect(lat, lon) {
@@ -44,12 +45,24 @@ fun DetailScreen(
     }
 
     Column {
-        Text(
-            modifier = Modifier.padding(Dimension2),
-            text = detailState.forecastDayData?.city?.name ?: "",
-            style = MaterialTheme.typography.headlineLarge
-        )
-
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = Dimension1, bottom = Dimension1),
+        ) {
+            IconButton(
+                modifier = Modifier
+                    .padding(start = IconPadding)
+                    .rotate(90f),
+                onClick = onBackClick
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+            }
+            Text(
+                modifier = Modifier.padding(start = Dimension1),
+                text = detailState.forecastDayData?.city?.name ?: "",
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
         BackdropScaffold(
             modifier = modifier,
             scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),

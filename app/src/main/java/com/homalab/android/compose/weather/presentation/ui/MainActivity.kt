@@ -118,7 +118,8 @@ fun AppNavHost(
                 DetailScreen(
                     lat,
                     lon,
-                    rememberDetailState(mainState.forecastData?.toForecastDayData())
+                    rememberDetailState(mainState.forecastData?.toForecastDayData()),
+                    onBackClick = { navController.navigateUp() }
                 )
             }
         }

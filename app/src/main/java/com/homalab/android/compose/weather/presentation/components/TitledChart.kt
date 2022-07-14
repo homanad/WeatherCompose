@@ -23,9 +23,15 @@ fun TitledChart(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            HorizontalDivider(modifier = Modifier
+                .padding(end = Dimension1)
+                .weight(1f))
+            SmallVerticalSpacer()
             Text(text = title, style = MaterialTheme.typography.bodyLarge)
             SmallVerticalSpacer()
-            HorizontalDivider(modifier = Modifier.padding(start = Dimension1))
+            HorizontalDivider(modifier = Modifier
+                .padding(start = Dimension1)
+                .weight(1f))
         }
         chartContent.invoke()
     }
