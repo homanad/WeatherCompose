@@ -2,6 +2,7 @@ package com.homalab.android.compose.weather.presentation.ui
 
 import android.Manifest
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
@@ -24,6 +26,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.data.util.NetworkChecker
 import com.homalab.android.compose.weather.domain.entity.City
@@ -70,8 +73,14 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ) {
     val mainState = rememberMainState()
+    val systemUiController = rememberSystemUiController()
     Box(modifier = Modifier.fillMaxSize()) {
         mainState.backgroundResource?.let {
+            val pixel = BitmapFactory.decodeResource(context.resources, it).getPixel(0, 0)
+            systemUiController.setSystemBarsColor(
+                color = Color(pixel).copy(alpha = BackgroundImageAlpha)
+            )
+
             Image(
                 painter = painterResource(id = it),
                 contentDescription = null,
