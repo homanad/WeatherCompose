@@ -91,7 +91,11 @@ fun TemperatureChart(
     )
     val multipleChartData = listOf(minData, normalData, maxData)
 
-    TitledChart(title = stringResource(id = R.string.temperature), modifier = titledChartModifier) {
+    TitledChart(
+        title = stringResource(id = R.string.temperature),
+        modifier = titledChartModifier,
+        lineColors = LineColors(TemperatureMinColor, TemperatureMaxColor)
+    ) {
         ChartAnimatedContent(
             targetState = multipleChartData,
         ) { chartData ->
@@ -131,7 +135,11 @@ fun RainChart(
 
     if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
 
-    TitledChart(title = stringResource(id = R.string.rain), modifier = titledChartModifier) {
+    TitledChart(
+        title = stringResource(id = R.string.rain),
+        modifier = titledChartModifier,
+        lineColors = LineColors(RainColor, RainColor)
+    ) {
         ChartAnimatedContent(targetState = barChartData) { chartData ->
             BarChart(
                 modifier = Modifier

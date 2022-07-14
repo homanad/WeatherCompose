@@ -77,7 +77,8 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
 fun HumidityChart(forecastItems: List<ForecastItem>, timeZone: Int) {
     TitledChart(
         title = stringResource(id = R.string.clouds) + " & " + stringResource(id = R.string.humidity),
-        modifier = titledChartModifier
+        modifier = titledChartModifier,
+        lineColors = LineColors(CloudsColor, HumidityColor)
     ) {
         val cloudsValues = mutableListOf<MultipleChartValue>()
         val humidityValues = mutableListOf<MultipleChartValue>()
@@ -134,7 +135,8 @@ fun HumidityChart(forecastItems: List<ForecastItem>, timeZone: Int) {
 fun SeaChart(forecastItems: List<ForecastItem>, timeZone: Int) {
     TitledChart(
         title = stringResource(id = R.string.sea_level) + " & " + stringResource(id = R.string.pressure),
-        modifier = titledChartModifier
+        modifier = titledChartModifier,
+        lineColors = LineColors(SeaLevelColor, PressureColor)
     ) {
         val seaLevelValues = mutableListOf<MultipleChartValue>()
         val pressureValues = mutableListOf<MultipleChartValue>()
