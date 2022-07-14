@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
@@ -62,7 +61,8 @@ fun TemperatureChart(
                 it.main.temp_min
             )
         },
-        label = stringResource(id = R.string.min)
+        label = stringResource(id = R.string.min),
+        dotRatio = 2.5f
     )
 
     val normalData = MultipleChartData(
@@ -74,7 +74,8 @@ fun TemperatureChart(
                 it.main.temp
             )
         },
-        label = stringResource(id = R.string.normal)
+        label = stringResource(id = R.string.normal),
+        dotRatio = 2f
     )
 
     val maxData = MultipleChartData(
@@ -86,7 +87,8 @@ fun TemperatureChart(
                 it.main.temp_max
             )
         },
-        label = stringResource(id = R.string.max)
+        label = stringResource(id = R.string.max),
+        dotRatio = 1.5f
     )
     val multipleChartData = listOf(minData, normalData, maxData)
 

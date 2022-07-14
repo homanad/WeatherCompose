@@ -111,8 +111,7 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
                     verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
                     verticalAxisLabelTransform = { formatPercent(it.toInt()) },
                     showHorizontalLines = true,
-                    horizontalLineStyle = HorizontalLineStyle.STROKE,
-                    drawCirclePoint = false
+                    horizontalLineStyle = HorizontalLineStyle.STROKE
                 )
             }
 
@@ -145,7 +144,8 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
                     dotColor = SeaLevelColor,
                     lineColor = SeaLevelColor,
                     values = seaLevelValues,
-                    label = stringResource(id = R.string.sea_level)
+                    label = stringResource(id = R.string.sea_level),
+                    dotRatio = 2f
                 )
 
                 val pressureData = MultipleChartData(
@@ -164,8 +164,7 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
                         .minOf { it }, seaLevelValues.map { it.value }.maxOf { it }),
                     verticalAxisLabelTransform = { formatHPa(it.toInt()) },
                     showHorizontalLines = true,
-                    horizontalLineStyle = HorizontalLineStyle.STROKE,
-                    drawCirclePoint = false
+                    horizontalLineStyle = HorizontalLineStyle.STROKE
                 )
             }
         }
