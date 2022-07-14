@@ -1,8 +1,6 @@
 package com.homalab.android.compose.benchmark
 
 import android.graphics.Point
-import androidx.benchmark.macro.FrameTimingMetric
-import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
@@ -18,16 +16,7 @@ class SearchCityBenchmark {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun searchCity() = benchmarkRule.measureRepeated(
-        packageName = "com.homalab.android.compose.weather",
-        metrics = listOf(FrameTimingMetric()),
-        iterations = 3,
-        startupMode = StartupMode.COLD,
-        setupBlock = {
-            pressHome()
-            startActivityAndWait()
-        }
-    ) {
+    fun searchCity() = benchmarkRule.measureFrameTiming {
         val searchBarInput = device.findObject(By.desc(GlobalConstants.SearchBarInputDescription))
         searchBarInput.click()
 
@@ -39,16 +28,7 @@ class SearchCityBenchmark {
     }
 
     @Test
-    fun selectSavedCity() = benchmarkRule.measureRepeated(
-        packageName = "com.homalab.android.compose.weather",
-        metrics = listOf(FrameTimingMetric()),
-        iterations = 3,
-        startupMode = StartupMode.COLD,
-        setupBlock = {
-            pressHome()
-            startActivityAndWait()
-        }
-    ) {
+    fun selectSavedCity() = benchmarkRule.measureFrameTiming {
         val bottomSheetLayout = device.findObject(By.desc(GlobalConstants.BottomSheetDescription))
 
         val bounds = bottomSheetLayout.visibleBounds

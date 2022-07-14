@@ -1,9 +1,7 @@
 package com.homalab.android.compose.benchmark
 
 import android.graphics.Point
-import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MacrobenchmarkScope
-import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
@@ -25,34 +23,14 @@ class GoToDetailBenchmark {
     }
 
     @Test
-    fun dragFrontLayerUp() = benchmarkRule.measureRepeated(
-        packageName = "com.homalab.android.compose.weather",
-        metrics = listOf(FrameTimingMetric()),
-        iterations = 3,
-        startupMode = StartupMode.COLD,
-        setupBlock = {
-            pressHome()
-            startActivityAndWait()
-        }
-    ) {
-        goToDetail()
+    fun dragFrontLayerUp() = benchmarkRule.measureFrameTiming(afterSetup = { goToDetail() }) {
 
         val frontLayer = device.findObject(By.desc(GlobalConstants.DetailFrontLayerDescription))
         frontLayer.drag(Point(frontLayer.visibleCenter.x, frontLayer.visibleBounds.top - 1000))
     }
 
     @Test
-    fun selectDay() = benchmarkRule.measureRepeated(
-        packageName = "com.homalab.android.compose.weather",
-        metrics = listOf(FrameTimingMetric()),
-        iterations = 3,
-        startupMode = StartupMode.COLD,
-        setupBlock = {
-            pressHome()
-            startActivityAndWait()
-        }
-    ) {
-        goToDetail()
+    fun selectDay() = benchmarkRule.measureFrameTiming(afterSetup = { goToDetail() }) {
 
         val dayTabs = device.findObject(By.desc(GlobalConstants.DayTabsDescription))
         dayTabs.children[Random.nextInt(5)].click()
