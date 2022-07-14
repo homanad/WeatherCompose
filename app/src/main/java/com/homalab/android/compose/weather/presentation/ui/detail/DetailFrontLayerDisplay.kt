@@ -57,7 +57,9 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
         ) {
             forecastDayItem.list.forEach {
                 DetailConditionCard(
-                    modifier = Modifier.padding(start = Dimension1, end = Dimension1),
+                    modifier = Modifier
+                        .padding(start = Dimension1, end = Dimension1)
+                        .width(DetailCardWidth),
                     forecastItem = it,
                     timeZone = forecastDayItem.timeZone
                 )
@@ -119,7 +121,10 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
                 )
             }
 
-            TitledChart(title = stringResource(id = R.string.sea_level) + " & " + stringResource(id = R.string.pressure)) {
+            TitledChart(
+                title = stringResource(id = R.string.sea_level) + " & " + stringResource(id = R.string.pressure),
+                modifier = titledChartModifier
+            ) {
                 val seaLevelValues = mutableListOf<MultipleChartValue>()
                 val pressureValues = mutableListOf<MultipleChartValue>()
 
@@ -167,7 +172,7 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
                     verticalAxisValues = generateMinMaxRange(seaLevelValues.map { it.value }
                         .minOf { it }, seaLevelValues.map { it.value }.maxOf { it }),
                     verticalAxisLabelTransform = { formatHPa(it.toInt()) },
-                    showHorizontalLines = true,
+                    showHorizontalLines = false,
                     horizontalLineStyle = HorizontalLineStyle.STROKE
                 )
             }

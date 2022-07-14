@@ -25,6 +25,7 @@ fun DetailBackLayerDisplay(
     forecastDayItem: ForecastDayItem?,
     modifier: Modifier = Modifier,
 ) {
+    DefaultVerticalSpacer()
     if (forecastDayItem != null) {
         DetailBackLayerInfo(forecastDayItem = forecastDayItem, modifier)
     } else {

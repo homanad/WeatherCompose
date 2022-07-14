@@ -56,7 +56,8 @@ fun DetailConditionCard(modifier: Modifier = Modifier, forecastItem: ForecastIte
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_visibility),

@@ -14,12 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.homalab.android.compose.weather.util.Dimension1
 import com.homalab.android.compose.weather.util.Dimension2
 import com.homalab.android.compose.weather.util.Dimension4
+import com.homalab.android.compose.weather.util.SelectedDayBorderStroke
 
 @Composable
 fun DayTabs(
@@ -32,14 +31,20 @@ fun DayTabs(
         selectedTabIndex = selectedTab,
         modifier = modifier,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         indicator = { tabPositions ->
             Box(
                 modifier = Modifier
                     .tabIndicatorOffset(tabPositions[selectedTab])
                     .fillMaxSize()
                     .padding(Dimension1)
-                    .border(BorderStroke(2.dp, Color.Black), RoundedCornerShape(Dimension4))
+                    .border(
+                        BorderStroke(
+                            SelectedDayBorderStroke,
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        RoundedCornerShape(Dimension4)
+                    )
             )
         },
         divider = {}

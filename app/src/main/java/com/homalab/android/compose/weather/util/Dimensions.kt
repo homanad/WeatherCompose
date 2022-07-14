@@ -27,3 +27,7 @@ val RecentlyBottomSheetPeekHeight = 44.dp
 val RecentlyBottomSheetCorner = 20.dp
 
 val VisibilityImageSize = 20.dp
+
+val SelectedDayBorderStroke = 2.dp
+
+val DetailCardWidth = 150.dp
