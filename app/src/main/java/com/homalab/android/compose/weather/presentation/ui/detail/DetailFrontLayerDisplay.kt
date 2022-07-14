@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.ForecastItem
 import com.homalab.android.compose.weather.presentation.components.*
@@ -34,7 +37,7 @@ fun DetailFrontLayerDisplay(
 
 @Composable
 fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.semantics { contentDescription = GlobalConstants.DetailFrontLayerDescription }) {
 
         RoundedLine(modifier = Modifier.align(Alignment.CenterHorizontally))
 
@@ -53,7 +56,7 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
         SmallVerticalSpacer()
 
         Row(
-            modifier = Modifier
+            modifier = Modifier.semantics { contentDescription = GlobalConstants.ConditionsDescription }
                 .fillMaxWidth()
                 .padding(Dimension2)
                 .horizontalScroll(rememberScrollState()),

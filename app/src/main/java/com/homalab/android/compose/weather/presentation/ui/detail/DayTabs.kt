@@ -11,7 +11,10 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.util.Dimension1
 import com.homalab.android.compose.weather.util.Dimension2
 import com.homalab.android.compose.weather.util.Dimension4
@@ -26,7 +29,7 @@ fun DayTabs(
 ) {
     TabRow(
         selectedTabIndex = selectedTab,
-        modifier = modifier,
+        modifier = modifier.semantics { contentDescription = GlobalConstants.DayTabsDescription },
         contentColor = MaterialTheme.colorScheme.onSurface,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         indicator = { tabPositions ->

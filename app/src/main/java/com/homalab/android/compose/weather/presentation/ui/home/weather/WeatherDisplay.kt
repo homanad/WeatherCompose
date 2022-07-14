@@ -14,11 +14,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.homalab.android.compose.constants.GlobalConstants
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.presentation.components.*
@@ -184,7 +187,7 @@ private fun WeatherInfo(
             }
 
             Column(
-                modifier = Modifier.clickable { onDetailClick.invoke() },
+                modifier = Modifier.clickable { onDetailClick.invoke() }.semantics { contentDescription = GlobalConstants.DetailButtonDescription },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
