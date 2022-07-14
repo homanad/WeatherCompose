@@ -3,12 +3,11 @@ package com.homalab.android.compose.weather.presentation.ui.detail
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.domain.entity.subEntity.ForecastItem
 import com.homalab.android.compose.weather.presentation.components.*
@@ -41,10 +40,14 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
 
         DefaultVerticalSpacer()
 
-        Text(
+        TitleWithLine(
             modifier = Modifier.fillMaxWidth(),
-            text = TimeFormatter.formatDetailDay(forecastDayItem.dt, forecastDayItem.timeZone),
-            textAlign = TextAlign.Center
+            title = TimeFormatter.formatDetailDay(forecastDayItem.dt, forecastDayItem.timeZone),
+            style = MaterialTheme.typography.titleLarge,
+            lineColors = LineColors(
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.primary
+            )
         )
 
         SmallVerticalSpacer()
