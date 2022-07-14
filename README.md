@@ -35,3 +35,7 @@
 ### UI test
 
 - Macro benchmark test
+
+### Custom composable
+- Multiple lines chart (for temperature, humidity, clouds, sea level, pressure,...)
+- Bar chart (for rain)
