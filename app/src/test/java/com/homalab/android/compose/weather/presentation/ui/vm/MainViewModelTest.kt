@@ -7,7 +7,6 @@ import com.homalab.android.compose.weather.domain.entity.City
 import com.homalab.android.compose.weather.domain.entity.ForecastData
 import com.homalab.android.compose.weather.domain.entity.WeatherData
 import com.homalab.android.compose.weather.domain.entity.subEntity.*
-import com.homalab.android.compose.weather.domain.repository.WeatherRepository
 import com.homalab.android.compose.weather.domain.usecase.GetCurrentWeatherUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetForecastDataUseCase
 import com.homalab.android.compose.weather.domain.usecase.GetLastWeatherUseCase
@@ -54,7 +53,10 @@ class MainViewModelTest {
     fun shouldReturnLastWeatherFromRemote() = runTest(standardTestDispatcher) {
         val useCase = GetLastWeatherUseCase(weatherRepository)
         val weatherData = useCase.invoke(0)
-        Assert.assertEquals(weatherData, getRemoteWeatherData(weatherData.coord.lat, weatherData.coord.lon))
+        Assert.assertEquals(
+            weatherData,
+            getRemoteWeatherData(weatherData.coord.lat, weatherData.coord.lon)
+        )
     }
 
     @Test
@@ -137,9 +139,12 @@ private fun getLocalWeatherData(id: Int): WeatherData {
         coord = Coord(10.0, 10.0),
         weather = listOf(),
         base = "",
-        main = Main(10f, 10f, 10f, 10f, 10f, 10f),
+        main = Main(10f, 10f, 10f, 10f, 1010, 10, 1000),
         visibility = 0,
         wind = Wind(10f, 360, 10f),
+        rain = null,
+        snow = null,
+        clouds = Clouds(100),
         dt = 10L,
         sys = Sys(10, id, "local", 100L, 100L),
         timeZone = 1,
@@ -154,9 +159,12 @@ private fun getRemoteWeatherData(lat: Double, lon: Double): WeatherData {
         coord = Coord(lat, lon),
         weather = listOf(),
         base = "",
-        main = Main(10f, 10f, 10f, 10f, 10f, 10f),
+        main = Main(10f, 10f, 10f, 10f, 1010, 10, 1000),
         visibility = 0,
         wind = Wind(10f, 360, 10f),
+        rain = null,
+        snow = null,
+        clouds = Clouds(100),
         dt = 10L,
         sys = Sys(10, 1000, "remote", 100L, 100L),
         timeZone = 1,
@@ -172,11 +180,13 @@ private fun getRemoteForecastData(lat: Double, lon: Double): ForecastData {
         list = listOf(
             ForecastItem(
                 dt = 10L,
-                main = Main(10f, 10f, 10f, 10f, 10f, 10f),
+                main = Main(10f, 10f, 10f, 10f, 1010, 10, 1000),
                 weather = listOf(),
                 wind = Wind(10f, 360, 10f),
                 visibility = 0,
                 pop = 0f,
+                clouds = Clouds(90),
+                rain = null,
                 sys = ForecastSys("n"),
                 dt_txt = "dt_txt"
             )
@@ -200,11 +210,13 @@ private fun getLocalForecastData(lat: Double, lon: Double): ForecastData {
         list = listOf(
             ForecastItem(
                 dt = 10L,
-                main = Main(10f, 10f, 10f, 10f, 10f, 10f),
+                main = Main(10f, 10f, 10f, 10f, 1010, 10, 1000),
                 weather = listOf(),
                 wind = Wind(10f, 360, 10f),
                 visibility = 0,
                 pop = 0f,
+                clouds = Clouds(90),
+                rain = null,
                 sys = ForecastSys("n"),
                 dt_txt = "dt_txt"
             )
