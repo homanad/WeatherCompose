@@ -12,9 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import com.homalab.android.compose.weather.util.Dimension3
 
 @Composable
 fun BarChart(
@@ -25,38 +24,44 @@ fun BarChart(
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     showHorizontalLines: Boolean = true,
+    horizontalLineSpacing: Dp = HorizontalLineSpacing,
     horizontalLineStyle: HorizontalLineStyle = HorizontalLineStyle.DASH,
     verticalAxisLabelColor: Color = DefaultAxisLabelColor,
     verticalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
     axisColor: Color = Color.Gray,
-    barWidthRatio: Float = DefaultBarWidthRatio
+    barWidthRatio: Float = DefaultBarWidthRatio,
+    axisThickness: Dp = DefaultAxisThickness,
+    contentPadding: Dp = DefaultContentPadding
 ) {
-    val chartHeight = HorizontalLineSpacing * verticalAxisValues.size
+    val axisThicknessPx = axisThickness.toPx()
+    val contentPaddingPx = contentPadding.toPx()
+
+    val visibleChartHeight = horizontalLineSpacing * (verticalAxisValues.size - 1)
+    val horizontalAxisLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
+
+    val chartHeight = visibleChartHeight + horizontalAxisLabelHeight
+
+    val leftAreaWidth =
+        (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
+            .div(1.75)).toInt() + contentPaddingPx
 
     Canvas(modifier = modifier.height(chartHeight)) {
-        val bottomAreaHeight = horizontalAxisLabelFontSize.toPx()
-        val leftAreaWidth =
-            (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
-                .div(1.75)).toInt() + Dimension3.toPx() //TODO fix padding
-
-        val verticalAxisLength = size.height - bottomAreaHeight
+        val verticalAxisLength = visibleChartHeight.toPx()
         val horizontalAxisLength = size.width - leftAreaWidth
 
         val distanceBetweenVerticalAxisValues = (verticalAxisLength / (verticalAxisValues.size - 1))
 
-        val axisThicknessPx = 1.dp.toPx()
-
         //draw horizontal axis
         drawRect(
             color = axisColor,
-            topLeft = Offset(leftAreaWidth.toFloat(), verticalAxisLength),
+            topLeft = Offset(leftAreaWidth, verticalAxisLength),
             size = Size(horizontalAxisLength, axisThicknessPx)
         )
 
         //draw vertical axis
         drawRect(
             color = axisColor,
-            topLeft = Offset(leftAreaWidth.toFloat(), 0.0f),
+            topLeft = Offset(leftAreaWidth, 0.0f),
             size = Size(axisThicknessPx, verticalAxisLength)
         )
 
@@ -89,8 +94,8 @@ fun BarChart(
 
             if (showHorizontalLines && index != 0)
                 drawLine(
-                    start = Offset(leftAreaWidth.toFloat(), y),
-                    end = Offset(leftAreaWidth.toFloat() + horizontalAxisLength, y),
+                    start = Offset(leftAreaWidth, y),
+                    end = Offset(leftAreaWidth + horizontalAxisLength, y),
                     color = axisColor,
                     strokeWidth = axisThicknessPx,
                     pathEffect = if (horizontalLineStyle == HorizontalLineStyle.DASH) PathEffect.dashPathEffect(
@@ -132,7 +137,7 @@ fun BarChart(
                 drawText(
                     barChartData.label,
                     center,
-                    verticalAxisLength + horizontalAxisLabelFontSize.toPx(),
+                    verticalAxisLength + horizontalAxisLabelHeight.toPx(),
                     horizontalValuesTextPaint
                 )
             }
