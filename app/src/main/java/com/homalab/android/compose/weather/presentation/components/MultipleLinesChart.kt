@@ -40,8 +40,8 @@ fun MultipleLinesChart(
     val visibleChartHeight = horizontalLineSpacing * (verticalAxisValues.size - 1)
     val horizontalAxisLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
 
-    val chartLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
-    val totalChartLabelHeight = chartLabelHeight *
+    val chartLabelLineHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
+    val totalChartLabelHeight = chartLabelLineHeight *
             ceil(chartData.size.toFloat() / MaxChartLabelInOneLine)
 
     val chartHeight = visibleChartHeight + horizontalAxisLabelHeight + totalChartLabelHeight
@@ -54,8 +54,8 @@ fun MultipleLinesChart(
 
     val horizontalLabelAreaY =
         (visibleChartHeight + horizontalAxisLabelHeight).toPx()
-//    val chartLabelAreaY =
-//        (visibleChartHeight + horizontalAxisLabelHeight + chartLabelHeight).toPx()
+    val chartLabelAreaBaseY =
+        (visibleChartHeight + horizontalAxisLabelHeight).toPx()
 
     val leftAreaWidth =
         (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSizePx
@@ -173,34 +173,34 @@ fun MultipleLinesChart(
                 previousOffset = currentOffset
             }
 
-            val labelRectPaint = Paint()
+            val labelRectPaint = Paint().apply { isAntiAlias = true }
             drawContext.canvas.nativeCanvas.apply {
-                val width = horizontalAxisWidth / MaxChartLabelInOneLine
+                val width =
+                    if (chartData.size >= MaxChartLabelInOneLine) horizontalAxisWidth / MaxChartLabelInOneLine
+                    else horizontalAxisWidth / chartData.size
                 var x = width * (i % MaxChartLabelInOneLine)
                 x += leftAreaWidth
 
-                val part = width.div(4)
-
-                val y =
-                    verticalAxisHeight + horizontalAxisLabelHeight.toPx() + chartLabelHeight.toPx() *
-                            ceil((i + 1).toFloat() / MaxChartLabelInOneLine)
-
-                x += part
+                val y = chartLabelAreaBaseY + chartLabelLineHeight.toPx() *
+                        ceil((i + 1).toFloat() / MaxChartLabelInOneLine)
 
                 labelRectPaint.color = multipleChartData.lineColor.toArgb()
+                val startRect = x + contentPaddingPx
+                val endRect = startRect + width / 4
                 drawRect(
-                    x,
+                    startRect,
                     y - horizontalAxisLabelFontSizePx,
-                    x + part,
+                    endRect,
                     y + horizontalAxisLabelFontSizePx / 2,
                     labelRectPaint
                 )
 
-                val textWidth = multipleChartData.label.length * verticalAxisLabelFontSizePx
-
+                val textWidth =
+                    (multipleChartData.label.length * verticalAxisLabelFontSizePx).div(1.75)
+                        .toFloat()
                 drawText(
                     multipleChartData.label,
-                    (x + part + textWidth / 2),
+                    (endRect + contentPaddingPx + textWidth / 2),
                     y,
                     horizontalValuesPaint
                 )
@@ -280,4 +280,4 @@ val DefaultContentPadding = 8.dp
 
 val HorizontalLineSpacing = 30.dp
 
-val MaxChartLabelInOneLine = 3
+const val MaxChartLabelInOneLine = 3
