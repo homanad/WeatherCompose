@@ -1,6 +1,11 @@
 # Weather app with Jetpack Compose
-
+A sample application developed using Jetpack Compose
 ---
+### Demo
+<p>
+<img src="/attachments/home_screen.gif" width="250" />
+<img src="/attachments/detail_screen.gif" width="250" />
+</p>
 
 ### Supported API (free)
 
