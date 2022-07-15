@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -200,4 +201,60 @@ fun <T> ChartAnimatedContent(targetState: T, content: @Composable (target: T) ->
     ) { target ->
         content.invoke(target)
     }
+}
+
+fun testMultipleBars(): List<MultipleBarsChartData> {
+    return listOf(
+        MultipleBarsChartData(
+            values = listOf(
+                MultipleBarsChartValue(
+                    barColor = Color.Blue,
+                    value = 10f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Gray,
+                    value = 11f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Green,
+                    value = 14f
+                )
+            ),
+            label = "label1"
+        ),
+        MultipleBarsChartData(
+            values = listOf(
+                MultipleBarsChartValue(
+                    barColor = Color.Blue,
+                    value = 20f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Gray,
+                    value = 15f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Green,
+                    value = 16f
+                )
+            ),
+            label = "label2"
+        ),
+        MultipleBarsChartData(
+            values = listOf(
+                MultipleBarsChartValue(
+                    barColor = Color.Blue,
+                    value = 10f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Gray,
+                    value = 11f
+                ),
+                MultipleBarsChartValue(
+                    barColor = Color.Green,
+                    value = 14f
+                )
+            ),
+            label = "label3"
+        )
+    )
 }
