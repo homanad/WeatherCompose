@@ -71,8 +71,8 @@ fun TopBar(
         searchState.searching = false
     }
 
-    BackHandler {
-        if (searchState.focused) searchState.focused = false
+    BackHandler(searchState.focused) {
+        searchState.focused = false
     }
 
     Row(
