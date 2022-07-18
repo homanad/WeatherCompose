@@ -1,9 +1,12 @@
 package com.homalab.android.compose.weather.presentation.components
 
 import android.graphics.Paint
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -16,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlin.math.ceil
 
 @Composable
@@ -75,6 +79,13 @@ fun MultipleLinesChart(
         isAntiAlias = true
     }
 
+    var animatedLines by remember {
+        mutableStateOf(listOf<Line>())
+    }
+    var animatedCircles by remember {
+        mutableStateOf(listOf<CircleEntity>())
+    }
+
     Canvas(modifier = modifier.height(chartHeight)) {
         val verticalAxisHeight = visibleChartHeight.toPx()
         val horizontalAxisWidth = size.width - leftAreaWidth
@@ -125,8 +136,10 @@ fun MultipleLinesChart(
         val minValue = verticalAxisValues.minOf { it }
         val deltaRange = verticalAxisValues.maxOf { it } - minValue
 
-        val circleOffsets = mutableListOf<CircleEntity>()
+        val circleEntities = mutableListOf<CircleEntity>()
         val textOffsets = mutableListOf<TextEntity>()
+
+        val lines = mutableListOf<Line>()
 
         chartData.forEachIndexed { i, multipleChartData ->
             var previousOffset: Offset? = null
@@ -147,7 +160,7 @@ fun MultipleLinesChart(
 
                 val endOffset = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
 
-                if (drawCirclePoint) circleOffsets.add(
+                if (drawCirclePoint) circleEntities.add(
                     CircleEntity(
                         multipleChartData.dotColor,
                         endOffset,
@@ -163,11 +176,19 @@ fun MultipleLinesChart(
 
                 previousOffset?.let {
                     val start = Offset(it.x + barWidth.div(2), it.y)
-                    drawLine(
-                        start = start,
-                        end = endOffset,
-                        color = multipleChartData.lineColor,
-                        strokeWidth = strokeWidth.toPx()
+//                    drawLine(
+//                        start = start,
+//                        end = endOffset,
+//                        color = multipleChartData.lineColor,
+//                        strokeWidth = strokeWidth.toPx()
+//                    )
+                    lines.add(
+                        Line(
+                            start = start,
+                            end = endOffset,
+                            color = multipleChartData.lineColor,
+                            strokeWidth = strokeWidth
+                        )
                     )
                 }
                 previousOffset = currentOffset
@@ -205,6 +226,9 @@ fun MultipleLinesChart(
                     horizontalValuesPaint
                 )
             }
+
+            animatedLines = lines
+            animatedCircles = circleEntities
         }
 
         drawContext.canvas.nativeCanvas.apply {
@@ -218,13 +242,32 @@ fun MultipleLinesChart(
             }
         }
 
-        circleOffsets.forEach {
-            drawCircle(
-                color = it.color,
-                center = it.offset,
-                radius = strokeWidth.times(it.ratio).toPx()
-            )
-        }
+//        circleEntities.forEach {
+//            drawCircle(
+//                color = it.color,
+//                center = it.offset,
+//                radius = strokeWidth.times(it.ratio).toPx()
+//            )
+//        }
+    }
+
+    animatedLines.forEachIndexed { index, line ->
+        AnimatedLine(
+            modifier = modifier.height(chartHeight),
+            index = index,
+            durationMillis = DEFAULT_DURATION,
+            line = line
+        )
+    }
+
+    animatedCircles.forEachIndexed { index, circleEntity ->
+        AnimatedCircle(
+            modifier = modifier.height(chartHeight),
+            index = index,
+            durationMillis = DEFAULT_DURATION,
+            strokeWidth = strokeWidth,
+            circleEntity = circleEntity
+        )
     }
 }
 
@@ -262,6 +305,66 @@ data class MultipleChartValue(
 enum class HorizontalLineStyle {
     DASH, STROKE
 }
+
+data class Line(val color: Color, val strokeWidth: Dp, val start: Offset, val end: Offset)
+
+@Composable
+fun AnimatedLine(modifier: Modifier, index: Int, durationMillis: Int, line: Line) {
+    val animatable = remember {
+        Animatable(0f)
+    }
+
+    LaunchedEffect(key1 = null, block = {
+        delay((index + 1) * durationMillis.toLong())
+        animatable.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing)
+        )
+    })
+
+    Canvas(modifier = modifier, onDraw = {
+        drawLine(
+            color = line.color,
+            start = line.start,
+            end = Offset(
+                (line.end.x * animatable.value) + line.start.x * (1f - animatable.value),
+                (line.end.y * animatable.value) + line.start.y * (1f - animatable.value)
+            ),
+            strokeWidth = line.strokeWidth.toPx()
+        )
+    })
+}
+
+@Composable
+fun AnimatedCircle(
+    modifier: Modifier,
+    index: Int,
+    durationMillis: Int,
+    strokeWidth: Dp,
+    circleEntity: CircleEntity
+) {
+    val animatable = remember {
+        Animatable(0f)
+    }
+
+    LaunchedEffect(key1 = null, block = {
+        delay((index) * durationMillis.toLong())
+        animatable.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing)
+        )
+    })
+
+    Canvas(modifier = modifier, onDraw = {
+        drawCircle(
+            color = circleEntity.color,
+            center = circleEntity.offset,
+            radius = strokeWidth.times(circleEntity.ratio).toPx() * animatable.value
+        )
+    })
+}
+
+const val DEFAULT_DURATION = 150
 
 @Composable
 fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
