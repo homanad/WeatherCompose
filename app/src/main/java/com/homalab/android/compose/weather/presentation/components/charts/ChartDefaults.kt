@@ -14,6 +14,7 @@ val DefaultContentPadding = 8.dp
 val HorizontalLineSpacing = 30.dp
 const val MaxChartLabelInOneLine = 3
 const val DEFAULT_DURATION = 150
+const val DefaultBarWidthRatio = 0.7f
 
 object ChartDefaults {
 

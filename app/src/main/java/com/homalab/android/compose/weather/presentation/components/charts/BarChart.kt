@@ -1,9 +1,12 @@
 package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
+import android.graphics.RectF
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -14,6 +17,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import kotlinx.coroutines.delay
 
 @Composable
 fun BarChart(
@@ -31,7 +35,8 @@ fun BarChart(
     axisColor: Color = Color.Gray,
     barWidthRatio: Float = DefaultBarWidthRatio,
     axisThickness: Dp = DefaultAxisThickness,
-    contentPadding: Dp = DefaultContentPadding
+    contentPadding: Dp = DefaultContentPadding,
+    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
 ) {
     val axisThicknessPx = axisThickness.toPx()
     val contentPaddingPx = contentPadding.toPx()
@@ -44,6 +49,10 @@ fun BarChart(
     val leftAreaWidth =
         (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSize.toPx()
             .div(1.75)).toInt() + contentPaddingPx
+
+    var animatedBars by remember {
+        mutableStateOf(listOf<BarEntity>())
+    }
 
     Canvas(modifier = modifier.height(chartHeight)) {
         val verticalAxisLength = visibleChartHeight.toPx()
@@ -108,6 +117,8 @@ fun BarChart(
         val minValue = verticalAxisValues.minOf { it }
         val deltaRange = verticalAxisValues.maxOf { it } - minValue
 
+        val rectFs = mutableListOf<BarEntity>()
+
         chartData.forEachIndexed { index, barChartData ->
             var start = barWidth * index
             start += leftAreaWidth
@@ -127,7 +138,12 @@ fun BarChart(
                 verticalAxisLength = verticalAxisLength
             )
 
-            drawRect(
+            if (animationOptions.isEnabled) rectFs.add(
+                BarEntity(
+                    barChartData.barColor,
+                    RectF(rect.left, rect.top, rect.right, rect.bottom)
+                )
+            ) else drawRect(
                 color = barChartData.barColor,
                 topLeft = rect.topLeft,
                 size = rect.bottomRight.toSize(rect.topLeft)
@@ -142,6 +158,17 @@ fun BarChart(
                 )
             }
         }
+
+        animatedBars = rectFs
+    }
+
+    animatedBars.forEachIndexed { index, bar ->
+        AnimatedBar(
+            modifier = modifier.height(chartHeight),
+            index = index,
+            durationMillis = animationOptions.durationMillis,
+            bar = bar
+        )
     }
 }
 
@@ -171,4 +198,41 @@ data class BarChartData(
     val label: String
 )
 
-const val DefaultBarWidthRatio = 0.7f
+data class BarEntity(val color: Color, val rectF: RectF)
+
+@Composable
+fun AnimatedBar(
+    modifier: Modifier = Modifier,
+    index: Int,
+    durationMillis: Long,
+    bar: BarEntity
+) {
+    val animatable = remember {
+        Animatable(0f)
+    }
+
+    LaunchedEffect(key1 = animatable, block = {
+        delay(index * durationMillis)
+        animatable.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis.toInt())
+        )
+    })
+
+    val paint = Paint().apply {
+        isAntiAlias = true
+        color = bar.color.toArgb()
+    }
+    val rect = bar.rectF
+    Canvas(modifier = modifier, onDraw = {
+        drawContext.canvas.nativeCanvas.run {
+            drawRect(
+                rect.left,
+                rect.bottom - (rect.bottom - rect.top) * animatable.value,
+                rect.right,
+                rect.bottom,
+                paint
+            )
+        }
+    })
+}

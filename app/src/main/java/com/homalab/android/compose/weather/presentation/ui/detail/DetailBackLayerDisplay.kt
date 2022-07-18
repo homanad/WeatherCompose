@@ -58,6 +58,7 @@ fun DetailBackLayerInfo(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TemperatureChart(
     data: ForecastDayItem,
@@ -107,9 +108,7 @@ fun TemperatureChart(
         modifier = titledChartModifier,
         lineColors = LineColors(TemperatureMinColor, TemperatureMaxColor)
     ) {
-        ChartAnimatedContent(
-            targetState = multipleChartData,
-        ) { chartData ->
+        ChartAnimatedContent(targetState = multipleChartData) { chartData ->
             MultipleLinesChart(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,6 +127,7 @@ fun TemperatureChart(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun RainChart(
     data: ForecastDayItem,
@@ -159,7 +159,8 @@ fun RainChart(
                     .padding(Dimension4),
                 chartData = chartData,
                 verticalAxisValues = verticalAxisValues,
-                verticalAxisLabelTransform = { formatMm(it) }
+                verticalAxisLabelTransform = { formatMm(it) },
+                animationOptions = ChartDefaults.AnimationOptions(true, durationMillis = 300)
             )
         }
     }
@@ -188,22 +189,34 @@ private const val MAX_HORIZONTAL_LINE = 5
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun <T> ChartAnimatedContent(targetState: T, content: @Composable (target: T) -> Unit) {
+fun <T> ChartAnimatedContent(
+    targetState: T,
+    animationSpec: ContentTransform = getFadeInOutContentTransform(),
+    content: @Composable (target: T) -> Unit
+) {
     AnimatedContent(
         targetState = targetState,
-        transitionSpec = {
-            expandHorizontally(
-                animationSpec = tween(DURATION_DOUBLE_LONG, delayMillis = DURATION_SMALL),
-                expandFrom = Alignment.Start
-            ) with shrinkHorizontally(
-                animationSpec = tween(DURATION_SMALL),
-                shrinkTowards = Alignment.Start
-            )
-        }
+        transitionSpec = { animationSpec }
     ) { target ->
         content.invoke(target)
     }
 }
+
+@OptIn(ExperimentalAnimationApi::class)
+fun getHorizontalExpandContentTransform() = expandHorizontally(
+    animationSpec = tween(DURATION_DOUBLE_LONG, delayMillis = DURATION_SMALL),
+    expandFrom = Alignment.Start
+) with shrinkHorizontally(
+    animationSpec = tween(DURATION_SMALL),
+    shrinkTowards = Alignment.Start
+)
+
+@OptIn(ExperimentalAnimationApi::class)
+fun getFadeInOutContentTransform() = fadeIn(
+    animationSpec = tween(DURATION_SMALL)
+) with fadeOut(
+    animationSpec = tween(DURATION_SMALL)
+)
 
 fun testMultipleBars(): List<MultipleBarsChartData> {
     return listOf(

@@ -256,7 +256,7 @@ fun MultipleLinesChart(
         AnimatedLine(
             modifier = modifier.height(chartHeight),
             index = index,
-            durationMillis = DEFAULT_DURATION,
+            durationMillis = animationOptions.durationMillis,
             line = line
         )
     }
@@ -265,7 +265,7 @@ fun MultipleLinesChart(
         AnimatedCircle(
             modifier = modifier.height(chartHeight),
             index = index,
-            durationMillis = DEFAULT_DURATION,
+            durationMillis = animationOptions.durationMillis,
             strokeWidth = strokeWidth,
             circleEntity = circleEntity
         )
@@ -310,16 +310,16 @@ enum class HorizontalLineStyle {
 data class Line(val color: Color, val strokeWidth: Dp, val start: Offset, val end: Offset)
 
 @Composable
-fun AnimatedLine(modifier: Modifier, index: Int, durationMillis: Int, line: Line) {
+fun AnimatedLine(modifier: Modifier, index: Int, durationMillis: Long, line: Line) {
     val animatable = remember {
         Animatable(0f)
     }
 
     LaunchedEffect(key1 = null, block = {
-        delay((index + 1) * durationMillis.toLong())
+        delay((index + 1) * durationMillis)
         animatable.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing)
+            animationSpec = tween(durationMillis = durationMillis.toInt(), easing = LinearEasing)
         )
     })
 
@@ -340,7 +340,7 @@ fun AnimatedLine(modifier: Modifier, index: Int, durationMillis: Int, line: Line
 fun AnimatedCircle(
     modifier: Modifier,
     index: Int,
-    durationMillis: Int,
+    durationMillis: Long,
     strokeWidth: Dp,
     circleEntity: CircleEntity
 ) {
@@ -349,10 +349,10 @@ fun AnimatedCircle(
     }
 
     LaunchedEffect(key1 = null, block = {
-        delay((index) * durationMillis.toLong())
+        delay(index * durationMillis)
         animatable.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing)
+            animationSpec = tween(durationMillis = durationMillis.toInt(), easing = LinearEasing)
         )
     })
 
