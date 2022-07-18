@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.components
+package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 
 @Composable
-fun MultipleBarsChart(
+fun BarChart(
     modifier: Modifier = Modifier,
-    chartData: List<MultipleBarsChartData>,
+    chartData: List<BarChartData>,
     verticalAxisValues: List<Float>,
     verticalAxisLabelTransform: (Float) -> String,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
@@ -110,30 +110,28 @@ fun MultipleBarsChart(
 
         chartData.forEachIndexed { index, barChartData ->
             var start = barWidth * index
-            start += leftAreaWidth + ((barWidth - barWidth * barWidthRatio) / 2)
+            start += leftAreaWidth
 
             val center = start + barWidth / 2
 
-            val calculatedOneBarWidth = (barWidth * barWidthRatio / barChartData.values.size)
+            val calculatedBarWidth = barWidth * barWidthRatio
+            val left = center - calculatedBarWidth / 2
+            val right = left + calculatedBarWidth
 
-            barChartData.values.forEachIndexed { valueIndex, barsChartValue ->
-                val startX = start + calculatedOneBarWidth * valueIndex
+            val rect = calculateRect(
+                left = left,
+                right = right,
+                value = barChartData.barValue,
+                minValue = minValue,
+                deltaRange = deltaRange,
+                verticalAxisLength = verticalAxisLength
+            )
 
-                val rect = calculateRect(
-                    left = startX,
-                    right = startX + calculatedOneBarWidth,
-                    value = barsChartValue.value,
-                    minValue = minValue,
-                    deltaRange = deltaRange,
-                    verticalAxisLength = verticalAxisLength
-                )
-
-                drawRect(
-                    color = barsChartValue.barColor,
-                    topLeft = rect.topLeft,
-                    size = rect.bottomRight.toSize(rect.topLeft)
-                )
-            }
+            drawRect(
+                color = barChartData.barColor,
+                topLeft = rect.topLeft,
+                size = rect.bottomRight.toSize(rect.topLeft)
+            )
 
             drawContext.canvas.nativeCanvas.run {
                 drawText(
@@ -167,12 +165,10 @@ private fun calculateRect(
     return Rect(topLeft = Offset(left, top), Offset(right, verticalAxisLength))
 }
 
-data class MultipleBarsChartData(
-    val values: List<MultipleBarsChartValue>,
+data class BarChartData(
+    val barColor: Color,
+    val barValue: Float,
     val label: String
 )
 
-data class MultipleBarsChartValue(
-    val barColor: Color,
-    val value: Float
-)
+const val DefaultBarWidthRatio = 0.7f

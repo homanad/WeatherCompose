@@ -15,6 +15,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
+import com.homalab.android.compose.weather.presentation.components.charts.*
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.theme.RainColor
 import com.homalab.android.compose.weather.presentation.theme.TemperatureMaxColor
@@ -120,7 +121,8 @@ fun TemperatureChart(
                 ),
                 verticalAxisLabelTransform = {
                     formatCDegree(it)
-                }
+                },
+                animationOptions = ChartDefaults.defaultAnimationOptions().copy(isEnabled = true)
             )
         }
     }

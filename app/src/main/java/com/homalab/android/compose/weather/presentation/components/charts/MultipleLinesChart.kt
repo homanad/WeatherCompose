@@ -1,4 +1,4 @@
-package com.homalab.android.compose.weather.presentation.components
+package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
@@ -17,8 +17,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.math.ceil
 
@@ -39,7 +37,8 @@ fun MultipleLinesChart(
     strokeWidth: Dp = DefaultStrokeWidth,
     drawCirclePoint: Boolean = true,
     axisThickness: Dp = DefaultAxisThickness,
-    contentPadding: Dp = DefaultContentPadding
+    contentPadding: Dp = DefaultContentPadding,
+    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
 ) {
     val visibleChartHeight = horizontalLineSpacing * (verticalAxisValues.size - 1)
     val horizontalAxisLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
@@ -176,19 +175,19 @@ fun MultipleLinesChart(
 
                 previousOffset?.let {
                     val start = Offset(it.x + barWidth.div(2), it.y)
-//                    drawLine(
-//                        start = start,
-//                        end = endOffset,
-//                        color = multipleChartData.lineColor,
-//                        strokeWidth = strokeWidth.toPx()
-//                    )
-                    lines.add(
+
+                    if (animationOptions.isEnabled) lines.add(
                         Line(
                             start = start,
                             end = endOffset,
                             color = multipleChartData.lineColor,
                             strokeWidth = strokeWidth
                         )
+                    ) else drawLine(
+                        start = start,
+                        end = endOffset,
+                        color = multipleChartData.lineColor,
+                        strokeWidth = strokeWidth.toPx()
                     )
                 }
                 previousOffset = currentOffset
@@ -227,8 +226,10 @@ fun MultipleLinesChart(
                 )
             }
 
-            animatedLines = lines
-            animatedCircles = circleEntities
+            if (animationOptions.isEnabled) {
+                animatedLines = lines
+                animatedCircles = circleEntities
+            }
         }
 
         drawContext.canvas.nativeCanvas.apply {
@@ -242,13 +243,13 @@ fun MultipleLinesChart(
             }
         }
 
-//        circleEntities.forEach {
-//            drawCircle(
-//                color = it.color,
-//                center = it.offset,
-//                radius = strokeWidth.times(it.ratio).toPx()
-//            )
-//        }
+        if (!animationOptions.isEnabled) circleEntities.forEach {
+            drawCircle(
+                color = it.color,
+                center = it.offset,
+                radius = strokeWidth.times(it.ratio).toPx()
+            )
+        }
     }
 
     animatedLines.forEachIndexed { index, line ->
@@ -364,7 +365,6 @@ fun AnimatedCircle(
     })
 }
 
-const val DEFAULT_DURATION = 150
 
 @Composable
 fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
@@ -374,13 +374,3 @@ fun TextUnit.toPx() = LocalDensity.current.run { this@toPx.toPx() }
 
 @Composable
 fun TextUnit.toDp() = LocalDensity.current.run { this@toDp.toDp() }
-
-val DefaultStrokeWidth = 4.dp
-val DefaultAxisLabelColor = Color(0xFF3D3D3D)
-val DefaultAxisLabelFontSize = 13.sp
-val DefaultAxisThickness = 1.dp
-val DefaultContentPadding = 8.dp
-
-val HorizontalLineSpacing = 30.dp
-
-const val MaxChartLabelInOneLine = 3
