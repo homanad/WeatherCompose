@@ -19,15 +19,15 @@ const val DefaultBarWidthRatio = 0.7f
 object ChartDefaults {
 
     fun defaultAnimationOptions() =
-        AnimationOptions(isEnabled = false, durationMillis = DEFAULT_DURATION.toLong())
+        AnimationOptions(isEnabled = false, durationMillis = DEFAULT_DURATION)
 
     @Immutable
     class AnimationOptions(
         val isEnabled: Boolean,
-        val durationMillis: Long,
+        val durationMillis: Int,
     ) {
         @Stable
-        fun copy(isEnabled: Boolean = this.isEnabled, durationMillis: Long = this.durationMillis) =
+        fun copy(isEnabled: Boolean = this.isEnabled, durationMillis: Int = this.durationMillis) =
             AnimationOptions(isEnabled, durationMillis)
     }
 }

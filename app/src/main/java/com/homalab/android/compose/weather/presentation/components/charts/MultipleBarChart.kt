@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import com.homalab.android.compose.weather.presentation.components.charts.components.toDp
+import com.homalab.android.compose.weather.presentation.components.charts.components.toPx
 
 @Composable
 fun MultipleBarsChart(

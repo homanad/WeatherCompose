@@ -1,9 +1,6 @@
 package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
@@ -14,10 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import kotlinx.coroutines.delay
+import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedCircle
+import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedLine
+import com.homalab.android.compose.weather.presentation.components.charts.components.toDp
+import com.homalab.android.compose.weather.presentation.components.charts.components.toPx
+import com.homalab.android.compose.weather.presentation.components.charts.entities.CircleEntity
+import com.homalab.android.compose.weather.presentation.components.charts.entities.LineEntity
+import com.homalab.android.compose.weather.presentation.components.charts.entities.TextEntity
 import kotlin.math.ceil
 
 @Composable
@@ -78,8 +80,8 @@ fun MultipleLinesChart(
         isAntiAlias = true
     }
 
-    var animatedLines by remember {
-        mutableStateOf(listOf<Line>())
+    var animatedLineEntities by remember {
+        mutableStateOf(listOf<LineEntity>())
     }
     var animatedCircles by remember {
         mutableStateOf(listOf<CircleEntity>())
@@ -138,7 +140,7 @@ fun MultipleLinesChart(
         val circleEntities = mutableListOf<CircleEntity>()
         val textOffsets = mutableListOf<TextEntity>()
 
-        val lines = mutableListOf<Line>()
+        val lineEntities = mutableListOf<LineEntity>()
 
         chartData.forEachIndexed { i, multipleChartData ->
             var previousOffset: Offset? = null
@@ -176,8 +178,8 @@ fun MultipleLinesChart(
                 previousOffset?.let {
                     val start = Offset(it.x + barWidth.div(2), it.y)
 
-                    if (animationOptions.isEnabled) lines.add(
-                        Line(
+                    if (animationOptions.isEnabled) lineEntities.add(
+                        LineEntity(
                             start = start,
                             end = endOffset,
                             color = multipleChartData.lineColor,
@@ -227,7 +229,7 @@ fun MultipleLinesChart(
             }
 
             if (animationOptions.isEnabled) {
-                animatedLines = lines
+                animatedLineEntities = lineEntities
                 animatedCircles = circleEntities
             }
         }
@@ -252,27 +254,27 @@ fun MultipleLinesChart(
         }
     }
 
-    animatedLines.forEachIndexed { index, line ->
+    animatedLineEntities.forEachIndexed { index, line ->
         AnimatedLine(
             modifier = modifier.height(chartHeight),
-            index = index,
             durationMillis = animationOptions.durationMillis,
-            line = line
+            delayMillis = (index + 1) * animationOptions.durationMillis,
+            lineEntity = line
         )
     }
 
     animatedCircles.forEachIndexed { index, circleEntity ->
         AnimatedCircle(
             modifier = modifier.height(chartHeight),
-            index = index,
             durationMillis = animationOptions.durationMillis,
+            delayMillis = index * animationOptions.durationMillis,
             strokeWidth = strokeWidth,
             circleEntity = circleEntity
         )
     }
 }
 
-fun calculateOffset(
+private fun calculateOffset(
     x: Float,
     value: Float,
     minValue: Float,
@@ -286,9 +288,6 @@ fun calculateOffset(
     val y = verticalAxisLength - barHeightInPixel
     return Offset(x, y)
 }
-
-data class CircleEntity(val color: Color, val offset: Offset, val ratio: Float)
-data class TextEntity(val text: String, val offset: Offset)
 
 data class MultipleChartData(
     val dotColor: Color,
@@ -306,71 +305,3 @@ data class MultipleChartValue(
 enum class HorizontalLineStyle {
     DASH, STROKE
 }
-
-data class Line(val color: Color, val strokeWidth: Dp, val start: Offset, val end: Offset)
-
-@Composable
-fun AnimatedLine(modifier: Modifier, index: Int, durationMillis: Long, line: Line) {
-    val animatable = remember {
-        Animatable(0f)
-    }
-
-    LaunchedEffect(key1 = null, block = {
-        delay((index + 1) * durationMillis)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = durationMillis.toInt(), easing = LinearEasing)
-        )
-    })
-
-    Canvas(modifier = modifier, onDraw = {
-        drawLine(
-            color = line.color,
-            start = line.start,
-            end = Offset(
-                (line.end.x * animatable.value) + line.start.x * (1f - animatable.value),
-                (line.end.y * animatable.value) + line.start.y * (1f - animatable.value)
-            ),
-            strokeWidth = line.strokeWidth.toPx()
-        )
-    })
-}
-
-@Composable
-fun AnimatedCircle(
-    modifier: Modifier,
-    index: Int,
-    durationMillis: Long,
-    strokeWidth: Dp,
-    circleEntity: CircleEntity
-) {
-    val animatable = remember {
-        Animatable(0f)
-    }
-
-    LaunchedEffect(key1 = null, block = {
-        delay(index * durationMillis)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = durationMillis.toInt(), easing = LinearEasing)
-        )
-    })
-
-    Canvas(modifier = modifier, onDraw = {
-        drawCircle(
-            color = circleEntity.color,
-            center = circleEntity.offset,
-            radius = strokeWidth.times(circleEntity.ratio).toPx() * animatable.value
-        )
-    })
-}
-
-
-@Composable
-fun Dp.toPx() = LocalDensity.current.run { this@toPx.toPx() }
-
-@Composable
-fun TextUnit.toPx() = LocalDensity.current.run { this@toPx.toPx() }
-
-@Composable
-fun TextUnit.toDp() = LocalDensity.current.run { this@toDp.toDp() }

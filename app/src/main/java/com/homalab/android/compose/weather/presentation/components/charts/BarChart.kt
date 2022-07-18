@@ -2,8 +2,6 @@ package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
 import android.graphics.RectF
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
@@ -17,7 +15,10 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import kotlinx.coroutines.delay
+import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedBar
+import com.homalab.android.compose.weather.presentation.components.charts.components.toDp
+import com.homalab.android.compose.weather.presentation.components.charts.components.toPx
+import com.homalab.android.compose.weather.presentation.components.charts.entities.BarEntity
 
 @Composable
 fun BarChart(
@@ -165,9 +166,9 @@ fun BarChart(
     animatedBars.forEachIndexed { index, bar ->
         AnimatedBar(
             modifier = modifier.height(chartHeight),
-            index = index,
             durationMillis = animationOptions.durationMillis,
-            bar = bar
+            delayMillis = index * animationOptions.durationMillis.toLong(),
+            barEntity = bar
         )
     }
 }
@@ -197,42 +198,3 @@ data class BarChartData(
     val barValue: Float,
     val label: String
 )
-
-data class BarEntity(val color: Color, val rectF: RectF)
-
-@Composable
-fun AnimatedBar(
-    modifier: Modifier = Modifier,
-    index: Int,
-    durationMillis: Long,
-    bar: BarEntity
-) {
-    val animatable = remember {
-        Animatable(0f)
-    }
-
-    LaunchedEffect(key1 = animatable, block = {
-        delay(index * durationMillis)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis.toInt())
-        )
-    })
-
-    val paint = Paint().apply {
-        isAntiAlias = true
-        color = bar.color.toArgb()
-    }
-    val rect = bar.rectF
-    Canvas(modifier = modifier, onDraw = {
-        drawContext.canvas.nativeCanvas.run {
-            drawRect(
-                rect.left,
-                rect.bottom - (rect.bottom - rect.top) * animatable.value,
-                rect.right,
-                rect.bottom,
-                paint
-            )
-        }
-    })
-}
