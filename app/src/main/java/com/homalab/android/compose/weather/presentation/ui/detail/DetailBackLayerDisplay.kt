@@ -160,7 +160,7 @@ fun RainChart(
                 chartData = chartData,
                 verticalAxisValues = verticalAxisValues,
                 verticalAxisLabelTransform = { formatMm(it) },
-                animationOptions = ChartDefaults.AnimationOptions(true, durationMillis = 100)
+                animationOptions = ChartDefaults.AnimationOptions(true, durationMillis = 300)
             )
         }
     }
