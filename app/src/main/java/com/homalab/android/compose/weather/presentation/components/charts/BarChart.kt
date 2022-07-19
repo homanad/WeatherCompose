@@ -163,7 +163,7 @@ fun BarChart(
         animatedBars = rectFs
     }
 
-    animatedBars.forEachIndexed { index, bar ->
+    animatedBars.filter { it.rectF.bottom - it.rectF.top > 0 }.forEachIndexed { index, bar ->
         AnimatedBar(
             modifier = modifier.height(chartHeight),
             durationMillis = animationOptions.durationMillis,
