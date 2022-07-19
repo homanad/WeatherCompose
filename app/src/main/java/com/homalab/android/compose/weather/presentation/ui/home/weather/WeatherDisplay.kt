@@ -109,8 +109,10 @@ private fun WeatherInfo(
             LargeVerticalSpacer()
 
             Text(
+                modifier = Modifier.padding(start = Dimension4, end = Dimension4),
                 text = formatCondition(weather.main, weather.description),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center
             )
 
             DefaultVerticalSpacer()
@@ -187,7 +189,9 @@ private fun WeatherInfo(
             }
 
             Column(
-                modifier = Modifier.clickable { onDetailClick.invoke() }.semantics { contentDescription = GlobalConstants.DetailButtonDescription },
+                modifier = Modifier
+                    .clickable { onDetailClick.invoke() }
+                    .semantics { contentDescription = GlobalConstants.DetailButtonDescription },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
