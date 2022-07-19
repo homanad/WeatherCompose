@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedBar
+import com.homalab.android.compose.weather.presentation.components.charts.components.generateVerticalValues
 import com.homalab.android.compose.weather.presentation.components.charts.components.toDp
 import com.homalab.android.compose.weather.presentation.components.charts.components.toPx
 import com.homalab.android.compose.weather.presentation.components.charts.entities.BarEntity
@@ -24,7 +25,7 @@ import com.homalab.android.compose.weather.presentation.components.charts.entiti
 fun BarChart(
     modifier: Modifier = Modifier,
     chartData: List<BarChartData>,
-    verticalAxisValues: List<Float>,
+    verticalAxisValues: MutableList<Float> = mutableListOf(),
     verticalAxisLabelTransform: (Float) -> String,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
@@ -39,6 +40,8 @@ fun BarChart(
     contentPadding: Dp = DefaultContentPadding,
     animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
 ) {
+    if (verticalAxisValues.isEmpty()) verticalAxisValues.addAll(generateVerticaAxisValues(chartData))
+
     val axisThicknessPx = axisThickness.toPx()
     val contentPaddingPx = contentPadding.toPx()
 
@@ -172,6 +175,14 @@ fun BarChart(
         )
     }
 }
+
+private fun generateVerticaAxisValues(chartData: List<BarChartData>): List<Float> {
+    val values = mutableListOf<Float>().apply {
+        addAll(chartData.map { it.barValue })
+    }
+    return generateVerticalValues(values.minOf { it }, values.maxOf { it })
+}
+
 
 private fun Offset.toSize(topLeftOffset: Offset): Size {
     return Size(x - topLeftOffset.x, y - topLeftOffset.y)

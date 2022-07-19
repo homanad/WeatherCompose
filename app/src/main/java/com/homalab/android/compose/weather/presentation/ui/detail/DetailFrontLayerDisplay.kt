@@ -41,7 +41,9 @@ fun DetailFrontLayerDisplay(
 
 @Composable
 fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.semantics { contentDescription = GlobalConstants.DetailFrontLayerDescription }) {
+    Column(modifier = modifier.semantics {
+        contentDescription = GlobalConstants.DetailFrontLayerDescription
+    }) {
 
         RoundedLine(modifier = Modifier.align(Alignment.CenterHorizontally))
 
@@ -60,7 +62,10 @@ fun DetailFrontLayerInfo(forecastDayItem: ForecastDayItem, modifier: Modifier = 
         SmallVerticalSpacer()
 
         Row(
-            modifier = Modifier.semantics { contentDescription = GlobalConstants.ConditionsDescription }
+            modifier = Modifier
+                .semantics {
+                    contentDescription = GlobalConstants.ConditionsDescription
+                }
                 .fillMaxWidth()
                 .padding(Dimension2)
                 .horizontalScroll(rememberScrollState()),
@@ -133,7 +138,7 @@ fun HumidityChart(forecastItems: List<ForecastItem>, timeZone: Int) {
                 .fillMaxWidth()
                 .padding(Dimension4),
             chartData = listOf(cloudsData, humidityData),
-            verticalAxisValues = listOf(0f, 20f, 40f, 60f, 80f, 100f),
+            verticalAxisValues = mutableListOf(0f, 20f, 40f, 60f, 80f, 100f),
             verticalAxisLabelTransform = { formatPercent(it.toInt()) },
             showHorizontalLines = true,
             horizontalLineStyle = HorizontalLineStyle.STROKE
@@ -192,8 +197,6 @@ fun SeaChart(forecastItems: List<ForecastItem>, timeZone: Int) {
                 .fillMaxWidth()
                 .padding(Dimension4),
             chartData = listOf(seaLevelData, pressureData),
-            verticalAxisValues = generateMinMaxRange(seaLevelValues.map { it.value }
-                .minOf { it }, seaLevelValues.map { it.value }.maxOf { it }),
             verticalAxisLabelTransform = { formatHPa(it.toInt()) },
             showHorizontalLines = false,
             horizontalLineStyle = HorizontalLineStyle.STROKE

@@ -13,10 +13,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedCircle
-import com.homalab.android.compose.weather.presentation.components.charts.components.AnimatedLine
-import com.homalab.android.compose.weather.presentation.components.charts.components.toDp
-import com.homalab.android.compose.weather.presentation.components.charts.components.toPx
+import com.homalab.android.compose.weather.presentation.components.charts.components.*
 import com.homalab.android.compose.weather.presentation.components.charts.entities.CircleEntity
 import com.homalab.android.compose.weather.presentation.components.charts.entities.LineEntity
 import com.homalab.android.compose.weather.presentation.components.charts.entities.TextEntity
@@ -26,7 +23,7 @@ import kotlin.math.ceil
 fun MultipleLinesChart(
     modifier: Modifier = Modifier,
     chartData: List<MultipleChartData>,
-    verticalAxisValues: List<Float>,
+    verticalAxisValues: MutableList<Float> = mutableListOf(),
     verticalAxisLabelTransform: (Float) -> String,
     horizontalAxisLabelColor: Color = DefaultAxisLabelColor,
     horizontalAxisLabelFontSize: TextUnit = DefaultAxisLabelFontSize,
@@ -42,6 +39,8 @@ fun MultipleLinesChart(
     contentPadding: Dp = DefaultContentPadding,
     animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
 ) {
+    if (verticalAxisValues.isEmpty()) verticalAxisValues.addAll(generateVerticaAxisValues(chartData))
+
     val visibleChartHeight = horizontalLineSpacing * (verticalAxisValues.size - 1)
     val horizontalAxisLabelHeight = contentPadding + horizontalAxisLabelFontSize.toDp()
 
@@ -272,6 +271,15 @@ fun MultipleLinesChart(
             circleEntity = circleEntity
         )
     }
+}
+
+private fun generateVerticaAxisValues(chartData: List<MultipleChartData>): List<Float> {
+    val values = mutableListOf<Float>().apply {
+        chartData.forEach {
+            addAll(it.values.map { v -> v.value })
+        }
+    }
+    return generateVerticalValues(values.minOf { it }, values.maxOf { it })
 }
 
 private fun calculateOffset(

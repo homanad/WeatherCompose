@@ -16,14 +16,13 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.components.charts.*
+import com.homalab.android.compose.weather.presentation.components.charts.components.generateVerticalValues
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.theme.RainColor
 import com.homalab.android.compose.weather.presentation.theme.TemperatureMaxColor
 import com.homalab.android.compose.weather.presentation.theme.TemperatureMinColor
 import com.homalab.android.compose.weather.presentation.theme.TemperatureNormalColor
 import com.homalab.android.compose.weather.util.*
-import kotlin.math.ceil
-import kotlin.math.floor
 
 @Composable
 fun DetailBackLayerDisplay(
@@ -114,10 +113,6 @@ fun TemperatureChart(
                     .fillMaxWidth()
                     .padding(Dimension4),
                 chartData = chartData,
-                verticalAxisValues = generateMinMaxRange(
-                    minData.values.minOf { it.value },
-                    maxData.values.maxOf { it.value }
-                ),
                 verticalAxisLabelTransform = {
                     formatCDegree(it)
                 },
@@ -141,11 +136,11 @@ fun RainChart(
         )
     }
 
-    var verticalAxisValues = generateMinMaxRange(
+    var verticalAxisValues = generateVerticalValues(
         barChartData.minOf { it.barValue },
         barChartData.maxOf { it.barValue })
 
-    if (verticalAxisValues.isEmpty()) verticalAxisValues = listOf(0f, 1f)
+    if (verticalAxisValues.isEmpty()) verticalAxisValues = mutableListOf(0f, 1f)
 
     TitledChart(
         title = stringResource(id = R.string.rain),
@@ -158,34 +153,13 @@ fun RainChart(
                     .fillMaxWidth()
                     .padding(Dimension4),
                 chartData = chartData,
-                verticalAxisValues = verticalAxisValues,
+                verticalAxisValues = verticalAxisValues.toMutableList(),
                 verticalAxisLabelTransform = { formatMm(it) },
                 animationOptions = ChartDefaults.AnimationOptions(true, durationMillis = 300)
             )
         }
     }
 }
-
-fun generateMinMaxRange(min: Float, max: Float): List<Float> {
-    val minValue = floor(min).toInt()
-    val maxValue = ceil(max).toInt()
-
-    val delta = maxValue - minValue
-    val step = ceil(delta.toFloat() / MAX_HORIZONTAL_LINE).toInt()
-
-    val list = mutableListOf<Float>()
-    var value = minValue - step
-    while (value < maxValue) {
-        value += step
-        list.add(value.toFloat())
-    }
-//    for (i in minValue..maxValue step step) {
-//        list.add(i.toFloat()) //TODO fix step out of value
-//    }
-    return list
-}
-
-private const val MAX_HORIZONTAL_LINE = 5
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
