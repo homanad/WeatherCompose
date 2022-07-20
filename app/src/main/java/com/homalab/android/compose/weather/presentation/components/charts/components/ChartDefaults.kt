@@ -16,6 +16,8 @@ val DefaultAxisLabelFontSize = 13.sp
 val DefaultAxisThickness = 1.dp
 val DefaultContentPadding = 8.dp
 val HorizontalLineSpacing = 30.dp
+const val DefaultCirclePointRatio = 1.5f
+const val DefaultUpscaleRatioStep = 0.5f
 const val MaxChartLabelInOneLine = 3
 const val DEFAULT_DURATION = 150
 const val DefaultBarWidthRatio = 0.7f
@@ -88,5 +90,28 @@ object ChartDefaults {
             horizontalLineSpacing,
             horizontalLineStyle
         )
+    }
+
+    fun defaultCirclePointOptions() = CirclePointOptions(
+        baseRatio = DefaultCirclePointRatio,
+        upscaleBackCircle = false,
+        upscaleRatioStep = DefaultUpscaleRatioStep,
+        showCirclePoint = true
+    )
+
+    @Immutable
+    class CirclePointOptions(
+        val baseRatio: Float,
+        val upscaleBackCircle: Boolean,
+        val upscaleRatioStep: Float,
+        val showCirclePoint: Boolean
+    ) {
+        @Stable
+        fun copy(
+            baseRatio: Float = this.baseRatio,
+            upscaleBackCircle: Boolean = this.upscaleBackCircle,
+            upscaleRatioStep: Float = this.upscaleRatioStep,
+            showCirclePoint: Boolean = this.showCirclePoint
+        ) = CirclePointOptions(baseRatio, upscaleBackCircle, upscaleRatioStep, showCirclePoint)
     }
 }

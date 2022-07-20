@@ -182,8 +182,7 @@ fun SeaChart(forecastItems: List<ForecastItem>, timeZone: Int) {
             dotColor = SeaLevelColor,
             lineColor = SeaLevelColor,
             values = seaLevelValues,
-            label = stringResource(id = R.string.sea_level),
-            dotRatio = 2f
+            label = stringResource(id = R.string.sea_level)
         )
 
         val pressureData = MultipleChartData(
@@ -200,7 +199,12 @@ fun SeaChart(forecastItems: List<ForecastItem>, timeZone: Int) {
             chartData = listOf(seaLevelData, pressureData),
             verticalAxisLabelTransform = { formatHPa(it.toInt()) },
             horizontalLineOptions = ChartDefaults.defaultHorizontalLineOptions()
-                .copy(showHorizontalLines = false, horizontalLineStyle = HorizontalLineStyle.STROKE)
+                .copy(
+                    showHorizontalLines = false,
+                    horizontalLineStyle = HorizontalLineStyle.STROKE
+                ),
+            circlePointOptions = ChartDefaults.defaultCirclePointOptions()
+                .copy(upscaleBackCircle = true)
         )
     }
 }

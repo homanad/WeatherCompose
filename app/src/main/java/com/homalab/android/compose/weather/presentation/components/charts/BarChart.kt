@@ -26,9 +26,9 @@ fun BarChart(
     horizontalAxisOptions: ChartDefaults.AxisOptions = ChartDefaults.defaultAxisOptions(),
     verticalAxisOptions: ChartDefaults.AxisOptions = ChartDefaults.defaultAxisOptions(),
     horizontalLineOptions: ChartDefaults.HorizontalLineOptions = ChartDefaults.defaultHorizontalLineOptions(),
+    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions(),
     barWidthRatio: Float = DefaultBarWidthRatio,
-    contentPadding: Dp = DefaultContentPadding,
-    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
+    contentPadding: Dp = DefaultContentPadding
 ) {
     if (verticalAxisValues.isEmpty()) verticalAxisValues.addAll(generateVerticaAxisValues(chartData))
 

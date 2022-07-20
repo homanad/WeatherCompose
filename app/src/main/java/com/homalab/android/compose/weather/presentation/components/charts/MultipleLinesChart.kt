@@ -27,10 +27,10 @@ fun MultipleLinesChart(
     horizontalAxisOptions: ChartDefaults.AxisOptions = ChartDefaults.defaultAxisOptions(),
     verticalAxisOptions: ChartDefaults.AxisOptions = ChartDefaults.defaultAxisOptions(),
     horizontalLineOptions: ChartDefaults.HorizontalLineOptions = ChartDefaults.defaultHorizontalLineOptions(),
+    circlePointOptions: ChartDefaults.CirclePointOptions = ChartDefaults.defaultCirclePointOptions(),
+    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions(),
     lineWidth: Dp = DefaultLineWidth,
-    drawCirclePoint: Boolean = true,
     contentPadding: Dp = DefaultContentPadding,
-    animationOptions: ChartDefaults.AnimationOptions = ChartDefaults.defaultAnimationOptions()
 ) {
     if (verticalAxisValues.isEmpty()) verticalAxisValues.addAll(generateVerticaAxisValues(chartData))
 
@@ -161,11 +161,16 @@ fun MultipleLinesChart(
 //                        multipleChartData.dotRatio
 //                    )
 //                )
+
                 circleEntities.add(
                     CircleEntity(
                         multipleChartData.dotColor,
                         endOffset,
-                        if (drawCirclePoint) multipleChartData.dotRatio else 0.5f
+                        if (circlePointOptions.showCirclePoint) {
+                            if (circlePointOptions.upscaleBackCircle)
+                                circlePointOptions.baseRatio + (circlePointOptions.upscaleRatioStep * (chartData.size - 1 - i))
+                            else circlePointOptions.baseRatio
+                        } else 0.5f
                     )
                 )
 
@@ -302,8 +307,7 @@ data class MultipleChartData(
     val dotColor: Color,
     val lineColor: Color,
     val values: List<MultipleChartValue>,
-    val label: String,
-    val dotRatio: Float = 1.5f
+    val label: String
 )
 
 data class MultipleChartValue(

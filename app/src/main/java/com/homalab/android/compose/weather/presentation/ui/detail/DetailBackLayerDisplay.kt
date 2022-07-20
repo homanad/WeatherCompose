@@ -72,8 +72,7 @@ fun TemperatureChart(
                 it.main.temp_min
             )
         },
-        label = stringResource(id = R.string.min),
-        dotRatio = 2.5f
+        label = stringResource(id = R.string.min)
     )
 
     val normalData = MultipleChartData(
@@ -85,8 +84,7 @@ fun TemperatureChart(
                 it.main.temp
             )
         },
-        label = stringResource(id = R.string.normal),
-        dotRatio = 2f
+        label = stringResource(id = R.string.normal)
     )
 
     val maxData = MultipleChartData(
@@ -98,8 +96,7 @@ fun TemperatureChart(
                 it.main.temp_max
             )
         },
-        label = stringResource(id = R.string.max),
-        dotRatio = 1.5f
+        label = stringResource(id = R.string.max)
     )
     val multipleChartData = listOf(minData, normalData, maxData)
 
@@ -117,6 +114,8 @@ fun TemperatureChart(
                 verticalAxisLabelTransform = {
                     formatCDegree(it)
                 },
+                circlePointOptions = ChartDefaults.defaultCirclePointOptions()
+                    .copy(upscaleBackCircle = true),
                 animationOptions = ChartDefaults.defaultAnimationOptions().copy(isEnabled = true)
             )
         }
