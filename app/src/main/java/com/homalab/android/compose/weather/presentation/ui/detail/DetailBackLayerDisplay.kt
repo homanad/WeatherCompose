@@ -16,6 +16,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.homalab.android.compose.weather.R
 import com.homalab.android.compose.weather.presentation.components.*
 import com.homalab.android.compose.weather.presentation.components.charts.*
+import com.homalab.android.compose.weather.presentation.components.charts.components.ChartDefaults
 import com.homalab.android.compose.weather.presentation.components.charts.components.generateVerticalValues
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.theme.RainColor

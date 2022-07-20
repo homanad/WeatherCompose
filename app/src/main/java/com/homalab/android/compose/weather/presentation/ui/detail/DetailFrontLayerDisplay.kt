@@ -18,6 +18,7 @@ import com.homalab.android.compose.weather.presentation.components.charts.Horizo
 import com.homalab.android.compose.weather.presentation.components.charts.MultipleChartData
 import com.homalab.android.compose.weather.presentation.components.charts.MultipleChartValue
 import com.homalab.android.compose.weather.presentation.components.charts.MultipleLinesChart
+import com.homalab.android.compose.weather.presentation.components.charts.components.ChartDefaults
 import com.homalab.android.compose.weather.presentation.mapper.ForecastDayItem
 import com.homalab.android.compose.weather.presentation.theme.CloudsColor
 import com.homalab.android.compose.weather.presentation.theme.HumidityColor
@@ -140,8 +141,8 @@ fun HumidityChart(forecastItems: List<ForecastItem>, timeZone: Int) {
             chartData = listOf(cloudsData, humidityData),
             verticalAxisValues = mutableListOf(0f, 20f, 40f, 60f, 80f, 100f),
             verticalAxisLabelTransform = { formatPercent(it.toInt()) },
-            showHorizontalLines = true,
-            horizontalLineStyle = HorizontalLineStyle.STROKE
+            horizontalLineOptions = ChartDefaults.defaultHorizontalLineOptions()
+                .copy(horizontalLineStyle = HorizontalLineStyle.STROKE)
         )
     }
 }
@@ -198,8 +199,8 @@ fun SeaChart(forecastItems: List<ForecastItem>, timeZone: Int) {
                 .padding(Dimension4),
             chartData = listOf(seaLevelData, pressureData),
             verticalAxisLabelTransform = { formatHPa(it.toInt()) },
-            showHorizontalLines = false,
-            horizontalLineStyle = HorizontalLineStyle.STROKE
+            horizontalLineOptions = ChartDefaults.defaultHorizontalLineOptions()
+                .copy(showHorizontalLines = false, horizontalLineStyle = HorizontalLineStyle.STROKE)
         )
     }
 }
