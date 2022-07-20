@@ -39,8 +39,8 @@ fun MultipleLinesChart(
     val horizontalAxisLabelHeight = contentPadding + horizontalAxisOptions.axisLabelFontSize.toDp()
 
     val chartLabelLineHeight = contentPadding + horizontalAxisOptions.axisLabelFontSize.toDp()
-    val totalChartLabelHeight = chartLabelLineHeight *
-            ceil(chartData.size.toFloat() / MaxChartLabelInOneLine)
+    val totalChartLabelHeight =
+        chartLabelLineHeight * ceil(chartData.size.toFloat() / MaxChartLabelInOneLine)
 
     val chartHeight = visibleChartHeight + horizontalAxisLabelHeight + totalChartLabelHeight
 
@@ -51,14 +51,11 @@ fun MultipleLinesChart(
     val horizontalAxisThicknessPx = horizontalAxisOptions.axisThickness.toPx()
     val verticalAxisThicknessPx = verticalAxisOptions.axisThickness.toPx()
 
-    val horizontalLabelAreaY =
-        (visibleChartHeight + horizontalAxisLabelHeight).toPx()
-    val chartLabelAreaBaseY =
-        (visibleChartHeight + horizontalAxisLabelHeight).toPx()
+    val horizontalLabelAreaY = (visibleChartHeight + horizontalAxisLabelHeight).toPx()
+    val chartLabelAreaBaseY = (visibleChartHeight + horizontalAxisLabelHeight).toPx()
 
-    val leftAreaWidth =
-        (verticalAxisLabelTransform(verticalAxisValues.last()).length * verticalAxisLabelFontSizePx
-            .div(1.75)).toInt() + contentPaddingPx
+    val leftAreaWidth = (verticalAxisLabelTransform(verticalAxisValues.last()).length
+            * verticalAxisLabelFontSizePx.div(1.75)).toInt() + contentPaddingPx
 
     val verticalValuesPaint = Paint().apply {
         textSize = verticalAxisLabelFontSizePx
@@ -138,7 +135,7 @@ fun MultipleLinesChart(
         chartData.forEachIndexed { i, multipleChartData ->
             var previousOffset: Offset? = null
 
-            val barWidth = (size.width - leftAreaWidth) / multipleChartData.values.size
+            val barWidth = horizontalAxisWidth / multipleChartData.values.size
 
             multipleChartData.values.forEachIndexed { index, multipleChartValue ->
                 var x = barWidth * index
@@ -153,14 +150,6 @@ fun MultipleLinesChart(
                 )
 
                 val endOffset = Offset((currentOffset.x + barWidth.div(2)), currentOffset.y)
-
-//                if (drawCirclePoint) circleEntities.add(
-//                    CircleEntity(
-//                        multipleChartData.dotColor,
-//                        endOffset,
-//                        multipleChartData.dotRatio
-//                    )
-//                )
 
                 circleEntities.add(
                     CircleEntity(
@@ -214,6 +203,7 @@ fun MultipleLinesChart(
                 labelRectPaint.color = multipleChartData.lineColor.toArgb()
                 val startRect = x + contentPaddingPx
                 val endRect = startRect + width / 4
+
                 drawRect(
                     startRect,
                     y - horizontalAxisLabelFontSizePx,
@@ -225,6 +215,7 @@ fun MultipleLinesChart(
                 val textWidth =
                     (multipleChartData.label.length * verticalAxisLabelFontSizePx).div(1.75)
                         .toFloat()
+
                 drawText(
                     multipleChartData.label,
                     (endRect + contentPaddingPx + textWidth / 2),
@@ -241,12 +232,7 @@ fun MultipleLinesChart(
 
         drawContext.canvas.nativeCanvas.apply {
             textOffsets.forEach {
-                drawText(
-                    it.text,
-                    it.offset.x,
-                    horizontalLabelAreaY,
-                    horizontalValuesPaint
-                )
+                drawText(it.text, it.offset.x, horizontalLabelAreaY, horizontalValuesPaint)
             }
         }
 

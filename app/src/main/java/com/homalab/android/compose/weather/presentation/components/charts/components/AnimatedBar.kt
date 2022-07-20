@@ -31,7 +31,7 @@ fun AnimatedBar(
             animationSpec = tween(durationMillis, easing = LinearEasing)
         )
     })
-    val rect = barEntity.rectF
+    val rect = barEntity.rect
     Canvas(modifier = modifier, onDraw = {
         val y = rect.bottom - (rect.bottom - rect.top) * animatable.value
         drawRect(

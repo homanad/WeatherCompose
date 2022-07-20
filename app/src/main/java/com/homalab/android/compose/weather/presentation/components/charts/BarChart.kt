@@ -1,7 +1,6 @@
 package com.homalab.android.compose.weather.presentation.components.charts
 
 import android.graphics.Paint
-import android.graphics.RectF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
@@ -109,7 +108,7 @@ fun BarChart(
                 )
         }
 
-        val barWidth = (drawContext.size.width - leftAreaWidth) / chartData.size
+        val barWidth = horizontalAxisLength / chartData.size
         val minValue = verticalAxisValues.minOf { it }
         val deltaRange = verticalAxisValues.maxOf { it } - minValue
 
@@ -134,12 +133,14 @@ fun BarChart(
                 verticalAxisLength = verticalAxisLength
             )
 
-            if (animationOptions.isEnabled) rectFs.add(
-                BarEntity(
-                    barChartData.barColor,
-                    RectF(rect.left, rect.top, rect.right, rect.bottom)
+            if (animationOptions.isEnabled) {
+                rectFs.add(
+                    BarEntity(
+                        barChartData.barColor,
+                        Rect(rect.left, rect.top, rect.right, rect.bottom)
+                    )
                 )
-            ) else drawRect(
+            } else drawRect(
                 color = barChartData.barColor,
                 topLeft = rect.topLeft,
                 size = rect.bottomRight.toSize(rect.topLeft)
@@ -158,7 +159,7 @@ fun BarChart(
         animatedBars = rectFs
     }
 
-    animatedBars.filter { it.rectF.bottom - it.rectF.top > 0 }.forEachIndexed { index, bar ->
+    animatedBars.filter { it.rect.size.height > 0 }.forEachIndexed { index, bar ->
         AnimatedBar(
             modifier = modifier.height(chartHeight),
             durationMillis = animationOptions.durationMillis,
